@@ -1,7 +1,17 @@
-'use client';
+use client';
 
 import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
+
+let supabase;
+
+if (typeof window !== 'undefined') {
+  supabase = require('@supabase/supabase-js').createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+}
+
+export { supabase };
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(true);
