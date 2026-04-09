@@ -57,6 +57,8 @@ export default function Dashboard() {
   const [metricasSalud, setMetricasSalud] = useState<any[]>([]);
   const [proyectos, setProyectos] = useState<any[]>([]);
   const [gymSesiones, setGymSesiones] = useState<any[]>([]);
+  const [gymEjercicios, setGymEjercicios] = useState<any[]>([]);
+  const [sesionExpandida, setSesionExpandida] = useState<number | null>(null);
   const [mostrarDescartadas, setMostrarDescartadas] = useState(false);
   const [ocultarCerradas, setOcultarCerradas] = useState(true);
   const [mostrarRealizadas, setMostrarRealizadas] = useState(false);
@@ -77,18 +79,20 @@ export default function Dashboard() {
   async function loadData() {
     setLoading(true);
     try {
-      const [lic, tar, sal, proj, gym] = await Promise.all([
+      const [lic, tar, sal, proj, gym, ejs] = await Promise.all([
         supabase.from('licitaciones').select('*').eq('estado', 'publicada').order('created_at', { ascending: false }).limit(200),
         supabase.from('tareas').select('*').order('created_at', { ascending: false }).limit(50),
         supabase.from('metricas_salud').select('*').order('fecha_registro', { ascending: true }),
         supabase.from('proyectos').select('*').order('created_at', { ascending: false }).limit(5),
         supabase.from('gym_sesiones').select('*').order('fecha', { ascending: false }).limit(100),
+        supabase.from('gym_ejercicios').select('*').order('id', { ascending: true }),
       ]);
       setLicitaciones(lic.data || []);
       setTareas(tar.data || []);
       setMetricasSalud(sal.data || []);
       setProyectos(proj.data || []);
       setGymSesiones(gym.data || []);
+      setGymEjercicios(ejs.data || []);
     } catch (err) {
       console.error('Error cargando datos:', err);
     }
@@ -747,32 +751,58 @@ export default function Dashboard() {
               <Card>
                 <CardHeader className="pb-2">
                   <CardTitle className="text-base">Historial de sesiones</CardTitle>
-                  <CardDescription>{gymSesiones.length} sesiones registradas</CardDescription>
+                  <CardDescription>{gymSesiones.length} sesiones · click para ver ejercicios</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="max-h-64 overflow-y-auto">
-                    <Table>
-                      <TableHeader>
-                        <TableRow className="hover:bg-transparent">
-                          <TableHead>Fecha</TableHead>
-                          <TableHead>Sem.</TableHead>
-                          <TableHead>Tipo</TableHead>
-                          <TableHead className="text-center">Estado</TableHead>
-                          <TableHead>Notas</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {gymSesiones.map((s) => (
-                          <TableRow key={s.id}>
-                            <TableCell className="text-xs text-zinc-500">{new Date(s.fecha).toLocaleDateString('es-CL', { day: 'numeric', month: 'short' })}</TableCell>
-                            <TableCell className="text-xs text-zinc-400">S{s.semana}</TableCell>
-                            <TableCell className="text-sm font-medium">{s.tipo}</TableCell>
-                            <TableCell className="text-center text-base">{ESTADO_ICONS[s.estado] ?? s.estado}</TableCell>
-                            <TableCell className="text-xs text-zinc-400 max-w-[200px] truncate" title={s.notas ?? ''}>{s.notas ?? ''}</TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
+                  <div className="max-h-[480px] overflow-y-auto space-y-1">
+                    {gymSesiones.map((s) => {
+                      const ejsSesion = gymEjercicios.filter(e => e.sesion_id === s.id);
+                      const expanded = sesionExpandida === s.id;
+                      return (
+                        <div key={s.id} className="border border-zinc-100 rounded-lg overflow-hidden">
+                          <button
+                            onClick={() => setSesionExpandida(expanded ? null : s.id)}
+                            className="w-full flex items-center gap-3 px-3 py-2 hover:bg-zinc-50 transition-colors text-left"
+                          >
+                            <span className="text-base w-6 text-center">{ESTADO_ICONS[s.estado] ?? '•'}</span>
+                            <span className="text-xs text-zinc-400 w-16 flex-shrink-0">{new Date(s.fecha).toLocaleDateString('es-CL', { day: 'numeric', month: 'short' })}</span>
+                            <span className="text-xs text-zinc-400 w-8 flex-shrink-0">S{s.semana}</span>
+                            <span className="text-sm font-medium text-zinc-800 flex-1">{s.tipo}</span>
+                            {ejsSesion.length > 0 && <span className="text-xs text-zinc-400">{ejsSesion.length} ej.</span>}
+                            {s.notas && <span className="text-xs text-zinc-400 max-w-[180px] truncate hidden md:block">{s.notas}</span>}
+                            {ejsSesion.length > 0 && (
+                              <span className="text-zinc-300 ml-1">{expanded ? '▲' : '▼'}</span>
+                            )}
+                          </button>
+                          {expanded && ejsSesion.length > 0 && (
+                            <div className="bg-zinc-50 border-t border-zinc-100 px-3 py-2">
+                              <table className="w-full text-xs">
+                                <thead>
+                                  <tr className="text-zinc-400 border-b border-zinc-200">
+                                    <th className="text-left py-1 font-medium">Ejercicio</th>
+                                    <th className="text-right py-1 font-medium">Carga</th>
+                                    <th className="text-right py-1 font-medium">Series</th>
+                                    <th className="text-right py-1 font-medium">Reps</th>
+                                    <th className="text-left py-1 pl-3 font-medium">Notas</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {ejsSesion.map(e => (
+                                    <tr key={e.id} className="border-b border-zinc-100 last:border-0">
+                                      <td className="py-1 text-zinc-700 font-medium">{e.nombre}</td>
+                                      <td className="py-1 text-right text-zinc-600">{e.carga_real != null ? `${e.carga_real} kg` : '—'}</td>
+                                      <td className="py-1 text-right text-zinc-600">{e.series_real ?? '—'}</td>
+                                      <td className="py-1 text-right text-zinc-600">{e.reps_real ?? '—'}</td>
+                                      <td className="py-1 pl-3 text-zinc-400">{e.notas ?? ''}</td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 </CardContent>
               </Card>
