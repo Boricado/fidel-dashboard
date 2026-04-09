@@ -404,8 +404,8 @@ export default function Dashboard() {
                                 </a>
                               ) : l.codigo}
                             </TableCell>
-                            <TableCell className="font-medium max-w-[280px]">
-                              <span className="line-clamp-2 text-sm">{l.nombre}</span>
+                            <TableCell className="font-medium">
+                              <span className="text-sm">{l.nombre}</span>
                             </TableCell>
                             <TableCell className="text-sm text-zinc-600">{l.categoria}</TableCell>
                             <TableCell className="text-sm text-zinc-600 max-w-[140px] truncate">{l.region}</TableCell>
