@@ -706,6 +706,15 @@ export default function Dashboard() {
                         <CardTitle className="text-base flex items-center gap-1.5"><Dumbbell className="w-4 h-4" /> Semana {semanaActual}</CardTitle>
                         <CardDescription>Rutina PPL actual</CardDescription>
                       </div>
+                      <a
+                        href="/rutina_semana5.html"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Button variant="outline" size="sm" className="text-xs gap-1">
+                          <FileText className="w-3 h-3" /> Ver rutina
+                        </Button>
+                      </a>
                     </div>
                   </CardHeader>
                   <CardContent>
