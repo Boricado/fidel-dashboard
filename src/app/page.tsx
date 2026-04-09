@@ -151,6 +151,9 @@ export default function Dashboard() {
   }, [licitaciones, acciones, mostrarDescartadas, busqueda, filtroCat, filtroRegion, filtroAccion, sortKey, sortDir]);
 
   const descartadasCount = licitaciones.filter(l => acciones[l.id] === 'descartado').length;
+  const postuladas = licitaciones.filter(l => acciones[l.id] === 'postulado').length;
+  const revisando = licitaciones.filter(l => acciones[l.id] === 'revisar').length;
+  const nuevas = licitaciones.filter(l => !acciones[l.id]).length;
   const tareasCompletadas = tareas.filter(t => t.estado === 'completada').length;
   const proyectosActivos = proyectos.filter(p => p.estado === 'activo').length;
   const pesoActual = metricasSalud[0]?.peso ?? '--';
@@ -170,6 +173,17 @@ export default function Dashboard() {
     };
     return map[estado] ?? 'bg-zinc-100 text-zinc-600';
   };
+
+  function diasRestantes(fecha: string | null): { texto: string; clase: string } {
+    if (!fecha) return { texto: '—', clase: 'text-zinc-400' };
+    const diff = Math.ceil((new Date(fecha).getTime() - Date.now()) / 86400000);
+    if (diff < 0) return { texto: 'Cerrada', clase: 'text-zinc-400 line-through' };
+    if (diff === 0) return { texto: 'Hoy', clase: 'text-red-600 font-semibold' };
+    if (diff === 1) return { texto: 'Mañana', clase: 'text-red-500 font-medium' };
+    if (diff <= 3) return { texto: `${diff}d`, clase: 'text-orange-500 font-medium' };
+    if (diff <= 7) return { texto: `${diff}d`, clase: 'text-yellow-600' };
+    return { texto: `${diff}d`, clase: 'text-zinc-500' };
+  }
 
   function limpiarFiltros() {
     setBusqueda(''); setFiltroCat(''); setFiltroRegion(''); setFiltroAccion('');
@@ -207,14 +221,33 @@ export default function Dashboard() {
 
       <main className="max-w-7xl mx-auto px-6 py-8 space-y-8">
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardDescription className="flex items-center gap-1 text-xs"><FileText className="w-3 h-3" /> Licitaciones</CardDescription>
-              <CardTitle className="text-3xl">{licitaciones.length}</CardTitle>
+        {/* Licitaciones resumen */}
+        <div className="grid grid-cols-3 gap-3">
+          <Card className="border-zinc-200 cursor-pointer hover:border-zinc-400 transition-colors" onClick={() => { setFiltroAccion('sin_accion'); }}>
+            <CardHeader className="pb-1 pt-4 px-4">
+              <CardDescription className="flex items-center gap-1 text-xs text-zinc-500"><FileText className="w-3 h-3" /> Nuevas</CardDescription>
+              <CardTitle className="text-4xl font-bold text-zinc-900">{nuevas}</CardTitle>
             </CardHeader>
-            <CardContent><p className="text-xs text-zinc-400">Chile · Rubro construcción</p></CardContent>
+            <CardContent className="px-4 pb-4"><p className="text-xs text-zinc-400">sin revisar</p></CardContent>
           </Card>
+          <Card className="border-yellow-200 bg-yellow-50/40 cursor-pointer hover:bg-yellow-50 transition-colors" onClick={() => { setFiltroAccion('revisar'); }}>
+            <CardHeader className="pb-1 pt-4 px-4">
+              <CardDescription className="flex items-center gap-1 text-xs text-yellow-600"><Eye className="w-3 h-3" /> Revisando</CardDescription>
+              <CardTitle className="text-4xl font-bold text-yellow-700">{revisando}</CardTitle>
+            </CardHeader>
+            <CardContent className="px-4 pb-4"><p className="text-xs text-yellow-500">marcadas para revisar</p></CardContent>
+          </Card>
+          <Card className="border-green-200 bg-green-50/40 cursor-pointer hover:bg-green-50 transition-colors" onClick={() => { setFiltroAccion('postulado'); }}>
+            <CardHeader className="pb-1 pt-4 px-4">
+              <CardDescription className="flex items-center gap-1 text-xs text-green-600"><CheckCircle2 className="w-3 h-3" /> Postuladas</CardDescription>
+              <CardTitle className="text-4xl font-bold text-green-700">{postuladas}</CardTitle>
+            </CardHeader>
+            <CardContent className="px-4 pb-4"><p className="text-xs text-green-500">postulaciones activas</p></CardContent>
+          </Card>
+        </div>
+
+        {/* Otras métricas */}
+        <div className="grid grid-cols-3 gap-3">
           <Card>
             <CardHeader className="pb-2">
               <CardDescription className="flex items-center gap-1 text-xs"><CheckSquare className="w-3 h-3" /> Tareas</CardDescription>
@@ -334,6 +367,9 @@ export default function Dashboard() {
                         <TableHead className="text-right cursor-pointer select-none" onClick={() => toggleSort('monto')}>
                           Monto <SortIcon dir={colSortDir('monto')} />
                         </TableHead>
+                        <TableHead className="text-center cursor-pointer select-none w-[80px]" onClick={() => toggleSort('fecha_publicacion')}>
+                          Cierre <SortIcon dir={colSortDir('fecha_publicacion')} />
+                        </TableHead>
                         <TableHead className="text-center w-[110px]">Acción</TableHead>
                       </TableRow>
                     </TableHeader>
@@ -358,6 +394,9 @@ export default function Dashboard() {
                             <TableCell className="text-sm text-zinc-600 max-w-[140px] truncate">{l.region}</TableCell>
                             <TableCell className="text-right text-sm">
                               {l.monto ? `$${l.monto.toLocaleString('es-CL')}` : <span className="text-zinc-400">—</span>}
+                            </TableCell>
+                            <TableCell className="text-center text-xs whitespace-nowrap">
+                              {(() => { const d = diasRestantes(l.fecha_publicacion); return <span className={d.clase}>{d.texto}</span>; })()}
                             </TableCell>
                             <TableCell>
                               <div className="flex items-center justify-center gap-1">
