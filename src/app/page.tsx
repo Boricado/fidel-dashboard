@@ -6,8 +6,36 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
-import { FileText, CheckSquare, Heart, FolderOpen, RefreshCw } from 'lucide-react';
+import { FileText, CheckSquare, Heart, FolderOpen, RefreshCw, CheckCircle2, Eye, XCircle, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+
+type LicEstado = 'postulado' | 'revisar' | 'descartado' | null;
+
+function useLicAcciones() {
+  const [acciones, setAcciones] = useState<Record<string, LicEstado>>({});
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('lic_acciones');
+      if (stored) setAcciones(JSON.parse(stored));
+    } catch {}
+  }, []);
+
+  function setAccion(id: string, accion: LicEstado) {
+    setAcciones(prev => {
+      const next = { ...prev };
+      if (accion === null || next[id] === accion) {
+        delete next[id];
+      } else {
+        next[id] = accion;
+      }
+      try { localStorage.setItem('lic_acciones', JSON.stringify(next)); } catch {}
+      return next;
+    });
+  }
+
+  return { acciones, setAccion };
+}
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(true);
@@ -15,6 +43,8 @@ export default function Dashboard() {
   const [tareas, setTareas] = useState<any[]>([]);
   const [metricasSalud, setMetricasSalud] = useState<any[]>([]);
   const [proyectos, setProyectos] = useState<any[]>([]);
+  const [mostrarDescartadas, setMostrarDescartadas] = useState(false);
+  const { acciones, setAccion } = useLicAcciones();
 
   useEffect(() => { loadData(); }, []);
 
@@ -22,7 +52,7 @@ export default function Dashboard() {
     setLoading(true);
     try {
       const [lic, tar, sal, proj] = await Promise.all([
-        supabase.from('licitaciones').select('*').order('created_at', { ascending: false }).limit(10),
+        supabase.from('licitaciones').select('*').eq('estado', 'publicada').order('created_at', { ascending: false }).limit(100),
         supabase.from('tareas').select('*').order('created_at', { ascending: false }).limit(10),
         supabase.from('metricas_salud').select('*').order('fecha_registro', { ascending: false }).limit(10),
         supabase.from('proyectos').select('*').order('created_at', { ascending: false }).limit(5),
@@ -45,6 +75,14 @@ export default function Dashboard() {
     peso: m.peso,
     grasa: m.grasa,
   }));
+
+  const licsVisibles = licitaciones.filter(l => {
+    const accion = acciones[l.id];
+    if (accion === 'descartado') return mostrarDescartadas;
+    return true;
+  });
+
+  const descartadasCount = licitaciones.filter(l => acciones[l.id] === 'descartado').length;
 
   const estadoClass = (estado: string) => {
     const map: Record<string, string> = {
@@ -95,7 +133,7 @@ export default function Dashboard() {
               <CardTitle className="text-3xl">{licitaciones.length}</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-xs text-zinc-400">IV Región · &lt; $10M</p>
+              <p className="text-xs text-zinc-400">Chile · Rubro construcción</p>
             </CardContent>
           </Card>
 
@@ -149,37 +187,94 @@ export default function Dashboard() {
           <TabsContent value="licitaciones">
             <Card>
               <CardHeader>
-                <CardTitle>Licitaciones recientes</CardTitle>
-                <CardDescription>IV Región · Montos menores a $10M</CardDescription>
+                <div className="flex items-start justify-between">
+                  <div>
+                    <CardTitle>Licitaciones publicadas</CardTitle>
+                    <CardDescription>
+                      Chile · Construcción, topografía, TI y más
+                      {descartadasCount > 0 && (
+                        <span className="ml-2 text-zinc-400">· {descartadasCount} descartada{descartadasCount !== 1 ? 's' : ''}</span>
+                      )}
+                    </CardDescription>
+                  </div>
+                  {descartadasCount > 0 && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setMostrarDescartadas(v => !v)}
+                      className="text-xs text-zinc-400 gap-1"
+                    >
+                      {mostrarDescartadas ? <Eye className="w-3 h-3" /> : <EyeOff className="w-3 h-3" />}
+                      {mostrarDescartadas ? 'Ocultar descartadas' : 'Mostrar descartadas'}
+                    </Button>
+                  )}
+                </div>
               </CardHeader>
               <CardContent>
-                {licitaciones.length === 0 ? (
+                {licsVisibles.length === 0 ? (
                   <p className="text-sm text-zinc-400 py-8 text-center">Sin licitaciones registradas.</p>
                 ) : (
                   <Table>
                     <TableHeader>
                       <TableRow>
+                        <TableHead className="w-[120px]">ID</TableHead>
                         <TableHead>Nombre</TableHead>
                         <TableHead>Categoría</TableHead>
                         <TableHead>Región</TableHead>
                         <TableHead className="text-right">Monto</TableHead>
-                        <TableHead>Estado</TableHead>
+                        <TableHead className="text-center w-[120px]">Acción</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {licitaciones.map((l) => (
-                        <TableRow key={l.id}>
-                          <TableCell className="font-medium max-w-[200px] truncate">{l.nombre || l.codigo}</TableCell>
-                          <TableCell>{l.categoria}</TableCell>
-                          <TableCell>{l.region}</TableCell>
-                          <TableCell className="text-right">${l.monto?.toLocaleString('es-CL') || '0'}</TableCell>
-                          <TableCell>
-                            <span className={`px-2 py-0.5 rounded text-xs font-medium ${estadoClass(l.estado)}`}>
-                              {l.estado}
-                            </span>
-                          </TableCell>
-                        </TableRow>
-                      ))}
+                      {licsVisibles.map((l) => {
+                        const accion = acciones[l.id];
+                        const descartada = accion === 'descartado';
+                        return (
+                          <TableRow key={l.id} className={descartada ? 'opacity-40' : ''}>
+                            <TableCell className="font-mono text-xs text-zinc-500">
+                              {l.url ? (
+                                <a href={l.url} target="_blank" rel="noopener noreferrer"
+                                  className="hover:text-zinc-900 hover:underline">
+                                  {l.codigo}
+                                </a>
+                              ) : l.codigo}
+                            </TableCell>
+                            <TableCell className="font-medium max-w-[280px]">
+                              <span className="line-clamp-2">{l.nombre}</span>
+                            </TableCell>
+                            <TableCell className="text-sm text-zinc-500">{l.categoria}</TableCell>
+                            <TableCell className="text-sm text-zinc-500 max-w-[140px] truncate">{l.region}</TableCell>
+                            <TableCell className="text-right text-sm">
+                              {l.monto ? `$${l.monto.toLocaleString('es-CL')}` : <span className="text-zinc-400">—</span>}
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex items-center justify-center gap-1">
+                                <button
+                                  title="Postulado"
+                                  onClick={() => setAccion(l.id, 'postulado')}
+                                  className={`p-1 rounded transition-colors ${accion === 'postulado' ? 'text-green-600 bg-green-50' : 'text-zinc-300 hover:text-green-500'}`}
+                                >
+                                  <CheckCircle2 className="w-4 h-4" />
+                                </button>
+                                <button
+                                  title="Revisar"
+                                  onClick={() => setAccion(l.id, 'revisar')}
+                                  className={`p-1 rounded transition-colors ${accion === 'revisar' ? 'text-yellow-600 bg-yellow-50' : 'text-zinc-300 hover:text-yellow-500'}`}
+                                >
+                                  <Eye className="w-4 h-4" />
+                                </button>
+                                <button
+                                  title="No me gustó"
+                                  onClick={() => setAccion(l.id, 'descartado')}
+                                  className={`p-1 rounded transition-colors ${accion === 'descartado' ? 'text-red-500 bg-red-50' : 'text-zinc-300 hover:text-red-400'}`}
+                                >
+                                  <XCircle className="w-4 h-4" />
+                                </button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
                     </TableBody>
                   </Table>
                 )}
