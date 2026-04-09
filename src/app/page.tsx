@@ -5,8 +5,8 @@ import { supabase } from '@/lib/supabase';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
-import { FileText, CheckSquare, Heart, FolderOpen, RefreshCw, CheckCircle2, Eye, XCircle, EyeOff, ChevronUp, ChevronDown, ChevronsUpDown, Search, X, CalendarOff, Circle, CheckCheck } from 'lucide-react';
+import { AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend } from 'recharts';
+import { FileText, CheckSquare, Heart, FolderOpen, RefreshCw, CheckCircle2, Eye, XCircle, EyeOff, ChevronUp, ChevronDown, ChevronsUpDown, Search, X, CalendarOff, Circle, CheckCheck, Dumbbell, TrendingDown, Target, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 type LicEstado = 'postulado' | 'revisar' | 'descartado' | null;
@@ -56,6 +56,7 @@ export default function Dashboard() {
   const [tareas, setTareas] = useState<any[]>([]);
   const [metricasSalud, setMetricasSalud] = useState<any[]>([]);
   const [proyectos, setProyectos] = useState<any[]>([]);
+  const [gymSesiones, setGymSesiones] = useState<any[]>([]);
   const [mostrarDescartadas, setMostrarDescartadas] = useState(false);
   const [ocultarCerradas, setOcultarCerradas] = useState(true);
   const [mostrarRealizadas, setMostrarRealizadas] = useState(false);
@@ -76,16 +77,18 @@ export default function Dashboard() {
   async function loadData() {
     setLoading(true);
     try {
-      const [lic, tar, sal, proj] = await Promise.all([
+      const [lic, tar, sal, proj, gym] = await Promise.all([
         supabase.from('licitaciones').select('*').eq('estado', 'publicada').order('created_at', { ascending: false }).limit(200),
-        supabase.from('tareas').select('*').order('created_at', { ascending: false }).limit(10),
-        supabase.from('metricas_salud').select('*').order('fecha_registro', { ascending: false }).limit(10),
+        supabase.from('tareas').select('*').order('created_at', { ascending: false }).limit(50),
+        supabase.from('metricas_salud').select('*').order('fecha_registro', { ascending: true }),
         supabase.from('proyectos').select('*').order('created_at', { ascending: false }).limit(5),
+        supabase.from('gym_sesiones').select('*').order('fecha', { ascending: false }).limit(100),
       ]);
       setLicitaciones(lic.data || []);
       setTareas(tar.data || []);
       setMetricasSalud(sal.data || []);
       setProyectos(proj.data || []);
+      setGymSesiones(gym.data || []);
     } catch (err) {
       console.error('Error cargando datos:', err);
     }
@@ -175,12 +178,47 @@ export default function Dashboard() {
     setTareas(prev => prev.map(t => t.id === id ? { ...t, estado: nuevoEstado } : t));
   }
   const proyectosActivos = proyectos.filter(p => p.estado === 'activo').length;
-  const pesoActual = metricasSalud[0]?.peso ?? '--';
-  const grafico = metricasSalud.slice().reverse().map(m => ({
-    fecha: m.fecha_registro?.slice(5, 10) ?? '',
+  const ultimaMedicion = metricasSalud[metricasSalud.length - 1];
+  const pesoActual = ultimaMedicion?.peso ?? '--';
+  const graficaInBody = metricasSalud.map(m => ({
+    fecha: m.fecha_registro ? new Date(m.fecha_registro).toLocaleDateString('es-CL', { month: 'short', year: '2-digit' }) : '',
     peso: m.peso,
     grasa: m.grasa,
+    musculo: m.musculo,
+    visceral: m.visceral,
+    score: m.score_inbody,
   }));
+
+  // Gym: semana actual (programa inicio 10 Feb 2026)
+  const INICIO_PROGRAMA = new Date('2026-02-10');
+  const semanaActual = Math.max(1, Math.floor((Date.now() - INICIO_PROGRAMA.getTime()) / (7 * 86400000)) + 1);
+  const sesionesSemanActual = gymSesiones.filter(s => s.semana === semanaActual);
+  const PPL_DIAS = [
+    { dia: 'Lun', tipo: 'Push A/B' },
+    { dia: 'Mar', tipo: 'Pull A' },
+    { dia: 'Mié', tipo: 'Pierna' },
+    { dia: 'Jue', tipo: 'Cardio Z2' },
+    { dia: 'Vie', tipo: 'Push A/B' },
+    { dia: 'Sáb', tipo: 'Deporte' },
+    { dia: 'Dom', tipo: 'Descanso' },
+  ];
+  const ESTADO_ICONS: Record<string, string> = {
+    completado: '✅', parcial: '⚡', no_realizado: '❌', pendiente: '⏳',
+  };
+
+  // Gym resumen todas las semanas para gráfico de consistencia
+  const semanasSesiones = useMemo(() => {
+    const bySemana: Record<number, number> = {};
+    gymSesiones.forEach(s => {
+      if (s.estado === 'completado' || s.estado === 'parcial') {
+        bySemana[s.semana] = (bySemana[s.semana] || 0) + 1;
+      }
+    });
+    return Object.entries(bySemana).sort((a, b) => Number(a[0]) - Number(b[0])).map(([sem, count]) => ({
+      semana: `S${sem}`,
+      sesiones: count,
+    }));
+  }, [gymSesiones]);
 
   const estadoClass = (estado: string) => {
     const map: Record<string, string> = {
@@ -279,7 +317,7 @@ export default function Dashboard() {
               <CardDescription className="flex items-center gap-1 text-xs"><Heart className="w-3 h-3" /> Peso actual</CardDescription>
               <CardTitle className="text-3xl">{pesoActual} <span className="text-sm font-normal text-zinc-400">kg</span></CardTitle>
             </CardHeader>
-            <CardContent><p className="text-xs text-zinc-400">{metricasSalud[0]?.grasa ? `${metricasSalud[0].grasa}% grasa` : 'Sin datos'}</p></CardContent>
+            <CardContent><p className="text-xs text-zinc-400">{ultimaMedicion?.grasa ? `${ultimaMedicion.grasa}% grasa · score ${ultimaMedicion.score_inbody}` : 'Sin datos'}</p></CardContent>
           </Card>
           <Card>
             <CardHeader className="pb-2">
@@ -534,49 +572,211 @@ export default function Dashboard() {
           </TabsContent>
 
           <TabsContent value="salud">
-            <div className="grid md:grid-cols-2 gap-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Evolución de peso</CardTitle>
-                  <CardDescription>Últimos registros (kg)</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {grafico.length === 0 ? (
-                    <p className="text-sm text-zinc-400 py-8 text-center">Sin datos de salud.</p>
-                  ) : (
-                    <ResponsiveContainer width="100%" height={200}>
-                      <AreaChart data={grafico}>
+            <div className="space-y-4">
+
+              {/* Metas */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {[
+                  { label: 'Peso', icon: <Activity className="w-3 h-3" />, current: ultimaMedicion?.peso, goal: 82, unit: 'kg', start: 92.8, invert: true },
+                  { label: '% Grasa', icon: <TrendingDown className="w-3 h-3" />, current: ultimaMedicion?.grasa, goal: 20, unit: '%', start: 28.3, invert: true },
+                  { label: 'Visceral', icon: <Heart className="w-3 h-3" />, current: ultimaMedicion?.visceral, goal: 8, unit: '', start: 11, invert: true },
+                  { label: 'Score InBody', icon: <Target className="w-3 h-3" />, current: ultimaMedicion?.score_inbody, goal: 90, unit: '', start: 75, invert: false },
+                ].map(({ label, icon, current, goal, unit, start, invert }) => {
+                  const pct = current == null ? 0 : invert
+                    ? Math.min(100, Math.max(0, ((start - current) / (start - goal)) * 100))
+                    : Math.min(100, Math.max(0, ((current - start) / (goal - start)) * 100));
+                  const reached = current != null && (invert ? current <= goal : current >= goal);
+                  return (
+                    <Card key={label}>
+                      <CardContent className="pt-4 pb-3 px-4">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-xs text-zinc-500 flex items-center gap-1">{icon}{label}</span>
+                          {reached && <span className="text-xs text-green-600 font-medium">✓ meta</span>}
+                        </div>
+                        <div className="text-2xl font-bold text-zinc-900 mb-1">
+                          {current ?? '—'}<span className="text-sm font-normal text-zinc-400 ml-0.5">{unit}</span>
+                        </div>
+                        <div className="text-xs text-zinc-400 mb-2">Meta: {goal}{unit}</div>
+                        <div className="w-full bg-zinc-100 rounded-full h-1.5">
+                          <div
+                            className={`h-1.5 rounded-full transition-all ${reached ? 'bg-green-500' : 'bg-zinc-700'}`}
+                            style={{ width: `${pct}%` }}
+                          />
+                        </div>
+                        <div className="text-xs text-zinc-400 mt-1 text-right">{Math.round(pct)}%</div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+
+              {/* Gráficos InBody */}
+              <div className="grid md:grid-cols-2 gap-4">
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-base">Composición corporal</CardTitle>
+                    <CardDescription>Peso · Músculo · Grasa kg</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <ResponsiveContainer width="100%" height={220}>
+                      <LineChart data={graficaInBody} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                        <XAxis dataKey="fecha" tick={{ fontSize: 11 }} />
-                        <YAxis tick={{ fontSize: 11 }} domain={['auto', 'auto']} />
-                        <Tooltip />
-                        <Area type="monotone" dataKey="peso" stroke="#3f3f46" fill="#e4e4e7" strokeWidth={2} />
-                      </AreaChart>
+                        <XAxis dataKey="fecha" tick={{ fontSize: 10 }} />
+                        <YAxis tick={{ fontSize: 10 }} domain={[30, 100]} />
+                        <Tooltip formatter={(v: any) => `${v} kg`} />
+                        <Legend iconType="line" wrapperStyle={{ fontSize: 11 }} />
+                        <Line type="monotone" dataKey="peso" stroke="#3f3f46" strokeWidth={2} dot={{ r: 4 }} name="Peso" />
+                        <Line type="monotone" dataKey="musculo" stroke="#16a34a" strokeWidth={2} dot={{ r: 4 }} name="Músculo" />
+                        <Line type="monotone" dataKey="grasa" stroke="#dc2626" strokeWidth={2} strokeDasharray="4 2" dot={{ r: 4 }} name="% Grasa" />
+                      </LineChart>
                     </ResponsiveContainer>
-                  )}
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <CardTitle>% Grasa corporal</CardTitle>
-                  <CardDescription>Últimos registros</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {grafico.length === 0 ? (
-                    <p className="text-sm text-zinc-400 py-8 text-center">Sin datos de salud.</p>
-                  ) : (
-                    <ResponsiveContainer width="100%" height={200}>
-                      <BarChart data={grafico}>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-base">Score InBody · Visceral</CardTitle>
+                    <CardDescription>Progresión histórica</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <ResponsiveContainer width="100%" height={220}>
+                      <BarChart data={graficaInBody} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                        <XAxis dataKey="fecha" tick={{ fontSize: 11 }} />
-                        <YAxis tick={{ fontSize: 11 }} domain={[0, 40]} />
+                        <XAxis dataKey="fecha" tick={{ fontSize: 10 }} />
+                        <YAxis tick={{ fontSize: 10 }} />
                         <Tooltip />
-                        <Bar dataKey="grasa" fill="#3f3f46" radius={[4, 4, 0, 0]} />
+                        <Legend wrapperStyle={{ fontSize: 11 }} />
+                        <Bar dataKey="score" fill="#3f3f46" radius={[4, 4, 0, 0]} name="Score" />
+                        <Bar dataKey="visceral" fill="#f97316" radius={[4, 4, 0, 0]} name="Visceral" />
                       </BarChart>
                     </ResponsiveContainer>
-                  )}
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Historial InBody tabla */}
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base">Mediciones InBody</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="hover:bg-transparent">
+                        <TableHead>Fecha</TableHead>
+                        <TableHead className="text-right">Peso</TableHead>
+                        <TableHead className="text-right">Músculo</TableHead>
+                        <TableHead className="text-right">% Grasa</TableHead>
+                        <TableHead className="text-right">Visceral</TableHead>
+                        <TableHead className="text-right">BMR</TableHead>
+                        <TableHead className="text-right">Score</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {[...metricasSalud].reverse().map((m) => (
+                        <TableRow key={m.id}>
+                          <TableCell className="text-sm font-medium">{new Date(m.fecha_registro).toLocaleDateString('es-CL', { year: 'numeric', month: 'short', day: 'numeric' })}</TableCell>
+                          <TableCell className="text-right text-sm">{m.peso} kg</TableCell>
+                          <TableCell className="text-right text-sm">{m.musculo ?? '—'} kg</TableCell>
+                          <TableCell className="text-right text-sm">{m.grasa}%</TableCell>
+                          <TableCell className="text-right text-sm">{m.visceral ?? '—'}</TableCell>
+                          <TableCell className="text-right text-sm">{m.bmr ?? '—'}</TableCell>
+                          <TableCell className="text-right">
+                            <span className={`text-xs font-bold px-2 py-0.5 rounded ${(m.score_inbody ?? 0) >= 80 ? 'bg-green-100 text-green-700' : 'bg-zinc-100 text-zinc-600'}`}>
+                              {m.score_inbody ?? '—'}
+                            </span>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
                 </CardContent>
               </Card>
+
+              {/* Gym semana actual */}
+              <div className="grid md:grid-cols-2 gap-4">
+                <Card>
+                  <CardHeader className="pb-2">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <CardTitle className="text-base flex items-center gap-1.5"><Dumbbell className="w-4 h-4" /> Semana {semanaActual}</CardTitle>
+                        <CardDescription>Rutina PPL actual</CardDescription>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      {PPL_DIAS.map(({ dia, tipo }) => {
+                        const sesion = sesionesSemanActual.find(s => s.tipo === tipo || s.tipo.startsWith(tipo.split('/')[0]));
+                        const icono = sesion ? (ESTADO_ICONS[sesion.estado] ?? '•') : (tipo === 'Descanso' ? '—' : '⏳');
+                        return (
+                          <div key={dia} className="flex items-center gap-3 py-1.5 border-b border-zinc-50 last:border-0">
+                            <span className="text-xs font-medium text-zinc-400 w-8">{dia}</span>
+                            <span className="text-sm flex-1 text-zinc-700">{tipo}</span>
+                            <span className="text-base">{icono}</span>
+                            {sesion?.notas && (
+                              <span className="text-xs text-zinc-400 max-w-[160px] truncate" title={sesion.notas}>{sesion.notas}</span>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-base">Consistencia semanal</CardTitle>
+                    <CardDescription>Sesiones completadas por semana</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <ResponsiveContainer width="100%" height={180}>
+                      <BarChart data={semanasSesiones} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                        <XAxis dataKey="semana" tick={{ fontSize: 11 }} />
+                        <YAxis tick={{ fontSize: 11 }} domain={[0, 7]} />
+                        <Tooltip />
+                        <Bar dataKey="sesiones" fill="#3f3f46" radius={[4, 4, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Historial sesiones gym */}
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base">Historial de sesiones</CardTitle>
+                  <CardDescription>{gymSesiones.length} sesiones registradas</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="max-h-64 overflow-y-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow className="hover:bg-transparent">
+                          <TableHead>Fecha</TableHead>
+                          <TableHead>Sem.</TableHead>
+                          <TableHead>Tipo</TableHead>
+                          <TableHead className="text-center">Estado</TableHead>
+                          <TableHead>Notas</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {gymSesiones.map((s) => (
+                          <TableRow key={s.id}>
+                            <TableCell className="text-xs text-zinc-500">{new Date(s.fecha).toLocaleDateString('es-CL', { day: 'numeric', month: 'short' })}</TableCell>
+                            <TableCell className="text-xs text-zinc-400">S{s.semana}</TableCell>
+                            <TableCell className="text-sm font-medium">{s.tipo}</TableCell>
+                            <TableCell className="text-center text-base">{ESTADO_ICONS[s.estado] ?? s.estado}</TableCell>
+                            <TableCell className="text-xs text-zinc-400 max-w-[200px] truncate" title={s.notas ?? ''}>{s.notas ?? ''}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </CardContent>
+              </Card>
+
             </div>
           </TabsContent>
 
