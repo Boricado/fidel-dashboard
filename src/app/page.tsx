@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
-import { FileText, CheckSquare, Heart, FolderOpen, RefreshCw, CheckCircle2, Eye, XCircle, EyeOff, ChevronUp, ChevronDown, ChevronsUpDown, Search, X, CalendarOff } from 'lucide-react';
+import { FileText, CheckSquare, Heart, FolderOpen, RefreshCw, CheckCircle2, Eye, XCircle, EyeOff, ChevronUp, ChevronDown, ChevronsUpDown, Search, X, CalendarOff, Circle, CheckCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 type LicEstado = 'postulado' | 'revisar' | 'descartado' | null;
@@ -58,6 +58,7 @@ export default function Dashboard() {
   const [proyectos, setProyectos] = useState<any[]>([]);
   const [mostrarDescartadas, setMostrarDescartadas] = useState(false);
   const [ocultarCerradas, setOcultarCerradas] = useState(true);
+  const [mostrarRealizadas, setMostrarRealizadas] = useState(false);
   const { acciones, setAccion } = useLicAcciones();
 
   // Filtros
@@ -164,7 +165,15 @@ export default function Dashboard() {
   const postuladas = licitaciones.filter(l => acciones[l.id] === 'postulado').length;
   const revisando = licitaciones.filter(l => acciones[l.id] === 'revisar').length;
   const nuevas = licitaciones.filter(l => !acciones[l.id]).length;
-  const tareasCompletadas = tareas.filter(t => t.estado === 'completada').length;
+  const tareasPendientes = tareas.filter(t => t.estado !== 'completada');
+  const tareasRealizadas = tareas.filter(t => t.estado === 'completada');
+  const tareasCompletadas = tareasRealizadas.length;
+
+  async function marcarTarea(id: number, completada: boolean) {
+    const nuevoEstado = completada ? 'completada' : 'pendiente';
+    await supabase.from('tareas').update({ estado: nuevoEstado }).eq('id', id);
+    setTareas(prev => prev.map(t => t.id === id ? { ...t, estado: nuevoEstado } : t));
+  }
   const proyectosActivos = proyectos.filter(p => p.estado === 'activo').length;
   const pesoActual = metricasSalud[0]?.peso ?? '--';
   const grafico = metricasSalud.slice().reverse().map(m => ({
@@ -442,38 +451,86 @@ export default function Dashboard() {
           </TabsContent>
 
           <TabsContent value="tareas">
-            <Card>
-              <CardHeader>
-                <CardTitle>Gestión de tareas</CardTitle>
-                <CardDescription>{tareasCompletadas} de {tareas.length} completadas</CardDescription>
-              </CardHeader>
-              <CardContent>
-                {tareas.length === 0 ? (
-                  <p className="text-sm text-zinc-400 py-8 text-center">Sin tareas registradas.</p>
-                ) : (
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Título</TableHead>
-                        <TableHead>Categoría</TableHead>
-                        <TableHead>Estado</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {tareas.map((t) => (
-                        <TableRow key={t.id}>
-                          <TableCell className="font-medium">{t.titulo}</TableCell>
-                          <TableCell>{t.categoria}</TableCell>
-                          <TableCell>
-                            <span className={`px-2 py-0.5 rounded text-xs font-medium ${estadoClass(t.estado)}`}>{t.estado}</span>
-                          </TableCell>
-                        </TableRow>
+            <div className="space-y-4">
+              {/* Pendientes */}
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle>Pendientes</CardTitle>
+                      <CardDescription>{tareasPendientes.length} tarea{tareasPendientes.length !== 1 ? 's' : ''} por hacer</CardDescription>
+                    </div>
+                    {tareasRealizadas.length > 0 && (
+                      <Button variant="ghost" size="sm" onClick={() => setMostrarRealizadas(v => !v)} className="text-xs text-zinc-400 gap-1">
+                        <CheckCheck className="w-3 h-3" />
+                        {mostrarRealizadas ? 'Ocultar realizadas' : `Ver ${tareasRealizadas.length} realizada${tareasRealizadas.length !== 1 ? 's' : ''}`}
+                      </Button>
+                    )}
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  {tareasPendientes.length === 0 ? (
+                    <p className="text-sm text-zinc-400 py-6 text-center">¡Todo al día! Sin tareas pendientes.</p>
+                  ) : (
+                    <div className="space-y-1">
+                      {tareasPendientes.map((t) => (
+                        <div key={t.id} className="flex items-center gap-3 p-3 rounded-lg hover:bg-zinc-50 group transition-colors">
+                          <button
+                            onClick={() => marcarTarea(t.id, true)}
+                            className="flex-shrink-0 text-zinc-300 hover:text-green-500 transition-colors"
+                            title="Marcar como realizada"
+                          >
+                            <Circle className="w-5 h-5" />
+                          </button>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-zinc-900">{t.titulo}</p>
+                            {t.descripcion && <p className="text-xs text-zinc-400 mt-0.5">{t.descripcion}</p>}
+                          </div>
+                          <div className="flex items-center gap-2 flex-shrink-0">
+                            {t.categoria && (
+                              <span className="text-xs text-zinc-400 bg-zinc-100 px-2 py-0.5 rounded">{t.categoria}</span>
+                            )}
+                            {t.prioridad === 'alta' && (
+                              <span className="text-xs text-red-600 bg-red-50 px-2 py-0.5 rounded font-medium">alta</span>
+                            )}
+                          </div>
+                        </div>
                       ))}
-                    </TableBody>
-                  </Table>
-                )}
-              </CardContent>
-            </Card>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Realizadas (colapsable) */}
+              {mostrarRealizadas && tareasRealizadas.length > 0 && (
+                <Card className="opacity-70">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-base text-zinc-500">Realizadas ({tareasRealizadas.length})</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-1">
+                      {tareasRealizadas.map((t) => (
+                        <div key={t.id} className="flex items-center gap-3 p-3 rounded-lg group">
+                          <button
+                            onClick={() => marcarTarea(t.id, false)}
+                            className="flex-shrink-0 text-green-500 hover:text-zinc-400 transition-colors"
+                            title="Marcar como pendiente"
+                          >
+                            <CheckCircle2 className="w-5 h-5" />
+                          </button>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm text-zinc-400 line-through">{t.titulo}</p>
+                          </div>
+                          {t.categoria && (
+                            <span className="text-xs text-zinc-300 bg-zinc-100 px-2 py-0.5 rounded">{t.categoria}</span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
           </TabsContent>
 
           <TabsContent value="salud">
