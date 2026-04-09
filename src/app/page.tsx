@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
-import { FileText, CheckSquare, Heart, FolderOpen, RefreshCw, CheckCircle2, Eye, XCircle, EyeOff, ChevronUp, ChevronDown, ChevronsUpDown, Search, X } from 'lucide-react';
+import { FileText, CheckSquare, Heart, FolderOpen, RefreshCw, CheckCircle2, Eye, XCircle, EyeOff, ChevronUp, ChevronDown, ChevronsUpDown, Search, X, CalendarOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 type LicEstado = 'postulado' | 'revisar' | 'descartado' | null;
@@ -57,6 +57,7 @@ export default function Dashboard() {
   const [metricasSalud, setMetricasSalud] = useState<any[]>([]);
   const [proyectos, setProyectos] = useState<any[]>([]);
   const [mostrarDescartadas, setMostrarDescartadas] = useState(false);
+  const [ocultarCerradas, setOcultarCerradas] = useState(true);
   const { acciones, setAccion } = useLicAcciones();
 
   // Filtros
@@ -112,6 +113,15 @@ export default function Dashboard() {
       if (a === 'descartado') return mostrarDescartadas;
       return true;
     });
+
+    // Filtro cerradas (excepto postuladas)
+    if (ocultarCerradas) {
+      result = result.filter(l => {
+        if (acciones[l.id] === 'postulado') return true;
+        if (!l.fecha_publicacion) return true; // sin fecha = mostrar
+        return new Date(l.fecha_publicacion).getTime() > Date.now();
+      });
+    }
 
     // Filtro búsqueda texto
     if (busqueda.trim()) {
@@ -290,12 +300,19 @@ export default function Dashboard() {
                       {descartadasCount > 0 && <span className="ml-2 text-zinc-400">· {descartadasCount} descartada{descartadasCount !== 1 ? 's' : ''}</span>}
                     </CardDescription>
                   </div>
-                  {descartadasCount > 0 && (
-                    <Button variant="ghost" size="sm" onClick={() => setMostrarDescartadas(v => !v)} className="text-xs text-zinc-400 gap-1">
-                      {mostrarDescartadas ? <Eye className="w-3 h-3" /> : <EyeOff className="w-3 h-3" />}
-                      {mostrarDescartadas ? 'Ocultar descartadas' : 'Mostrar descartadas'}
+                  <div className="flex gap-1">
+                    <Button variant="ghost" size="sm" onClick={() => setOcultarCerradas(v => !v)}
+                      className={`text-xs gap-1 ${ocultarCerradas ? 'text-zinc-400' : 'text-blue-500 bg-blue-50'}`}>
+                      <CalendarOff className="w-3 h-3" />
+                      {ocultarCerradas ? 'Mostrar cerradas' : 'Ocultar cerradas'}
                     </Button>
-                  )}
+                    {descartadasCount > 0 && (
+                      <Button variant="ghost" size="sm" onClick={() => setMostrarDescartadas(v => !v)} className="text-xs text-zinc-400 gap-1">
+                        {mostrarDescartadas ? <Eye className="w-3 h-3" /> : <EyeOff className="w-3 h-3" />}
+                        {mostrarDescartadas ? 'Ocultar descartadas' : 'Mostrar descartadas'}
+                      </Button>
+                    )}
+                  </div>
                 </div>
 
                 {/* Filtros */}
