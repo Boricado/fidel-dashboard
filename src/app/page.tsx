@@ -2,6 +2,12 @@
 
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import { FileText, CheckSquare, Heart, FolderOpen, RefreshCw } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(true);
@@ -10,9 +16,7 @@ export default function Dashboard() {
   const [metricasSalud, setMetricasSalud] = useState<any[]>([]);
   const [proyectos, setProyectos] = useState<any[]>([]);
 
-  useEffect(() => {
-    loadData();
-  }, []);
+  useEffect(() => { loadData(); }, []);
 
   async function loadData() {
     setLoading(true);
@@ -20,7 +24,7 @@ export default function Dashboard() {
       const [lic, tar, sal, proj] = await Promise.all([
         supabase.from('licitaciones').select('*').order('created_at', { ascending: false }).limit(10),
         supabase.from('tareas').select('*').order('created_at', { ascending: false }).limit(10),
-        supabase.from('metricas_salud').select('*').order('fecha_registro', { ascending: false }).limit(5),
+        supabase.from('metricas_salud').select('*').order('fecha_registro', { ascending: false }).limit(10),
         supabase.from('proyectos').select('*').order('created_at', { ascending: false }).limit(5),
       ]);
       setLicitaciones(lic.data || []);
@@ -33,123 +37,280 @@ export default function Dashboard() {
     setLoading(false);
   }
 
+  const tareasCompletadas = tareas.filter(t => t.estado === 'completada').length;
+  const proyectosActivos = proyectos.filter(p => p.estado === 'activo').length;
+  const pesoActual = metricasSalud[0]?.peso ?? '--';
+  const grafico = metricasSalud.slice().reverse().map(m => ({
+    fecha: m.fecha_registro?.slice(5, 10) ?? '',
+    peso: m.peso,
+    grasa: m.grasa,
+  }));
+
+  const estadoClass = (estado: string) => {
+    const map: Record<string, string> = {
+      completada: 'bg-green-100 text-green-700',
+      en_progreso: 'bg-yellow-100 text-yellow-700',
+      activo: 'bg-blue-100 text-blue-700',
+      completado: 'bg-green-100 text-green-700',
+      pendiente: 'bg-zinc-100 text-zinc-600',
+    };
+    return map[estado] ?? 'bg-zinc-100 text-zinc-600';
+  };
+
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-zinc-50">
-        <div className="text-zinc-600">Cargando dashboard...</div>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="flex items-center gap-2 text-zinc-500">
+          <RefreshCw className="w-4 h-4 animate-spin" />
+          Cargando dashboard...
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-zinc-50 p-6">
-      <div className="max-w-6xl mx-auto space-y-6">
-        
-        {/* Header */}
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <h1 className="text-2xl font-bold text-zinc-900">🚀 Dashboard de Control - Fidel</h1>
-          <p className="text-zinc-500 text-sm">{new Date().toLocaleDateString('es-CL', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
-        </div>
-
-        {/* Licitaciones */}
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold text-zinc-900">🔍 Licitaciones (Sourcing)</h2>
-            <span className="text-sm text-zinc-500">IV Región | {'<'} $10M</span>
+    <div className="min-h-screen bg-zinc-50">
+      <header className="bg-white border-b border-zinc-200 sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div>
+            <h1 className="text-xl font-bold text-zinc-900">Dashboard · Fidel</h1>
+            <p className="text-xs text-zinc-400">
+              {new Date().toLocaleDateString('es-CL', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+            </p>
           </div>
-          {licitaciones.length === 0 ? (
-            <p className="text-zinc-400 text-sm">Sin licitaciones registradas. ¡Anímate a agregar una!</p>
-          ) : (
-            <div className="space-y-2">
-              {licitaciones.map((l) => (
-                <div key={l.id} className="flex justify-between items-center p-3 bg-zinc-50 rounded">
-                  <div>
-                    <div className="font-medium text-zinc-900">{l.nombre || l.codigo}</div>
-                    <div className="text-sm text-zinc-500">{l.categoria} • {l.region}</div>
-                  </div>
-                  <div className="text-right">
-                    <div className="font-semibold text-zinc-900">${l.monto?.toLocaleString('es-CL') || '0'}</div>
-                    <div className="text-xs text-zinc-500">{l.estado}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+          <Button variant="outline" size="sm" onClick={loadData}>
+            <RefreshCw className="w-3 h-3 mr-1" /> Actualizar
+          </Button>
+        </div>
+      </header>
+
+      <main className="max-w-7xl mx-auto px-6 py-8 space-y-8">
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardDescription className="flex items-center gap-1 text-xs">
+                <FileText className="w-3 h-3" /> Licitaciones
+              </CardDescription>
+              <CardTitle className="text-3xl">{licitaciones.length}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-xs text-zinc-400">IV Región · &lt; $10M</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-2">
+              <CardDescription className="flex items-center gap-1 text-xs">
+                <CheckSquare className="w-3 h-3" /> Tareas
+              </CardDescription>
+              <CardTitle className="text-3xl">{tareasCompletadas}/{tareas.length}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-xs text-zinc-400">completadas</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-2">
+              <CardDescription className="flex items-center gap-1 text-xs">
+                <Heart className="w-3 h-3" /> Peso actual
+              </CardDescription>
+              <CardTitle className="text-3xl">{pesoActual} <span className="text-sm font-normal text-zinc-400">kg</span></CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-xs text-zinc-400">
+                {metricasSalud[0]?.grasa ? `${metricasSalud[0].grasa}% grasa` : 'Sin datos'}
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-2">
+              <CardDescription className="flex items-center gap-1 text-xs">
+                <FolderOpen className="w-3 h-3" /> Proyectos
+              </CardDescription>
+              <CardTitle className="text-3xl">{proyectosActivos}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-xs text-zinc-400">activos de {proyectos.length}</p>
+            </CardContent>
+          </Card>
         </div>
 
-        {/* Tareas */}
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold text-zinc-900">📋 Gestión (Tareas)</h2>
-          </div>
-          {tareas.length === 0 ? (
-            <p className="text-zinc-400 text-sm">Sin tareas registradas.</p>
-          ) : (
-            <div className="space-y-2">
-              {tareas.map((t) => (
-                <div key={t.id} className="flex justify-between items-center p-3 bg-zinc-50 rounded">
-                  <div>
-                    <div className="font-medium text-zinc-900">{t.titulo}</div>
-                    <div className="text-sm text-zinc-500">{t.categoria}</div>
-                  </div>
-                  <div className={`px-2 py-1 rounded text-xs font-medium ${
-                    t.estado === 'completada' ? 'bg-green-100 text-green-700' :
-                    t.estado === 'en_progreso' ? 'bg-yellow-100 text-yellow-700' :
-                    'bg-zinc-200 text-zinc-600'
-                  }`}>
-                    {t.estado}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+        <Tabs defaultValue="licitaciones">
+          <TabsList>
+            <TabsTrigger value="licitaciones">Licitaciones</TabsTrigger>
+            <TabsTrigger value="tareas">Tareas</TabsTrigger>
+            <TabsTrigger value="salud">Salud</TabsTrigger>
+            <TabsTrigger value="proyectos">Proyectos</TabsTrigger>
+          </TabsList>
 
-        {/* Salud */}
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <h2 className="text-xl font-semibold text-zinc-900 mb-4">🧘 Coach (Salud)</h2>
-          {metricasSalud.length === 0 ? (
-            <p className="text-zinc-400 text-sm">Sin métricas de salud. ¡Registra tu peso!</p>
-          ) : (
-            <div className="grid grid-cols-3 gap-4">
-              {metricasSalud.map((m) => (
-                <div key={m.id} className="p-4 bg-zinc-50 rounded text-center">
-                  <div className="text-2xl font-bold text-zinc-900">{m.peso} kg</div>
-                  <div className="text-xs text-zinc-500">{m.grasa}% grasa</div>
-                  <div className="text-xs text-zinc-400">{m.fecha_registro}</div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+          <TabsContent value="licitaciones">
+            <Card>
+              <CardHeader>
+                <CardTitle>Licitaciones recientes</CardTitle>
+                <CardDescription>IV Región · Montos menores a $10M</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {licitaciones.length === 0 ? (
+                  <p className="text-sm text-zinc-400 py-8 text-center">Sin licitaciones registradas.</p>
+                ) : (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Nombre</TableHead>
+                        <TableHead>Categoría</TableHead>
+                        <TableHead>Región</TableHead>
+                        <TableHead className="text-right">Monto</TableHead>
+                        <TableHead>Estado</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {licitaciones.map((l) => (
+                        <TableRow key={l.id}>
+                          <TableCell className="font-medium max-w-[200px] truncate">{l.nombre || l.codigo}</TableCell>
+                          <TableCell>{l.categoria}</TableCell>
+                          <TableCell>{l.region}</TableCell>
+                          <TableCell className="text-right">${l.monto?.toLocaleString('es-CL') || '0'}</TableCell>
+                          <TableCell>
+                            <span className={`px-2 py-0.5 rounded text-xs font-medium ${estadoClass(l.estado)}`}>
+                              {l.estado}
+                            </span>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-        {/* Proyectos */}
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <h2 className="text-xl font-semibold text-zinc-900 mb-4">🏗️ Proyectos</h2>
-          {proyectos.length === 0 ? (
-            <p className="text-zinc-400 text-sm">Sin proyectos registrados.</p>
-          ) : (
-            <div className="space-y-2">
-              {proyectos.map((p) => (
-                <div key={p.id} className="flex justify-between items-center p-3 bg-zinc-50 rounded">
-                  <div>
-                    <div className="font-medium text-zinc-900">{p.nombre}</div>
-                    <div className="text-sm text-zinc-500">{p.cliente}</div>
-                  </div>
-                  <div className={`px-2 py-1 rounded text-xs font-medium ${
-                    p.estado === 'activo' ? 'bg-blue-100 text-blue-700' :
-                    p.estado === 'completado' ? 'bg-green-100 text-green-700' :
-                    'bg-zinc-200 text-zinc-600'
-                  }`}>
-                    {p.estado}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+          <TabsContent value="tareas">
+            <Card>
+              <CardHeader>
+                <CardTitle>Gestión de tareas</CardTitle>
+                <CardDescription>{tareasCompletadas} de {tareas.length} completadas</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {tareas.length === 0 ? (
+                  <p className="text-sm text-zinc-400 py-8 text-center">Sin tareas registradas.</p>
+                ) : (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Título</TableHead>
+                        <TableHead>Categoría</TableHead>
+                        <TableHead>Estado</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {tareas.map((t) => (
+                        <TableRow key={t.id}>
+                          <TableCell className="font-medium">{t.titulo}</TableCell>
+                          <TableCell>{t.categoria}</TableCell>
+                          <TableCell>
+                            <span className={`px-2 py-0.5 rounded text-xs font-medium ${estadoClass(t.estado)}`}>
+                              {t.estado}
+                            </span>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-      </div>
+          <TabsContent value="salud">
+            <div className="grid md:grid-cols-2 gap-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Evolución de peso</CardTitle>
+                  <CardDescription>Últimos registros (kg)</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {grafico.length === 0 ? (
+                    <p className="text-sm text-zinc-400 py-8 text-center">Sin datos de salud.</p>
+                  ) : (
+                    <ResponsiveContainer width="100%" height={200}>
+                      <AreaChart data={grafico}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                        <XAxis dataKey="fecha" tick={{ fontSize: 11 }} />
+                        <YAxis tick={{ fontSize: 11 }} domain={['auto', 'auto']} />
+                        <Tooltip />
+                        <Area type="monotone" dataKey="peso" stroke="#3f3f46" fill="#e4e4e7" strokeWidth={2} />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  )}
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>% Grasa corporal</CardTitle>
+                  <CardDescription>Últimos registros</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {grafico.length === 0 ? (
+                    <p className="text-sm text-zinc-400 py-8 text-center">Sin datos de salud.</p>
+                  ) : (
+                    <ResponsiveContainer width="100%" height={200}>
+                      <BarChart data={grafico}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                        <XAxis dataKey="fecha" tick={{ fontSize: 11 }} />
+                        <YAxis tick={{ fontSize: 11 }} domain={[0, 40]} />
+                        <Tooltip />
+                        <Bar dataKey="grasa" fill="#3f3f46" radius={[4, 4, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="proyectos">
+            <Card>
+              <CardHeader>
+                <CardTitle>Proyectos</CardTitle>
+                <CardDescription>{proyectosActivos} activos</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {proyectos.length === 0 ? (
+                  <p className="text-sm text-zinc-400 py-8 text-center">Sin proyectos registrados.</p>
+                ) : (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Nombre</TableHead>
+                        <TableHead>Cliente</TableHead>
+                        <TableHead>Estado</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {proyectos.map((p) => (
+                        <TableRow key={p.id}>
+                          <TableCell className="font-medium">{p.nombre}</TableCell>
+                          <TableCell>{p.cliente}</TableCell>
+                          <TableCell>
+                            <span className={`px-2 py-0.5 rounded text-xs font-medium ${estadoClass(p.estado)}`}>
+                              {p.estado}
+                            </span>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+
+      </main>
     </div>
   );
 }
