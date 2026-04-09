@@ -1,15 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-let supabase;
-
-if (typeof window !== 'undefined') {
-  supabase = require('@supabase/supabase-js').createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
-}
+const supabase: SupabaseClient = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 export { supabase };
 
