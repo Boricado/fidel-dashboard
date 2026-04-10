@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend } from 'recharts';
 import { FileText, CheckSquare, Heart, FolderOpen, RefreshCw, CheckCircle2, Eye, XCircle, EyeOff, ChevronUp, ChevronDown, ChevronsUpDown, Search, X, CalendarOff, Circle, CheckCheck, Dumbbell, TrendingDown, Target, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import AccountantAgent from '@/components/AccountantAgent';
 
 type LicEstado = 'postulado' | 'revisar' | 'descartado' | null;
 type SortDir = 'asc' | 'desc' | null;
@@ -335,6 +336,7 @@ export default function Dashboard() {
         <Tabs defaultValue="licitaciones">
           <TabsList>
             <TabsTrigger value="licitaciones">Licitaciones</TabsTrigger>
+            <TabsTrigger value="contador">Contador</TabsTrigger>
             <TabsTrigger value="tareas">Tareas</TabsTrigger>
             <TabsTrigger value="salud">Salud</TabsTrigger>
             <TabsTrigger value="proyectos">Proyectos</TabsTrigger>
@@ -490,6 +492,10 @@ export default function Dashboard() {
                 )}
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="contador">
+            <AccountantAgent />
           </TabsContent>
 
           <TabsContent value="tareas">
