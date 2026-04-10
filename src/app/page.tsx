@@ -831,8 +831,11 @@ export default function Dashboard() {
                   const desglose: any[] = meta.presupuesto_desglose || [];
                   const completadas = etapas.filter((e: any) => e.estado === 'completado').length;
                   const pct = etapas.length > 0 ? Math.round((completadas / etapas.length) * 100) : 0;
-                  const isCafetera = meta.tipo === 'emprendimiento';
-                  const isLicencia = meta.tipo === 'certificacion';
+                  const isCafetera   = meta.tipo === 'emprendimiento';
+                  const isLicencia   = meta.tipo === 'certificacion';
+                  const isMonitor    = meta.tipo === 'monitor_precios';
+                  const preciosActuales: any[] = meta.precios_actuales || [];
+                  const dronesObjetivo: any[]  = meta.drones_objetivo || [];
 
                   return (
                     <Card key={p.id} className="bg-zinc-900 border-zinc-800">
@@ -902,6 +905,57 @@ export default function Dashboard() {
                                 </div>
                               )}
                             </div>
+                          </div>
+                        )}
+
+                        {/* Monitor precios: tabla de drones */}
+                        {isMonitor && (
+                          <div>
+                            <p className="text-xs text-zinc-400 font-medium mb-2 uppercase tracking-wide">
+                              Precios MercadoLibre Chile
+                            </p>
+                            {(preciosActuales.length > 0 ? preciosActuales : dronesObjetivo).map((d: any, i: number) => {
+                              const precio    = d.precio ?? null;
+                              const umbral    = d.umbral;
+                              const oport     = precio != null && precio < umbral;
+                              const variacion = d.variacion ?? null;
+                              return (
+                                <div key={i} className={`flex items-center justify-between py-1.5 border-b border-zinc-800 text-sm ${oport ? 'text-green-400' : 'text-zinc-300'}`}>
+                                  <div className="flex items-center gap-2">
+                                    <span>{oport ? '🟢' : precio != null ? '🔴' : '⏳'}</span>
+                                    <div>
+                                      <p className="font-medium">{d.modelo}</p>
+                                      <p className="text-xs text-zinc-500">
+                                        Umbral: ${umbral.toLocaleString('es-CL')} CLP
+                                        {d.descripcion ? ` · ${d.descripcion}` : ''}
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <div className="text-right shrink-0 ml-3">
+                                    {precio != null ? (
+                                      <>
+                                        <p className="font-mono font-semibold">${precio.toLocaleString('es-CL')}</p>
+                                        {variacion != null && (
+                                          <p className={`text-xs ${variacion < 0 ? 'text-green-500' : 'text-red-400'}`}>
+                                            {variacion < 0 ? '↓' : '↑'}{Math.abs(variacion)}%
+                                          </p>
+                                        )}
+                                      </>
+                                    ) : (
+                                      <p className="text-xs text-zinc-600">sin datos aún</p>
+                                    )}
+                                  </div>
+                                </div>
+                              );
+                            })}
+                            {meta.ultima_revision && (
+                              <p className="text-xs text-zinc-600 mt-2">
+                                Última revisión: {new Date(meta.ultima_revision).toLocaleDateString('es-CL', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
+                              </p>
+                            )}
+                            {meta.cronjob && !meta.ultima_revision && (
+                              <p className="text-xs text-zinc-600 mt-2 italic">{meta.cronjob}</p>
+                            )}
                           </div>
                         )}
 
