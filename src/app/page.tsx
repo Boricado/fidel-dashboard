@@ -820,38 +820,115 @@ export default function Dashboard() {
           </TabsContent>
 
           <TabsContent value="proyectos">
-            <Card>
-              <CardHeader>
-                <CardTitle>Proyectos</CardTitle>
-                <CardDescription>{proyectosActivos} activos</CardDescription>
-              </CardHeader>
-              <CardContent>
-                {proyectos.length === 0 ? (
-                  <p className="text-sm text-zinc-400 py-8 text-center">Sin proyectos registrados.</p>
-                ) : (
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Nombre</TableHead>
-                        <TableHead>Cliente</TableHead>
-                        <TableHead>Estado</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {proyectos.map((p) => (
-                        <TableRow key={p.id}>
-                          <TableCell className="font-medium">{p.nombre}</TableCell>
-                          <TableCell>{p.cliente}</TableCell>
-                          <TableCell>
+            <div className="space-y-4">
+              {proyectos.length === 0 ? (
+                <Card><CardContent><p className="text-sm text-zinc-400 py-8 text-center">Sin proyectos registrados.</p></CardContent></Card>
+              ) : (
+                proyectos.map((p) => {
+                  let meta: any = {};
+                  try { meta = JSON.parse(p.descripcion || '{}'); } catch {}
+                  const etapas: any[] = meta.etapas || [];
+                  const desglose: any[] = meta.presupuesto_desglose || [];
+                  const completadas = etapas.filter((e: any) => e.estado === 'completado').length;
+                  const pct = etapas.length > 0 ? Math.round((completadas / etapas.length) * 100) : 0;
+                  const isCafetera = meta.tipo === 'emprendimiento';
+                  const isLicencia = meta.tipo === 'certificacion';
+
+                  return (
+                    <Card key={p.id} className="bg-zinc-900 border-zinc-800">
+                      <CardHeader className="pb-3">
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <CardTitle className="text-lg">{p.nombre}</CardTitle>
+                            {meta.subtitulo && <p className="text-sm text-zinc-400 mt-0.5">{meta.subtitulo}</p>}
+                          </div>
+                          <div className="flex items-center gap-2 shrink-0">
                             <span className={`px-2 py-0.5 rounded text-xs font-medium ${estadoClass(p.estado)}`}>{p.estado}</span>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                )}
-              </CardContent>
-            </Card>
+                            {p.presupuesto && (
+                              <span className="text-xs text-zinc-400 font-mono">
+                                ${(p.presupuesto / 1000000).toFixed(1)}M
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        {/* Progress bar */}
+                        {etapas.length > 0 && (
+                          <div>
+                            <div className="flex justify-between text-xs text-zinc-400 mb-1">
+                              <span>Progreso</span>
+                              <span>{completadas}/{etapas.length} etapas</span>
+                            </div>
+                            <div className="h-2 bg-zinc-800 rounded-full">
+                              <div className="h-2 bg-blue-500 rounded-full transition-all" style={{ width: `${pct}%` }} />
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Etapas checklist */}
+                        {etapas.length > 0 && (
+                          <div className="grid grid-cols-1 gap-1.5">
+                            {etapas.map((e: any, i: number) => (
+                              <div key={i} className="flex items-center gap-2 text-sm">
+                                {e.estado === 'completado'
+                                  ? <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" />
+                                  : <Circle className="w-4 h-4 text-zinc-600 shrink-0" />}
+                                <span className={e.estado === 'completado' ? 'text-zinc-500 line-through' : 'text-zinc-300'}>{e.nombre}</span>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Cafetería: budget breakdown */}
+                        {isCafetera && desglose.length > 0 && (
+                          <div>
+                            <p className="text-xs text-zinc-400 font-medium mb-2 uppercase tracking-wide">Presupuesto estimado</p>
+                            <div className="space-y-1 text-sm">
+                              {desglose.map((d: any, i: number) => (
+                                <div key={i} className="flex justify-between items-center py-0.5 border-b border-zinc-800">
+                                  <span className="text-zinc-300">{d.item}</span>
+                                  <span className="font-mono text-zinc-400 shrink-0 ml-4">${d.monto.toLocaleString('es-CL')}</span>
+                                </div>
+                              ))}
+                              <div className="flex justify-between items-center pt-1 font-medium">
+                                <span className="text-white">TOTAL INVERSIÓN</span>
+                                <span className="font-mono text-blue-400">${desglose.reduce((a: number, d: any) => a + d.monto, 0).toLocaleString('es-CL')}</span>
+                              </div>
+                              {meta.arriendo_mensual && (
+                                <div className="flex justify-between items-center text-xs text-zinc-500 pt-1">
+                                  <span>Arriendo mensual recurrente</span>
+                                  <span className="font-mono">${meta.arriendo_mensual.toLocaleString('es-CL')}/mes</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Licencia: links y notas */}
+                        {isLicencia && (
+                          <div className="text-xs text-zinc-500 space-y-1">
+                            {meta.organismo && <p><span className="text-zinc-400">Organismo:</span> {meta.organismo}</p>}
+                            {meta.url_examenes && (
+                              <p><span className="text-zinc-400">Exámenes:</span>{' '}
+                                <a href={meta.url_examenes} target="_blank" rel="noopener noreferrer"
+                                   className="text-blue-400 hover:underline">{meta.url_examenes}</a>
+                              </p>
+                            )}
+                            {meta.notas && <p className="text-zinc-500 italic">{meta.notas}</p>}
+                          </div>
+                        )}
+
+                        {/* Footer: fecha inicio */}
+                        {p.fecha_inicio && (
+                          <p className="text-xs text-zinc-600">Iniciado: {p.fecha_inicio}</p>
+                        )}
+                      </CardContent>
+                    </Card>
+                  );
+                })
+              )}
+            </div>
           </TabsContent>
         </Tabs>
 
