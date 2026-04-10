@@ -198,11 +198,11 @@ export default function Dashboard() {
   const semanaActual = Math.max(1, Math.floor((Date.now() - INICIO_PROGRAMA.getTime()) / (7 * 86400000)) + 1);
   const sesionesSemanActual = gymSesiones.filter(s => s.semana === semanaActual);
   const PPL_DIAS = [
-    { dia: 'Lun', tipo: 'Push A/B' },
+    { dia: 'Lun', tipo: 'Push B' },
     { dia: 'Mar', tipo: 'Pull A' },
     { dia: 'Mié', tipo: 'Pierna' },
     { dia: 'Jue', tipo: 'Cardio Z2' },
-    { dia: 'Vie', tipo: 'Push A/B' },
+    { dia: 'Vie', tipo: 'Push A' },
     { dia: 'Sáb', tipo: 'Deporte' },
     { dia: 'Dom', tipo: 'Descanso' },
   ];
