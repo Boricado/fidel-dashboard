@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { AlertCircle, CheckCircle2, Calendar, Wallet, ClipboardList, Building2 } from "lucide-react";
 
 // ── Datos de empresa ─────────────────────────────────────────────────────────
@@ -96,12 +95,11 @@ export default function AccountantAgent() {
   }
 
   // El F29 de Marzo 2026 ya fue presentado
-  const checkedF29 = { ...checked, 'f29-2026-2': true };
+  const checkedF29: Record<string, boolean> = { ...checked, 'f29-2026-2': true };
   // ini-1 siempre completado
-  const checkedIni = { ...checked, 'ini-1': true };
+  const checkedIni: Record<string, boolean> = { ...checked, 'ini-1': true };
 
   const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-  const hoy = new Date();
 
   return (
     <div className="space-y-4">
