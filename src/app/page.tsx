@@ -838,7 +838,7 @@ export default function Dashboard() {
                   const dronesObjetivo: any[]  = meta.drones_objetivo || [];
 
                   return (
-                    <Card key={p.id} className="bg-zinc-900 border-zinc-800">
+                    <Card key={p.id}>
                       <CardHeader className="pb-3">
                         <div className="flex items-start justify-between gap-3">
                           <div>
@@ -863,7 +863,7 @@ export default function Dashboard() {
                               <span>Progreso</span>
                               <span>{completadas}/{etapas.length} etapas</span>
                             </div>
-                            <div className="h-2 bg-zinc-800 rounded-full">
+                            <div className="h-2 bg-zinc-200 rounded-full">
                               <div className="h-2 bg-blue-500 rounded-full transition-all" style={{ width: `${pct}%` }} />
                             </div>
                           </div>
@@ -877,7 +877,7 @@ export default function Dashboard() {
                                 {e.estado === 'completado'
                                   ? <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" />
                                   : <Circle className="w-4 h-4 text-zinc-600 shrink-0" />}
-                                <span className={e.estado === 'completado' ? 'text-zinc-500 line-through' : 'text-zinc-300'}>{e.nombre}</span>
+                                <span className={e.estado === 'completado' ? 'text-zinc-400 line-through' : 'text-zinc-700'}>{e.nombre}</span>
                               </div>
                             ))}
                           </div>
@@ -889,17 +889,17 @@ export default function Dashboard() {
                             <p className="text-xs text-zinc-400 font-medium mb-2 uppercase tracking-wide">Presupuesto estimado</p>
                             <div className="space-y-1 text-sm">
                               {desglose.map((d: any, i: number) => (
-                                <div key={i} className="flex justify-between items-center py-0.5 border-b border-zinc-800">
-                                  <span className="text-zinc-300">{d.item}</span>
-                                  <span className="font-mono text-zinc-400 shrink-0 ml-4">${d.monto.toLocaleString('es-CL')}</span>
+                                <div key={i} className="flex justify-between items-center py-0.5 border-b border-zinc-100">
+                                  <span className="text-zinc-700">{d.item}</span>
+                                  <span className="font-mono text-zinc-500 shrink-0 ml-4">${d.monto.toLocaleString('es-CL')}</span>
                                 </div>
                               ))}
                               <div className="flex justify-between items-center pt-1 font-medium">
-                                <span className="text-white">TOTAL INVERSIÓN</span>
-                                <span className="font-mono text-blue-400">${desglose.reduce((a: number, d: any) => a + d.monto, 0).toLocaleString('es-CL')}</span>
+                                <span className="text-zinc-900">TOTAL INVERSIÓN</span>
+                                <span className="font-mono text-blue-600">${desglose.reduce((a: number, d: any) => a + d.monto, 0).toLocaleString('es-CL')}</span>
                               </div>
                               {meta.arriendo_mensual && (
-                                <div className="flex justify-between items-center text-xs text-zinc-500 pt-1">
+                                <div className="flex justify-between items-center text-xs text-zinc-400 pt-1">
                                   <span>Arriendo mensual recurrente</span>
                                   <span className="font-mono">${meta.arriendo_mensual.toLocaleString('es-CL')}/mes</span>
                                 </div>
@@ -920,12 +920,12 @@ export default function Dashboard() {
                               const oport     = precio != null && precio < umbral;
                               const variacion = d.variacion ?? null;
                               return (
-                                <div key={i} className={`flex items-center justify-between py-1.5 border-b border-zinc-800 text-sm ${oport ? 'text-green-400' : 'text-zinc-300'}`}>
+                                <div key={i} className={`flex items-center justify-between py-1.5 border-b border-zinc-100 text-sm ${oport ? 'text-green-700' : 'text-zinc-700'}`}>
                                   <div className="flex items-center gap-2">
                                     <span>{oport ? '🟢' : precio != null ? '🔴' : '⏳'}</span>
                                     <div>
                                       <p className="font-medium">{d.modelo}</p>
-                                      <p className="text-xs text-zinc-500">
+                                      <p className="text-xs text-zinc-400">
                                         Umbral: ${umbral.toLocaleString('es-CL')} CLP
                                         {d.descripcion ? ` · ${d.descripcion}` : ''}
                                       </p>
@@ -936,25 +936,25 @@ export default function Dashboard() {
                                       <>
                                         <p className="font-mono font-semibold">${precio.toLocaleString('es-CL')}</p>
                                         {variacion != null && (
-                                          <p className={`text-xs ${variacion < 0 ? 'text-green-500' : 'text-red-400'}`}>
+                                          <p className={`text-xs ${variacion < 0 ? 'text-green-600' : 'text-red-500'}`}>
                                             {variacion < 0 ? '↓' : '↑'}{Math.abs(variacion)}%
                                           </p>
                                         )}
                                       </>
                                     ) : (
-                                      <p className="text-xs text-zinc-600">sin datos aún</p>
+                                      <p className="text-xs text-zinc-400">sin datos aún</p>
                                     )}
                                   </div>
                                 </div>
                               );
                             })}
                             {meta.ultima_revision && (
-                              <p className="text-xs text-zinc-600 mt-2">
+                              <p className="text-xs text-zinc-400 mt-2">
                                 Última revisión: {new Date(meta.ultima_revision).toLocaleDateString('es-CL', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
                               </p>
                             )}
                             {meta.cronjob && !meta.ultima_revision && (
-                              <p className="text-xs text-zinc-600 mt-2 italic">{meta.cronjob}</p>
+                              <p className="text-xs text-zinc-400 mt-2 italic">{meta.cronjob}</p>
                             )}
                           </div>
                         )}
@@ -975,7 +975,7 @@ export default function Dashboard() {
 
                         {/* Footer: fecha inicio */}
                         {p.fecha_inicio && (
-                          <p className="text-xs text-zinc-600">Iniciado: {p.fecha_inicio}</p>
+                          <p className="text-xs text-zinc-400">Iniciado: {p.fecha_inicio}</p>
                         )}
                       </CardContent>
                     </Card>
