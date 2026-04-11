@@ -49,39 +49,39 @@
 }
 
 :root {
-  /* Clinical Precision — "Living Sanctuary" design system */
-  --background: #f7f9fb;
-  --foreground: #191c1e;
+  /* Sophisticated Curator — Vida Integral design system */
+  --background: #faf8ff;
+  --foreground: #1a1b22;
   --card: #ffffff;
-  --card-foreground: #191c1e;
+  --card-foreground: #1a1b22;
   --popover: #ffffff;
-  --popover-foreground: #191c1e;
-  --primary: #00488d;
+  --popover-foreground: #1a1b22;
+  --primary: #006e2f;
   --primary-foreground: #ffffff;
-  --secondary: #f2f4f6;
-  --secondary-foreground: #555f6d;
-  --muted: #eceef0;
-  --muted-foreground: #555f6d;
-  --accent: #d6e3ff;
-  --accent-foreground: #00488d;
+  --secondary: #f4f3fc;
+  --secondary-foreground: #5e5e65;
+  --muted: #eeedf7;
+  --muted-foreground: #5e5e65;
+  --accent: #d1fae5;
+  --accent-foreground: #006e2f;
   --destructive: oklch(0.577 0.245 27.325);
-  --border: rgb(194 198 212 / 0.25);
-  --input: #eceef0;
-  --ring: rgb(0 72 141 / 0.25);
-  --chart-1: #00488d;
-  --chart-2: #005fb8;
-  --chart-3: #a8c8ff;
-  --chart-4: #555f6d;
-  --chart-5: #d6e3ff;
+  --border: rgb(188 203 185 / 0.25);
+  --input: #f4f3fc;
+  --ring: rgb(0 110 47 / 0.25);
+  --chart-1: #006e2f;
+  --chart-2: #22c55e;
+  --chart-3: #86efac;
+  --chart-4: #c5ab03;
+  --chart-5: #f0fdf4;
   --radius: 0.875rem;
-  --sidebar: #f2f4f6;
-  --sidebar-foreground: #191c1e;
-  --sidebar-primary: #00488d;
+  --sidebar: #f4f3fc;
+  --sidebar-foreground: #1a1b22;
+  --sidebar-primary: #006e2f;
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #ffffff;
-  --sidebar-accent-foreground: #00488d;
-  --sidebar-border: rgb(194 198 212 / 0.2);
-  --sidebar-ring: rgb(0 72 141 / 0.25);
+  --sidebar-accent-foreground: #006e2f;
+  --sidebar-border: rgb(188 203 185 / 0.2);
+  --sidebar-ring: rgb(0 110 47 / 0.25);
 }
 
 .dark {
@@ -129,20 +129,30 @@
   html {
     @apply font-sans;
   }
-  /* Stat numbers and headings use Manrope */
+  /* Headlines use Inter bold — editorial authority */
   .font-headline, h1, h2, h3 {
-    font-family: var(--font-manrope, 'Manrope', sans-serif);
+    font-family: var(--font-inter, 'Inter', sans-serif);
+  }
+  /* Stat numbers and monospace data use JetBrains Mono */
+  .font-data, .font-stat {
+    font-family: var(--font-geist-mono, 'JetBrains Mono', monospace);
+    font-feature-settings: "tnum" 1;
+  }
+  /* Labels use Work Sans */
+  .font-label {
+    font-family: var(--font-work-sans, 'Work Sans', sans-serif);
   }
 }
 
-/* Card elevation — ambient shadow instead of border ring */
+/* Card elevation — ambient shadow (Sophisticated Curator style) */
 [data-slot="card"] {
   @apply ring-0;
-  box-shadow: 0 2px 16px rgb(25 28 30 / 0.06);
+  box-shadow: 0 4px 24px rgba(19, 27, 46, 0.05);
+  border: 1px solid rgb(188 203 185 / 0.18);
   transition: box-shadow 0.2s, transform 0.2s;
 }
 [data-slot="card"]:has([data-slot="card-header"]:hover),
 [data-slot="card"].hover\:shadow-lift:hover {
-  box-shadow: 0 8px 28px rgb(25 28 30 / 0.1);
+  box-shadow: 0 20px 40px rgba(19, 27, 46, 0.08);
   transform: translateY(-2px);
 }

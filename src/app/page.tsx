@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabase';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend } from 'recharts';
 import { FileText, CheckSquare, Heart, FolderOpen, RefreshCw, CheckCircle2, Eye, XCircle, EyeOff, ChevronUp, ChevronDown, ChevronsUpDown, Search, X, CalendarOff, Circle, CheckCheck, Dumbbell, TrendingDown, Target, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import AccountantAgent from '@/components/AccountantAgent';
@@ -267,7 +267,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen">
-      <header className="bg-[#f7f9fb]/80 backdrop-blur-xl border-b border-[rgb(194_198_212/0.2)] sticky top-0 z-10">
+      <header className="bg-[#faf8ff]/80 backdrop-blur-xl border-b border-[rgb(188_203_185/0.2)] sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div>
             <h1 className="text-xl font-extrabold font-headline text-primary">Dashboard · Fidel</h1>
@@ -287,24 +287,24 @@ export default function Dashboard() {
         <div className="grid grid-cols-3 gap-3">
           <Card className="cursor-pointer hover:shadow-lift" onClick={() => { setFiltroAccion('sin_accion'); }}>
             <CardHeader className="pb-1 pt-4 px-4">
-              <CardDescription className="flex items-center gap-1 text-xs"><FileText className="w-3 h-3" /> Nuevas</CardDescription>
-              <CardTitle className="text-4xl font-extrabold font-headline text-primary">{nuevas}</CardTitle>
+              <CardDescription className="flex items-center gap-1 text-xs font-label"><FileText className="w-3 h-3" /> Nuevas</CardDescription>
+              <CardTitle className="text-4xl font-extrabold font-data text-primary">{nuevas}</CardTitle>
             </CardHeader>
-            <CardContent className="px-4 pb-4"><p className="text-xs text-muted-foreground">sin revisar</p></CardContent>
+            <CardContent className="px-4 pb-4"><p className="text-xs text-muted-foreground font-label">sin revisar</p></CardContent>
           </Card>
           <Card className="cursor-pointer hover:shadow-lift bg-amber-50/60" onClick={() => { setFiltroAccion('revisar'); }}>
             <CardHeader className="pb-1 pt-4 px-4">
-              <CardDescription className="flex items-center gap-1 text-xs text-amber-600"><Eye className="w-3 h-3" /> Revisando</CardDescription>
-              <CardTitle className="text-4xl font-extrabold font-headline text-amber-700">{revisando}</CardTitle>
+              <CardDescription className="flex items-center gap-1 text-xs text-amber-600 font-label"><Eye className="w-3 h-3" /> Revisando</CardDescription>
+              <CardTitle className="text-4xl font-extrabold font-data text-amber-700">{revisando}</CardTitle>
             </CardHeader>
             <CardContent className="px-4 pb-4"><p className="text-xs text-amber-500">marcadas para revisar</p></CardContent>
           </Card>
           <Card className="cursor-pointer hover:shadow-lift bg-emerald-50/60" onClick={() => { setFiltroAccion('postulado'); }}>
             <CardHeader className="pb-1 pt-4 px-4">
-              <CardDescription className="flex items-center gap-1 text-xs text-emerald-600"><CheckCircle2 className="w-3 h-3" /> Postuladas</CardDescription>
-              <CardTitle className="text-4xl font-extrabold font-headline text-emerald-700">{postuladas}</CardTitle>
+              <CardDescription className="flex items-center gap-1 text-xs text-emerald-600 font-label"><CheckCircle2 className="w-3 h-3" /> Postuladas</CardDescription>
+              <CardTitle className="text-4xl font-extrabold font-data text-emerald-700">{postuladas}</CardTitle>
             </CardHeader>
-            <CardContent className="px-4 pb-4"><p className="text-xs text-emerald-600">postulaciones activas</p></CardContent>
+            <CardContent className="px-4 pb-4"><p className="text-xs text-emerald-600 font-label">postulaciones activas</p></CardContent>
           </Card>
         </div>
 
@@ -312,24 +312,24 @@ export default function Dashboard() {
         <div className="grid grid-cols-3 gap-3">
           <Card>
             <CardHeader className="pb-2">
-              <CardDescription className="flex items-center gap-1 text-xs"><CheckSquare className="w-3 h-3" /> Tareas</CardDescription>
-              <CardTitle className="text-3xl font-extrabold font-headline">{tareasCompletadas}/{tareas.length}</CardTitle>
+              <CardDescription className="flex items-center gap-1 text-xs font-label"><CheckSquare className="w-3 h-3" /> Tareas</CardDescription>
+              <CardTitle className="text-3xl font-extrabold font-data">{tareasCompletadas}/{tareas.length}</CardTitle>
             </CardHeader>
-            <CardContent><p className="text-xs text-muted-foreground">completadas</p></CardContent>
+            <CardContent><p className="text-xs text-muted-foreground font-label">completadas</p></CardContent>
           </Card>
           <Card>
             <CardHeader className="pb-2">
-              <CardDescription className="flex items-center gap-1 text-xs"><Heart className="w-3 h-3" /> Peso actual</CardDescription>
-              <CardTitle className="text-3xl font-extrabold font-headline">{pesoActual} <span className="text-sm font-normal text-muted-foreground">kg</span></CardTitle>
+              <CardDescription className="flex items-center gap-1 text-xs font-label"><Heart className="w-3 h-3" /> Peso actual</CardDescription>
+              <CardTitle className="text-3xl font-extrabold font-data">{pesoActual} <span className="text-sm font-normal text-muted-foreground">kg</span></CardTitle>
             </CardHeader>
-            <CardContent><p className="text-xs text-muted-foreground">{ultimaMedicion?.grasa ? `${ultimaMedicion.grasa}% grasa · score ${ultimaMedicion.score_inbody}` : 'Sin datos'}</p></CardContent>
+            <CardContent><p className="text-xs text-muted-foreground font-label">{ultimaMedicion?.grasa ? `${ultimaMedicion.grasa}% grasa · score ${ultimaMedicion.score_inbody}` : 'Sin datos'}</p></CardContent>
           </Card>
           <Card>
             <CardHeader className="pb-2">
-              <CardDescription className="flex items-center gap-1 text-xs"><FolderOpen className="w-3 h-3" /> Proyectos</CardDescription>
-              <CardTitle className="text-3xl font-extrabold font-headline">{proyectosActivos}</CardTitle>
+              <CardDescription className="flex items-center gap-1 text-xs font-label"><FolderOpen className="w-3 h-3" /> Proyectos</CardDescription>
+              <CardTitle className="text-3xl font-extrabold font-data">{proyectosActivos}</CardTitle>
             </CardHeader>
-            <CardContent><p className="text-xs text-muted-foreground">activos de {proyectos.length}</p></CardContent>
+            <CardContent><p className="text-xs text-muted-foreground font-label">activos de {proyectos.length}</p></CardContent>
           </Card>
         </div>
 
@@ -603,7 +603,7 @@ export default function Dashboard() {
                           <span className="text-xs text-zinc-500 flex items-center gap-1">{icon}{label}</span>
                           {reached && <span className="text-xs text-green-600 font-medium">✓ meta</span>}
                         </div>
-                        <div className="text-2xl font-bold text-zinc-900 mb-1">
+                        <div className="text-2xl font-bold font-data text-zinc-900 mb-1">
                           {current ?? '—'}<span className="text-sm font-normal text-zinc-400 ml-0.5">{unit}</span>
                         </div>
                         <div className="text-xs text-zinc-400 mb-2">Meta: {goal}{unit}</div>
@@ -635,9 +635,9 @@ export default function Dashboard() {
                         <YAxis tick={{ fontSize: 10 }} domain={[30, 100]} />
                         <Tooltip formatter={(v: any) => `${v} kg`} />
                         <Legend iconType="line" wrapperStyle={{ fontSize: 11 }} />
-                        <Line type="monotone" dataKey="peso" stroke="#3f3f46" strokeWidth={2} dot={{ r: 4 }} name="Peso" />
-                        <Line type="monotone" dataKey="musculo" stroke="#16a34a" strokeWidth={2} dot={{ r: 4 }} name="Músculo" />
-                        <Line type="monotone" dataKey="grasa" stroke="#dc2626" strokeWidth={2} strokeDasharray="4 2" dot={{ r: 4 }} name="% Grasa" />
+                        <Line type="monotone" dataKey="peso" stroke="#006e2f" strokeWidth={2} dot={{ r: 4 }} name="Peso" />
+                        <Line type="monotone" dataKey="musculo" stroke="#22c55e" strokeWidth={2} dot={{ r: 4 }} name="Músculo" />
+                        <Line type="monotone" dataKey="grasa" stroke="#c5ab03" strokeWidth={2} strokeDasharray="4 2" dot={{ r: 4 }} name="% Grasa" />
                       </LineChart>
                     </ResponsiveContainer>
                   </CardContent>
@@ -656,8 +656,8 @@ export default function Dashboard() {
                         <YAxis tick={{ fontSize: 10 }} />
                         <Tooltip />
                         <Legend wrapperStyle={{ fontSize: 11 }} />
-                        <Bar dataKey="score" fill="#3f3f46" radius={[4, 4, 0, 0]} name="Score" />
-                        <Bar dataKey="visceral" fill="#f97316" radius={[4, 4, 0, 0]} name="Visceral" />
+                        <Bar dataKey="score" fill="#006e2f" radius={[4, 4, 0, 0]} name="Score" />
+                        <Bar dataKey="visceral" fill="#c5ab03" radius={[4, 4, 0, 0]} name="Visceral" />
                       </BarChart>
                     </ResponsiveContainer>
                   </CardContent>
@@ -755,7 +755,7 @@ export default function Dashboard() {
                         <XAxis dataKey="semana" tick={{ fontSize: 11 }} />
                         <YAxis tick={{ fontSize: 11 }} domain={[0, 7]} />
                         <Tooltip />
-                        <Bar dataKey="sesiones" fill="#3f3f46" radius={[4, 4, 0, 0]} />
+                        <Bar dataKey="sesiones" fill="#006e2f" radius={[4, 4, 0, 0]} />
                       </BarChart>
                     </ResponsiveContainer>
                   </CardContent>
@@ -843,18 +843,23 @@ export default function Dashboard() {
                   const preciosActuales: any[] = meta.precios_actuales || [];
                   const dronesObjetivo: any[]  = meta.drones_objetivo || [];
 
+                  const accentColor = isCafetera ? '#f57012' : isLicencia ? '#006e2f' : isMonitor ? '#2DCE89' : '#006e2f';
+
                   return (
-                    <Card key={p.id}>
+                    <Card key={p.id} className="overflow-hidden">
+                      <div className="flex">
+                        <div className="w-1 shrink-0 rounded-l-xl" style={{ backgroundColor: accentColor }} />
+                        <div className="flex-1">
                       <CardHeader className="pb-3">
                         <div className="flex items-start justify-between gap-3">
                           <div>
                             <CardTitle className="text-lg">{p.nombre}</CardTitle>
-                            {meta.subtitulo && <p className="text-sm text-zinc-400 mt-0.5">{meta.subtitulo}</p>}
+                            {meta.subtitulo && <p className="text-sm text-muted-foreground mt-0.5 font-label">{meta.subtitulo}</p>}
                           </div>
                           <div className="flex items-center gap-2 shrink-0">
                             <span className={`px-2 py-0.5 rounded text-xs font-medium ${estadoClass(p.estado)}`}>{p.estado}</span>
                             {p.presupuesto && (
-                              <span className="text-xs text-zinc-400 font-mono">
+                              <span className="text-xs text-muted-foreground font-data">
                                 ${(p.presupuesto / 1000000).toFixed(1)}M
                               </span>
                             )}
@@ -981,9 +986,11 @@ export default function Dashboard() {
 
                         {/* Footer: fecha inicio */}
                         {p.fecha_inicio && (
-                          <p className="text-xs text-zinc-400">Iniciado: {p.fecha_inicio}</p>
+                          <p className="text-xs text-zinc-400 font-label">Iniciado: {p.fecha_inicio}</p>
                         )}
                       </CardContent>
+                        </div>
+                      </div>
                     </Card>
                   );
                 })
