@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState, useMemo } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend } from 'recharts';
 import {
   Home, Briefcase, CheckSquare, Activity, FolderOpen, Receipt,
@@ -32,33 +31,36 @@ const NAV: { id: Section; label: string; Icon: React.FC<{ className?: string }> 
 
 /* ── Hook: acciones licitaciones ────────────────────────────── */
 function useLicAcciones() {
-  const [acciones, setAcciones] = useState<Record<string, LicEstado>>({});
-  const hydrated = useRef(false);
+  // null = no hidratado aún; {} = cargado y vacío; {...} = cargado con datos
+  const [acciones, setAcciones] = useState<Record<string, LicEstado> | null>(null);
 
-  // Carga inicial desde localStorage
+  // Carga desde localStorage una sola vez al montar
   useEffect(() => {
     try {
       const s = localStorage.getItem('lic_acciones');
-      if (s) setAcciones(JSON.parse(s));
-    } catch {}
-    hydrated.current = true;
+      setAcciones(s ? JSON.parse(s) : {});
+    } catch {
+      setAcciones({});
+    }
   }, []);
 
-  // Persiste cada cambio (no se ejecuta en la hidratación inicial)
+  // Persiste al localStorage solo cuando ya está hidratado (acciones !== null)
   useEffect(() => {
-    if (!hydrated.current) return;
+    if (acciones === null) return;
     try { localStorage.setItem('lic_acciones', JSON.stringify(acciones)); } catch {}
   }, [acciones]);
 
   function setAccion(id: string, accion: LicEstado) {
     setAcciones(prev => {
+      if (prev === null) return prev;
       const next = { ...prev };
       if (accion === null || next[String(id)] === accion) delete next[String(id)];
       else next[String(id)] = accion;
       return next;
     });
   }
-  return { acciones, setAccion };
+
+  return { acciones: acciones ?? {}, setAccion };
 }
 
 /* ── Sort icon ──────────────────────────────────────────────── */
@@ -88,12 +90,6 @@ function DonutStat({ pct, label, color = '#006e2f' }: { pct: number; label: stri
   );
 }
 
-/* ── Row colors licitaciones ────────────────────────────────── */
-const ROW_COLORS: Record<string, string> = {
-  postulado:  'bg-green-50  hover:bg-green-100',
-  revisar:    'bg-yellow-50 hover:bg-yellow-100',
-  descartado: 'bg-red-50 opacity-50 hover:opacity-70',
-};
 
 /* ══════════════════════════════════════════════════════════════
    DASHBOARD
