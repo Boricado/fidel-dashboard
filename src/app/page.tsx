@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -33,18 +33,28 @@ const NAV: { id: Section; label: string; Icon: React.FC<{ className?: string }> 
 /* ── Hook: acciones licitaciones ────────────────────────────── */
 function useLicAcciones() {
   const [acciones, setAcciones] = useState<Record<string, LicEstado>>({});
+  const hydrated = useRef(false);
+
+  // Carga inicial desde localStorage
   useEffect(() => {
     try {
       const s = localStorage.getItem('lic_acciones');
       if (s) setAcciones(JSON.parse(s));
     } catch {}
+    hydrated.current = true;
   }, []);
+
+  // Persiste cada cambio (no se ejecuta en la hidratación inicial)
+  useEffect(() => {
+    if (!hydrated.current) return;
+    try { localStorage.setItem('lic_acciones', JSON.stringify(acciones)); } catch {}
+  }, [acciones]);
+
   function setAccion(id: string, accion: LicEstado) {
     setAcciones(prev => {
       const next = { ...prev };
-      if (accion === null || next[id] === accion) delete next[id];
-      else next[id] = accion;
-      try { localStorage.setItem('lic_acciones', JSON.stringify(next)); } catch {}
+      if (accion === null || next[String(id)] === accion) delete next[String(id)];
+      else next[String(id)] = accion;
       return next;
     });
   }
@@ -145,9 +155,9 @@ export default function Dashboard() {
 
   const licsVisibles = useMemo(() => {
     let r = [...licitaciones];
-    r = r.filter(l => { const a = acciones[l.id]; return a === 'descartado' ? mostrarDescartadas : true; });
+    r = r.filter(l => { const a = acciones[String(l.id)]; return a === 'descartado' ? mostrarDescartadas : true; });
     if (ocultarCerradas) r = r.filter(l => {
-      if (acciones[l.id] === 'postulado') return true;
+      if (acciones[String(l.id)] === 'postulado') return true;
       if (!l.fecha_publicacion) return true;
       return new Date(l.fecha_publicacion).getTime() > Date.now();
     });
@@ -157,8 +167,8 @@ export default function Dashboard() {
     }
     if (filtroCat)    r = r.filter(l => l.categoria === filtroCat);
     if (filtroRegion) r = r.filter(l => l.region === filtroRegion);
-    if (filtroAccion === 'sin_accion') r = r.filter(l => !acciones[l.id]);
-    else if (filtroAccion) r = r.filter(l => acciones[l.id] === filtroAccion);
+    if (filtroAccion === 'sin_accion') r = r.filter(l => !acciones[String(l.id)]);
+    else if (filtroAccion) r = r.filter(l => acciones[String(l.id)] === filtroAccion);
     if (sortKey && sortDir) {
       r.sort((a, b) => {
         let va: any = a[sortKey] ?? '', vb: any = b[sortKey] ?? '';
@@ -172,10 +182,10 @@ export default function Dashboard() {
     return r;
   }, [licitaciones, acciones, mostrarDescartadas, ocultarCerradas, busqueda, filtroCat, filtroRegion, filtroAccion, sortKey, sortDir]);
 
-  const descartadasCount  = licitaciones.filter(l => acciones[l.id] === 'descartado').length;
-  const postuladas        = licitaciones.filter(l => acciones[l.id] === 'postulado').length;
-  const revisando         = licitaciones.filter(l => acciones[l.id] === 'revisar').length;
-  const nuevas            = licitaciones.filter(l => !acciones[l.id]).length;
+  const descartadasCount  = licitaciones.filter(l => acciones[String(l.id)] === 'descartado').length;
+  const postuladas        = licitaciones.filter(l => acciones[String(l.id)] === 'postulado').length;
+  const revisando         = licitaciones.filter(l => acciones[String(l.id)] === 'revisar').length;
+  const nuevas            = licitaciones.filter(l => !acciones[String(l.id)]).length;
   const tareasPendientes  = tareas.filter(t => t.estado !== 'completada');
   const tareasRealizadas  = tareas.filter(t => t.estado === 'completada');
   const tareasCompletadas = tareasRealizadas.length;
@@ -473,57 +483,87 @@ export default function Dashboard() {
                   )}
                 </div>
               </CardHeader>
-              <CardContent>
+              <CardContent className="px-0 pb-0">
                 {licsVisibles.length === 0
                   ? <p className="text-sm text-[#5e5e65] py-8 text-center">Sin resultados.</p>
                   : (
-                  <Table>
-                    <TableHeader>
-                      <TableRow className="hover:bg-transparent">
-                        <TableHead className="w-[120px] cursor-pointer select-none" onClick={() => toggleSort('codigo')}>ID <SortIcon dir={colSortDir('codigo')} /></TableHead>
-                        <TableHead className="cursor-pointer select-none" onClick={() => toggleSort('nombre')}>Nombre <SortIcon dir={colSortDir('nombre')} /></TableHead>
-                        <TableHead className="cursor-pointer select-none" onClick={() => toggleSort('categoria')}>Categoría <SortIcon dir={colSortDir('categoria')} /></TableHead>
-                        <TableHead className="cursor-pointer select-none" onClick={() => toggleSort('region')}>Región <SortIcon dir={colSortDir('region')} /></TableHead>
-                        <TableHead className="text-right cursor-pointer select-none" onClick={() => toggleSort('monto')}>Monto <SortIcon dir={colSortDir('monto')} /></TableHead>
-                        <TableHead className="text-center cursor-pointer select-none w-[80px]" onClick={() => toggleSort('fecha_publicacion')}>Cierre <SortIcon dir={colSortDir('fecha_publicacion')} /></TableHead>
-                        <TableHead className="text-center w-[110px]">Acción</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {licsVisibles.map(l => {
-                        const accion = acciones[l.id];
-                        return (
-                          <TableRow key={l.id} className={`transition-colors ${accion ? ROW_COLORS[accion] : 'hover:bg-[#f4f3fc]'}`}>
-                            <TableCell className="font-geist-mono text-xs text-[#5e5e65]">
-                              {l.url ? <a href={l.url} target="_blank" rel="noopener noreferrer" className="hover:text-[#1a1b22] hover:underline">{l.codigo}</a> : l.codigo}
-                            </TableCell>
-                            <TableCell className="font-medium text-sm">{l.nombre}</TableCell>
-                            <TableCell className="text-sm text-[#5e5e65]">{l.categoria}</TableCell>
-                            <TableCell className="text-sm text-[#5e5e65] max-w-[140px] truncate">{l.region}</TableCell>
-                            <TableCell className="text-right text-sm font-geist-mono">
-                              {l.monto ? `$${l.monto.toLocaleString('es-CL')}` : <span className="text-[#5e5e65]">—</span>}
-                            </TableCell>
-                            <TableCell className="text-center text-xs whitespace-nowrap">
-                              {(() => { const d = diasRestantes(l.fecha_publicacion); return <span className={d.clase}>{d.texto}</span>; })()}
-                            </TableCell>
-                            <TableCell>
-                              <div className="flex items-center justify-center gap-1">
-                                <button title="Postulado" onClick={() => setAccion(l.id,'postulado')}
-                                  className={`p-1 rounded transition-colors ${accion==='postulado' ? 'text-green-700 bg-green-200' : 'text-[#bccbb9] hover:text-green-500 hover:bg-green-50'}`}>
-                                  <CheckCircle2 className="w-4 h-4" /></button>
-                                <button title="Revisar" onClick={() => setAccion(l.id,'revisar')}
-                                  className={`p-1 rounded transition-colors ${accion==='revisar' ? 'text-amber-700 bg-amber-200' : 'text-[#bccbb9] hover:text-amber-500 hover:bg-amber-50'}`}>
-                                  <Eye className="w-4 h-4" /></button>
-                                <button title="Descartar" onClick={() => setAccion(l.id,'descartado')}
-                                  className={`p-1 rounded transition-colors ${accion==='descartado' ? 'text-red-600 bg-red-200' : 'text-[#bccbb9] hover:text-red-400 hover:bg-red-50'}`}>
-                                  <XCircle className="w-4 h-4" /></button>
-                              </div>
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm border-collapse">
+                      <thead>
+                        <tr className="border-b border-[#eeedf7] bg-[#faf8ff]">
+                          <th className="text-left px-4 py-3 text-xs font-label font-semibold text-[#5e5e65] uppercase tracking-wide cursor-pointer select-none whitespace-nowrap w-[110px]" onClick={() => toggleSort('codigo')}>
+                            ID <SortIcon dir={colSortDir('codigo')} />
+                          </th>
+                          <th className="text-left px-4 py-3 text-xs font-label font-semibold text-[#5e5e65] uppercase tracking-wide cursor-pointer select-none min-w-[260px]" onClick={() => toggleSort('nombre')}>
+                            Nombre <SortIcon dir={colSortDir('nombre')} />
+                          </th>
+                          <th className="text-left px-4 py-3 text-xs font-label font-semibold text-[#5e5e65] uppercase tracking-wide cursor-pointer select-none hidden lg:table-cell w-[140px]" onClick={() => toggleSort('categoria')}>
+                            Categoría <SortIcon dir={colSortDir('categoria')} />
+                          </th>
+                          <th className="text-left px-4 py-3 text-xs font-label font-semibold text-[#5e5e65] uppercase tracking-wide cursor-pointer select-none hidden md:table-cell w-[150px]" onClick={() => toggleSort('region')}>
+                            Región <SortIcon dir={colSortDir('region')} />
+                          </th>
+                          <th className="text-right px-4 py-3 text-xs font-label font-semibold text-[#5e5e65] uppercase tracking-wide cursor-pointer select-none whitespace-nowrap w-[120px]" onClick={() => toggleSort('monto')}>
+                            Monto <SortIcon dir={colSortDir('monto')} />
+                          </th>
+                          <th className="text-center px-4 py-3 text-xs font-label font-semibold text-[#5e5e65] uppercase tracking-wide cursor-pointer select-none whitespace-nowrap w-[70px]" onClick={() => toggleSort('fecha_publicacion')}>
+                            Cierre <SortIcon dir={colSortDir('fecha_publicacion')} />
+                          </th>
+                          <th className="text-center px-4 py-3 text-xs font-label font-semibold text-[#5e5e65] uppercase tracking-wide w-[100px]">
+                            Acción
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {licsVisibles.map(l => {
+                          const sid    = String(l.id);
+                          const accion = acciones[sid];
+                          const rowBg  = accion === 'postulado'  ? 'bg-green-50'
+                                       : accion === 'revisar'    ? 'bg-amber-50'
+                                       : accion === 'descartado' ? 'bg-red-50 opacity-60'
+                                       : '';
+                          return (
+                            <tr key={l.id} className={`border-b border-[#eeedf7] hover:bg-[#f4f3fc] transition-colors align-top ${rowBg}`}>
+                              <td className="px-4 py-3 font-geist-mono text-xs text-[#5e5e65] whitespace-nowrap">
+                                {l.url
+                                  ? <a href={l.url} target="_blank" rel="noopener noreferrer" className="hover:text-primary hover:underline">{l.codigo}</a>
+                                  : l.codigo}
+                              </td>
+                              <td className="px-4 py-3 font-medium text-[#1a1b22] leading-snug">
+                                {l.nombre}
+                                {l.categoria && <p className="text-xs text-[#5e5e65] font-label font-normal mt-0.5 lg:hidden">{l.categoria}</p>}
+                                {l.region    && <p className="text-xs text-[#5e5e65] font-label font-normal mt-0.5 md:hidden">{l.region}</p>}
+                              </td>
+                              <td className="px-4 py-3 text-[#5e5e65] hidden lg:table-cell align-top leading-snug">{l.categoria}</td>
+                              <td className="px-4 py-3 text-[#5e5e65] hidden md:table-cell align-top leading-snug">{l.region}</td>
+                              <td className="px-4 py-3 text-right font-geist-mono whitespace-nowrap">
+                                {l.monto ? `$${l.monto.toLocaleString('es-CL')}` : <span className="text-[#bccbb9]">—</span>}
+                              </td>
+                              <td className="px-4 py-3 text-center whitespace-nowrap">
+                                {(() => { const d = diasRestantes(l.fecha_publicacion); return <span className={`text-xs font-geist-mono ${d.clase}`}>{d.texto}</span>; })()}
+                              </td>
+                              <td className="px-4 py-3">
+                                <div className="flex items-center justify-center gap-0.5">
+                                  <button title="Postulado" onClick={() => setAccion(sid, 'postulado')}
+                                    className={`p-1.5 rounded-lg transition-colors ${accion==='postulado' ? 'text-green-700 bg-green-100' : 'text-[#bccbb9] hover:text-green-600 hover:bg-green-50'}`}>
+                                    <CheckCircle2 className="w-4 h-4" />
+                                  </button>
+                                  <button title="Revisar" onClick={() => setAccion(sid, 'revisar')}
+                                    className={`p-1.5 rounded-lg transition-colors ${accion==='revisar' ? 'text-amber-700 bg-amber-100' : 'text-[#bccbb9] hover:text-amber-600 hover:bg-amber-50'}`}>
+                                    <Eye className="w-4 h-4" />
+                                  </button>
+                                  <button title="Descartar" onClick={() => setAccion(sid, 'descartado')}
+                                    className={`p-1.5 rounded-lg transition-colors ${accion==='descartado' ? 'text-red-600 bg-red-100' : 'text-[#bccbb9] hover:text-red-500 hover:bg-red-50'}`}>
+                                    <XCircle className="w-4 h-4" />
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
                 )}
               </CardContent>
             </Card>
