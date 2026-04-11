@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend } from 'recharts';
@@ -29,39 +29,6 @@ const NAV: { id: Section; label: string; Icon: React.FC<{ className?: string }> 
   { id: 'contador',     label: 'Contador',     Icon: Receipt     },
 ];
 
-/* ── Hook: acciones licitaciones ────────────────────────────── */
-function useLicAcciones() {
-  // null = no hidratado aún; {} = cargado y vacío; {...} = cargado con datos
-  const [acciones, setAcciones] = useState<Record<string, LicEstado> | null>(null);
-
-  // Carga desde localStorage una sola vez al montar
-  useEffect(() => {
-    try {
-      const s = localStorage.getItem('lic_acciones');
-      setAcciones(s ? JSON.parse(s) : {});
-    } catch {
-      setAcciones({});
-    }
-  }, []);
-
-  // Persiste al localStorage solo cuando ya está hidratado (acciones !== null)
-  useEffect(() => {
-    if (acciones === null) return;
-    try { localStorage.setItem('lic_acciones', JSON.stringify(acciones)); } catch {}
-  }, [acciones]);
-
-  function setAccion(id: string, accion: LicEstado) {
-    setAcciones(prev => {
-      if (prev === null) return prev;
-      const next = { ...prev };
-      if (accion === null || next[String(id)] === accion) delete next[String(id)];
-      else next[String(id)] = accion;
-      return next;
-    });
-  }
-
-  return { acciones: acciones ?? {}, setAccion };
-}
 
 /* ── Sort icon ──────────────────────────────────────────────── */
 function SortIcon({ dir }: { dir: SortDir }) {
@@ -107,7 +74,7 @@ export default function Dashboard() {
   const [mostrarDescartadas, setMostrarDescartadas] = useState(false);
   const [ocultarCerradas,    setOcultarCerradas]    = useState(true);
   const [mostrarRealizadas,  setMostrarRealizadas]  = useState(false);
-  const { acciones, setAccion } = useLicAcciones();
+
 
   const [busqueda,     setBusqueda]     = useState('');
   const [filtroCat,    setFiltroCat]    = useState('');
@@ -151,9 +118,9 @@ export default function Dashboard() {
 
   const licsVisibles = useMemo(() => {
     let r = [...licitaciones];
-    r = r.filter(l => { const a = acciones[String(l.id)]; return a === 'descartado' ? mostrarDescartadas : true; });
+    r = r.filter(l => l.user_accion === 'descartado' ? mostrarDescartadas : true);
     if (ocultarCerradas) r = r.filter(l => {
-      if (acciones[String(l.id)] === 'postulado') return true;
+      if (l.user_accion === 'postulado') return true;
       if (!l.fecha_publicacion) return true;
       return new Date(l.fecha_publicacion).getTime() > Date.now();
     });
@@ -163,8 +130,8 @@ export default function Dashboard() {
     }
     if (filtroCat)    r = r.filter(l => l.categoria === filtroCat);
     if (filtroRegion) r = r.filter(l => l.region === filtroRegion);
-    if (filtroAccion === 'sin_accion') r = r.filter(l => !acciones[String(l.id)]);
-    else if (filtroAccion) r = r.filter(l => acciones[String(l.id)] === filtroAccion);
+    if (filtroAccion === 'sin_accion') r = r.filter(l => !l.user_accion);
+    else if (filtroAccion) r = r.filter(l => l.user_accion === filtroAccion);
     if (sortKey && sortDir) {
       r.sort((a, b) => {
         let va: any = a[sortKey] ?? '', vb: any = b[sortKey] ?? '';
@@ -176,12 +143,12 @@ export default function Dashboard() {
       });
     }
     return r;
-  }, [licitaciones, acciones, mostrarDescartadas, ocultarCerradas, busqueda, filtroCat, filtroRegion, filtroAccion, sortKey, sortDir]);
+  }, [licitaciones, mostrarDescartadas, ocultarCerradas, busqueda, filtroCat, filtroRegion, filtroAccion, sortKey, sortDir]);
 
-  const descartadasCount  = licitaciones.filter(l => acciones[String(l.id)] === 'descartado').length;
-  const postuladas        = licitaciones.filter(l => acciones[String(l.id)] === 'postulado').length;
-  const revisando         = licitaciones.filter(l => acciones[String(l.id)] === 'revisar').length;
-  const nuevas            = licitaciones.filter(l => !acciones[String(l.id)]).length;
+  const descartadasCount  = licitaciones.filter(l => l.user_accion === 'descartado').length;
+  const postuladas        = licitaciones.filter(l => l.user_accion === 'postulado').length;
+  const revisando         = licitaciones.filter(l => l.user_accion === 'revisar').length;
+  const nuevas            = licitaciones.filter(l => !l.user_accion).length;
   const tareasPendientes  = tareas.filter(t => t.estado !== 'completada');
   const tareasRealizadas  = tareas.filter(t => t.estado === 'completada');
   const tareasCompletadas = tareasRealizadas.length;
@@ -243,6 +210,15 @@ export default function Dashboard() {
     setSortKey(''); setSortDir(null);
   }
   const hayFiltros = busqueda || filtroCat || filtroRegion || filtroAccion;
+
+  async function setAccion(id: number, accion: LicEstado) {
+    const actual = licitaciones.find(l => l.id === id)?.user_accion ?? null;
+    const nuevo  = actual === accion ? null : accion;
+    // Optimistic update — la UI responde inmediato
+    setLicitaciones(prev => prev.map(l => l.id === id ? { ...l, user_accion: nuevo } : l));
+    // Persiste en Supabase
+    await supabase.from('licitaciones').update({ user_accion: nuevo }).eq('id', id);
+  }
 
   async function marcarTarea(id: number, completada: boolean) {
     const estado = completada ? 'completada' : 'pendiente';
@@ -512,8 +488,7 @@ export default function Dashboard() {
                       </thead>
                       <tbody>
                         {licsVisibles.map(l => {
-                          const sid    = String(l.id);
-                          const accion = acciones[sid];
+                          const accion = l.user_accion as LicEstado;
                           const rowBg  = accion === 'postulado'  ? 'bg-green-50'
                                        : accion === 'revisar'    ? 'bg-amber-50'
                                        : accion === 'descartado' ? 'bg-red-50 opacity-60'
@@ -540,15 +515,15 @@ export default function Dashboard() {
                               </td>
                               <td className="px-4 py-3">
                                 <div className="flex items-center justify-center gap-0.5">
-                                  <button title="Postulado" onClick={() => setAccion(sid, 'postulado')}
+                                  <button title="Postulado" onClick={() => setAccion(l.id, 'postulado')}
                                     className={`p-1.5 rounded-lg transition-colors ${accion==='postulado' ? 'text-green-700 bg-green-100' : 'text-[#bccbb9] hover:text-green-600 hover:bg-green-50'}`}>
                                     <CheckCircle2 className="w-4 h-4" />
                                   </button>
-                                  <button title="Revisar" onClick={() => setAccion(sid, 'revisar')}
+                                  <button title="Revisar" onClick={() => setAccion(l.id, 'revisar')}
                                     className={`p-1.5 rounded-lg transition-colors ${accion==='revisar' ? 'text-amber-700 bg-amber-100' : 'text-[#bccbb9] hover:text-amber-600 hover:bg-amber-50'}`}>
                                     <Eye className="w-4 h-4" />
                                   </button>
-                                  <button title="Descartar" onClick={() => setAccion(sid, 'descartado')}
+                                  <button title="Descartar" onClick={() => setAccion(l.id, 'descartado')}
                                     className={`p-1.5 rounded-lg transition-colors ${accion==='descartado' ? 'text-red-600 bg-red-100' : 'text-[#bccbb9] hover:text-red-500 hover:bg-red-50'}`}>
                                     <XCircle className="w-4 h-4" />
                                   </button>
