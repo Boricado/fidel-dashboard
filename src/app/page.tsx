@@ -266,16 +266,16 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-50">
-      <header className="bg-white border-b border-zinc-200 sticky top-0 z-10">
+    <div className="min-h-screen">
+      <header className="bg-[#f7f9fb]/80 backdrop-blur-xl border-b border-[rgb(194_198_212/0.2)] sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-bold text-zinc-900">Dashboard · Fidel</h1>
-            <p className="text-xs text-zinc-400">
+            <h1 className="text-xl font-extrabold font-headline text-primary">Dashboard · Fidel</h1>
+            <p className="text-xs text-muted-foreground">
               {new Date().toLocaleDateString('es-CL', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
             </p>
           </div>
-          <Button variant="outline" size="sm" onClick={loadData}>
+          <Button size="sm" onClick={loadData} className="rounded-full">
             <RefreshCw className="w-3 h-3 mr-1" /> Actualizar
           </Button>
         </div>
@@ -285,26 +285,26 @@ export default function Dashboard() {
 
         {/* Licitaciones resumen */}
         <div className="grid grid-cols-3 gap-3">
-          <Card className="border-zinc-200 cursor-pointer hover:border-zinc-400 transition-colors" onClick={() => { setFiltroAccion('sin_accion'); }}>
+          <Card className="cursor-pointer hover:shadow-lift" onClick={() => { setFiltroAccion('sin_accion'); }}>
             <CardHeader className="pb-1 pt-4 px-4">
-              <CardDescription className="flex items-center gap-1 text-xs text-zinc-500"><FileText className="w-3 h-3" /> Nuevas</CardDescription>
-              <CardTitle className="text-4xl font-bold text-zinc-900">{nuevas}</CardTitle>
+              <CardDescription className="flex items-center gap-1 text-xs"><FileText className="w-3 h-3" /> Nuevas</CardDescription>
+              <CardTitle className="text-4xl font-extrabold font-headline text-primary">{nuevas}</CardTitle>
             </CardHeader>
-            <CardContent className="px-4 pb-4"><p className="text-xs text-zinc-400">sin revisar</p></CardContent>
+            <CardContent className="px-4 pb-4"><p className="text-xs text-muted-foreground">sin revisar</p></CardContent>
           </Card>
-          <Card className="border-yellow-200 bg-yellow-50/40 cursor-pointer hover:bg-yellow-50 transition-colors" onClick={() => { setFiltroAccion('revisar'); }}>
+          <Card className="cursor-pointer hover:shadow-lift bg-amber-50/60" onClick={() => { setFiltroAccion('revisar'); }}>
             <CardHeader className="pb-1 pt-4 px-4">
-              <CardDescription className="flex items-center gap-1 text-xs text-yellow-600"><Eye className="w-3 h-3" /> Revisando</CardDescription>
-              <CardTitle className="text-4xl font-bold text-yellow-700">{revisando}</CardTitle>
+              <CardDescription className="flex items-center gap-1 text-xs text-amber-600"><Eye className="w-3 h-3" /> Revisando</CardDescription>
+              <CardTitle className="text-4xl font-extrabold font-headline text-amber-700">{revisando}</CardTitle>
             </CardHeader>
-            <CardContent className="px-4 pb-4"><p className="text-xs text-yellow-500">marcadas para revisar</p></CardContent>
+            <CardContent className="px-4 pb-4"><p className="text-xs text-amber-500">marcadas para revisar</p></CardContent>
           </Card>
-          <Card className="border-green-200 bg-green-50/40 cursor-pointer hover:bg-green-50 transition-colors" onClick={() => { setFiltroAccion('postulado'); }}>
+          <Card className="cursor-pointer hover:shadow-lift bg-emerald-50/60" onClick={() => { setFiltroAccion('postulado'); }}>
             <CardHeader className="pb-1 pt-4 px-4">
-              <CardDescription className="flex items-center gap-1 text-xs text-green-600"><CheckCircle2 className="w-3 h-3" /> Postuladas</CardDescription>
-              <CardTitle className="text-4xl font-bold text-green-700">{postuladas}</CardTitle>
+              <CardDescription className="flex items-center gap-1 text-xs text-emerald-600"><CheckCircle2 className="w-3 h-3" /> Postuladas</CardDescription>
+              <CardTitle className="text-4xl font-extrabold font-headline text-emerald-700">{postuladas}</CardTitle>
             </CardHeader>
-            <CardContent className="px-4 pb-4"><p className="text-xs text-green-500">postulaciones activas</p></CardContent>
+            <CardContent className="px-4 pb-4"><p className="text-xs text-emerald-600">postulaciones activas</p></CardContent>
           </Card>
         </div>
 
@@ -313,23 +313,23 @@ export default function Dashboard() {
           <Card>
             <CardHeader className="pb-2">
               <CardDescription className="flex items-center gap-1 text-xs"><CheckSquare className="w-3 h-3" /> Tareas</CardDescription>
-              <CardTitle className="text-3xl">{tareasCompletadas}/{tareas.length}</CardTitle>
+              <CardTitle className="text-3xl font-extrabold font-headline">{tareasCompletadas}/{tareas.length}</CardTitle>
             </CardHeader>
-            <CardContent><p className="text-xs text-zinc-400">completadas</p></CardContent>
+            <CardContent><p className="text-xs text-muted-foreground">completadas</p></CardContent>
           </Card>
           <Card>
             <CardHeader className="pb-2">
               <CardDescription className="flex items-center gap-1 text-xs"><Heart className="w-3 h-3" /> Peso actual</CardDescription>
-              <CardTitle className="text-3xl">{pesoActual} <span className="text-sm font-normal text-zinc-400">kg</span></CardTitle>
+              <CardTitle className="text-3xl font-extrabold font-headline">{pesoActual} <span className="text-sm font-normal text-muted-foreground">kg</span></CardTitle>
             </CardHeader>
-            <CardContent><p className="text-xs text-zinc-400">{ultimaMedicion?.grasa ? `${ultimaMedicion.grasa}% grasa · score ${ultimaMedicion.score_inbody}` : 'Sin datos'}</p></CardContent>
+            <CardContent><p className="text-xs text-muted-foreground">{ultimaMedicion?.grasa ? `${ultimaMedicion.grasa}% grasa · score ${ultimaMedicion.score_inbody}` : 'Sin datos'}</p></CardContent>
           </Card>
           <Card>
             <CardHeader className="pb-2">
               <CardDescription className="flex items-center gap-1 text-xs"><FolderOpen className="w-3 h-3" /> Proyectos</CardDescription>
-              <CardTitle className="text-3xl">{proyectosActivos}</CardTitle>
+              <CardTitle className="text-3xl font-extrabold font-headline">{proyectosActivos}</CardTitle>
             </CardHeader>
-            <CardContent><p className="text-xs text-zinc-400">activos de {proyectos.length}</p></CardContent>
+            <CardContent><p className="text-xs text-muted-foreground">activos de {proyectos.length}</p></CardContent>
           </Card>
         </div>
 
@@ -607,9 +607,9 @@ export default function Dashboard() {
                           {current ?? '—'}<span className="text-sm font-normal text-zinc-400 ml-0.5">{unit}</span>
                         </div>
                         <div className="text-xs text-zinc-400 mb-2">Meta: {goal}{unit}</div>
-                        <div className="w-full bg-zinc-100 rounded-full h-1.5">
+                        <div className="w-full bg-muted rounded-full h-1.5">
                           <div
-                            className={`h-1.5 rounded-full transition-all ${reached ? 'bg-green-500' : 'bg-zinc-700'}`}
+                            className={`h-1.5 rounded-full transition-all ${reached ? 'bg-emerald-500' : 'bg-primary'}`}
                             style={{ width: `${pct}%` }}
                           />
                         </div>
@@ -869,7 +869,7 @@ export default function Dashboard() {
                               <span>Progreso</span>
                               <span>{completadas}/{etapas.length} etapas</span>
                             </div>
-                            <div className="h-2 bg-zinc-200 rounded-full">
+                            <div className="h-1.5 bg-muted rounded-full">
                               <div className="h-2 bg-blue-500 rounded-full transition-all" style={{ width: `${pct}%` }} />
                             </div>
                           </div>
