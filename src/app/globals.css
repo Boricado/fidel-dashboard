@@ -134,13 +134,17 @@
     font-family: var(--font-inter, 'Inter', sans-serif);
   }
   /* Stat numbers and monospace data use JetBrains Mono */
-  .font-data, .font-stat {
+  .font-data, .font-stat, .font-geist-mono {
     font-family: var(--font-geist-mono, 'JetBrains Mono', monospace);
     font-feature-settings: "tnum" 1;
   }
   /* Labels use Work Sans */
   .font-label {
     font-family: var(--font-work-sans, 'Work Sans', sans-serif);
+  }
+  /* Inter explicit class (mirrors body) */
+  .font-inter {
+    font-family: var(--font-inter, 'Inter', sans-serif);
   }
 }
 
