@@ -1,0 +1,92 @@
+{
+  "flujo_trabajo": "SketchUp → OpenCutList → DXF → CNC / Corte manual guiado",
+  "plugin_esencial": {
+    "nombre": "OpenCutList",
+    "url": "https://extensions.sketchup.com/extension/00f0bf69-7a42-4295-9e1c-226080814e3e/open-cut-list",
+    "sitio": "https://opencutlist.org",
+    "costo": "Gratuito",
+    "que_hace": "Genera lista de corte optimizada desde el modelo, minimiza desperdicio en tablero, exporta PDF con layout de corte, soporta múltiples materiales",
+    "compatibilidad": "SketchUp 2017+, incluye SketchUp Free (web)"
+  },
+  "plugins": [
+    { "nombre": "OpenCutList", "url": "https://opencutlist.org", "costo": "Gratuito", "prioridad": 1, "descripcion": "Lista de corte optimizada — INSTALAR PRIMERO" },
+    { "nombre": "CutList Bridge", "url": "https://extensions.sketchup.com", "costo": "Gratuito", "prioridad": 2, "descripcion": "Exporta lista de corte a CutList Plus FX" },
+    { "nombre": "DXF Export nativo", "url": "SketchUp Pro incluido", "costo": "Requiere Pro (~$299 USD/año)", "prioridad": 3, "descripcion": "File > Export > 2D Graphic > .dxf — necesario para CNC" },
+    { "nombre": "Flatten to Plane", "url": "https://extensions.sketchup.com", "costo": "Gratuito", "prioridad": 4, "descripcion": "Lleva piezas 3D a plano 2D antes de exportar DXF" }
+  ],
+  "fuentes_modelos": [
+    {
+      "nombre": "3D Warehouse — Woodworking Plans",
+      "url": "https://3dwarehouse.sketchup.com/search/?q=woodworking+furniture+plans",
+      "costo": "Gratuito",
+      "calidad": "variable",
+      "busquedas_utiles": [
+        "workbench woodworking",
+        "dining table woodworking plans",
+        "cabinet plans woodworking",
+        "shelf plans sketchup",
+        "nightstand woodworking plans",
+        "escritorio madera planos",
+        "estanteria madera sketchup"
+      ]
+    },
+    {
+      "nombre": "Woodgears.ca — Matthias Wandel",
+      "url": "https://woodgears.ca/sketchup/",
+      "costo": "Gratuito",
+      "calidad": "alta",
+      "descripcion": "Modelos funcionales de carpintería, jigs, herramientas de madera. Muy práctico para taller."
+    },
+    {
+      "nombre": "Ana White Plans",
+      "url": "https://www.anawhite.com/plans",
+      "costo": "Gratuito",
+      "calidad": "media",
+      "descripcion": "Planos de muebles DIY, algunos con archivos SketchUp. Orientado a construcción simple."
+    },
+    {
+      "nombre": "Fine Woodworking SketchUp Models",
+      "url": "https://www.finewoodworking.com/sketchup-models",
+      "costo": "~$35 USD/año (suscripción)",
+      "calidad": "muy alta",
+      "descripcion": "Modelos con dimensiones reales y lista de materiales. Vale la pena si produces en volumen."
+    },
+    {
+      "nombre": "Instructables — SketchUp Woodworking",
+      "url": "https://www.instructables.com/search/?q=sketchup+woodworking+plans",
+      "costo": "Gratuito",
+      "calidad": "variable",
+      "descripcion": "Proyectos con archivos .skp adjuntos."
+    }
+  ],
+  "cnc_chile": {
+    "flujo": [
+      "Modelar cada pieza como Componente separado en SketchUp (nombre descriptivo: 'lateral_izq_18mm')",
+      "OpenCutList genera layout optimizado en tablero estándar",
+      "Exportar DXF de cada pieza (Pro: File > Export > 2D Graphic > .dxf)",
+      "Verificar escala 1:1 en LibreCAD (gratuito) antes de enviar",
+      "Incluir línea de referencia de 100mm etiquetada para verificación en CNC",
+      "Enviar al taller CNC con especificaciones: material, espesor, cantidad"
+    ],
+    "workaround_sin_pro": "Exportar SVG desde SketchUp Free → convertir en cloudconvert.com/svg-to-dxf",
+    "precios_referencia": {
+      "hora_maquina": { "min": 15000, "max": 35000, "unidad": "CLP/hora" },
+      "por_m2_mdf15mm": { "min": 8000, "max": 15000, "unidad": "CLP/m² (solo corte, sin material)" },
+      "tablero_mdf18mm": { "min": 25000, "max": 40000, "unidad": "CLP/tablero en taller CNC" },
+      "tablero_plywood18mm": { "min": 35000, "max": 55000, "unidad": "CLP/tablero en taller CNC" }
+    },
+    "servicios_chile": [
+      { "nombre": "Buscar en Google Maps", "query": "CNC Chile corte MDF", "zona": "Santiago — Pudahuel, Quilicura" },
+      { "nombre": "MercadoLibre Chile", "url": "https://www.mercadolibre.cl/c/servicios-corte-cnc", "nota": "Cotizaciones online, envío de cortes en Starken" },
+      { "nombre": "Buscar local", "query": "corte CNC La Serena / corte láser La Serena", "zona": "IV Región" },
+      { "nombre": "Facebook Marketplace La Serena", "query": "corte CNC / corte MDF", "zona": "IV Región" }
+    ]
+  },
+  "comunidades": [
+    { "nombre": "SketchUp en Español (Facebook)", "url": "https://www.facebook.com/groups/sketchupespanol" },
+    { "nombre": "Carpintería y Ebanistería Latinoamérica (Facebook)", "url": "Buscar en Facebook" },
+    { "nombre": "CNC Chile Makers (Facebook)", "url": "Buscar en Facebook" },
+    { "nombre": "r/woodworking (Reddit)", "url": "https://www.reddit.com/r/woodworking" },
+    { "nombre": "YouTube: OpenCutList tutorial español", "url": "https://www.youtube.com/search/?q=opencutlist+tutorial+espanol" }
+  ]
+}

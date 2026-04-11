@@ -1,0 +1,54 @@
+{
+  "moneda": "CLP",
+  "ultima_actualizacion": "2025-08",
+  "nota": "Precios de referencia La Serena/Coquimbo. Verificar siempre en maderera antes de presupuestar. Variación hasta 30% entre proveedores.",
+
+  "pino_estructural": [
+    { "dimension": "1\"x2\" (2.5x5cm)", "largo_m": 3, "precio_min": 2500, "precio_max": 3500 },
+    { "dimension": "1\"x3\" (2.5x7.5cm)", "largo_m": 3, "precio_min": 3200, "precio_max": 4500 },
+    { "dimension": "1\"x4\" (2.5x10cm)", "largo_m": 3, "precio_min": 4000, "precio_max": 5500 },
+    { "dimension": "1\"x6\" (2.5x15cm)", "largo_m": 3, "precio_min": 6000, "precio_max": 8500 },
+    { "dimension": "1\"x8\" (2.5x20cm)", "largo_m": 3, "precio_min": 8000, "precio_max": 12000 },
+    { "dimension": "2\"x2\" (5x5cm)", "largo_m": 3, "precio_min": 4000, "precio_max": 5500 },
+    { "dimension": "2\"x4\" (5x10cm)", "largo_m": 3, "precio_min": 7000, "precio_max": 10000 },
+    { "dimension": "2\"x6\" (5x15cm)", "largo_m": 3, "precio_min": 10000, "precio_max": 14000 }
+  ],
+
+  "tableros": [
+    { "tipo": "Plywood 9mm", "dim": "1.22x2.44m", "precio_min": 16000, "precio_max": 22000, "m2": 2.977 },
+    { "tipo": "Plywood 12mm", "dim": "1.22x2.44m", "precio_min": 20000, "precio_max": 28000, "m2": 2.977 },
+    { "tipo": "Plywood 15mm", "dim": "1.22x2.44m", "precio_min": 25000, "precio_max": 35000, "m2": 2.977 },
+    { "tipo": "Plywood 18mm", "dim": "1.22x2.44m", "precio_min": 28000, "precio_max": 38000, "m2": 2.977 },
+    { "tipo": "Terciado marino 18mm", "dim": "1.22x2.44m", "precio_min": 45000, "precio_max": 65000, "m2": 2.977 },
+    { "tipo": "MDF 9mm", "dim": "1.83x2.44m", "precio_min": 20000, "precio_max": 28000, "m2": 4.471 },
+    { "tipo": "MDF 12mm", "dim": "1.83x2.44m", "precio_min": 25000, "precio_max": 35000, "m2": 4.471 },
+    { "tipo": "MDF 15mm", "dim": "1.83x2.44m", "precio_min": 30000, "precio_max": 42000, "m2": 4.471 },
+    { "tipo": "MDF 18mm", "dim": "1.83x2.44m", "precio_min": 35000, "precio_max": 50000, "m2": 4.471 },
+    { "tipo": "OSB 11mm", "dim": "1.22x2.44m", "precio_min": 18000, "precio_max": 25000, "m2": 2.977 },
+    { "tipo": "OSB 15mm", "dim": "1.22x2.44m", "precio_min": 22000, "precio_max": 32000, "m2": 2.977 },
+    { "tipo": "Melamina blanca 18mm", "dim": "1.83x2.44m", "precio_min": 38000, "precio_max": 55000, "m2": 4.471 },
+    { "tipo": "Melamina madera 18mm", "dim": "1.83x2.44m", "precio_min": 42000, "precio_max": 62000, "m2": 4.471 }
+  ],
+
+  "acabados": [
+    { "tipo": "Aceite de teca Xylazel/Sikkens 750ml", "precio_min": 18000, "precio_max": 28000, "recomendado": true, "nota": "Acabado natural premium" },
+    { "tipo": "Aceite de linaza crudo 1L", "precio_min": 8000, "precio_max": 14000, "recomendado": true, "nota": "Económico, buen resultado en pino" },
+    { "tipo": "Aceite danesa Minwax/Liberon 500ml", "precio_min": 20000, "precio_max": 30000, "recomendado": true, "nota": "" },
+    { "tipo": "Cera de carnauba en pasta 400ml", "precio_min": 15000, "precio_max": 22000, "recomendado": true, "nota": "Capa final sobre aceite" },
+    { "tipo": "Barniz satinado interior 1L", "precio_min": 10000, "precio_max": 16000, "recomendado": false, "nota": "" },
+    { "tipo": "Chalk paint nacional 1L", "precio_min": 18000, "precio_max": 28000, "recomendado": false, "nota": "Solo para MDF o efecto vintage" },
+    { "tipo": "Tinte acuoso Minwax 250ml", "precio_min": 12000, "precio_max": 20000, "recomendado": false, "nota": "Para oscurecer veta" },
+    { "tipo": "Resina epoxi 250ml (fisuras)", "precio_min": 15000, "precio_max": 25000, "recomendado": true, "nota": "Efecto wabi-sabi en nudos y fisuras" }
+  ],
+
+  "proveedores_zona": [
+    { "nombre": "Maderera Arizala", "ciudad": "La Serena", "zona": "Zona industrial Av. Francisco de Aguirre" },
+    { "nombre": "Maderera El Roble", "ciudad": "La Serena", "zona": "" },
+    { "nombre": "Sodimac", "ciudad": "La Serena", "zona": "Av. del Mar / Las Compras", "precio": "alto", "ventaja": "stock garantizado" },
+    { "nombre": "Easy", "ciudad": "La Serena", "zona": "", "precio": "alto", "ventaja": "stock garantizado" },
+    { "nombre": "Construmart", "ciudad": "La Serena", "zona": "", "precio": "medio", "ventaja": "tableros y materiales construcción" },
+    { "nombre": "Aserraderos Ovalle/Combarbalá", "ciudad": "Ovalle", "zona": "", "precio": "bajo", "ventaja": "eucalipto y pino bruto más barato, vale el viaje para compras grandes" }
+  ],
+
+  "consejo_compra": "Compra con 4-6 semanas de anticipación. Pino verde recién aserrado se tuerce al secar si lo trabajas inmediatamente."
+}

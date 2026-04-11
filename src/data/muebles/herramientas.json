@@ -1,0 +1,102 @@
+{
+  "existentes": [
+    { "nombre": "Sierra circular manual", "estado": "ok" },
+    { "nombre": "Sargentos (varios)", "estado": "ok" },
+    { "nombre": "Taladro", "estado": "ok" },
+    { "nombre": "Galletera (biscuit joiner)", "estado": "ok" },
+    { "nombre": "Impresora 3D", "estado": "ok" }
+  ],
+  "por_comprar": [
+    {
+      "id": 1,
+      "nombre": "Sierra de inglete deslizante 10\"",
+      "prioridad": "alta",
+      "razon": "70% de cortes en serie son angulares/largo. Más segura que table saw para operar solo.",
+      "modelos": [
+        { "marca": "Dewalt", "modelo": "DWS779", "precio_min": 280000, "precio_max": 350000 },
+        { "marca": "Bosch", "modelo": "GCM 10 SD", "precio_min": 290000, "precio_max": 370000 },
+        { "marca": "Makita", "modelo": "LS1019L", "precio_min": 320000, "precio_max": 400000 },
+        { "marca": "Dewalt", "modelo": "DW713 (fija)", "precio_min": 180000, "precio_max": 230000 }
+      ],
+      "recomendada": "Dewalt DWS779 o Bosch GCM 10 SD"
+    },
+    {
+      "id": 2,
+      "nombre": "Lijadora orbital 125mm",
+      "prioridad": "alta",
+      "razon": "Imprescindible para producción en serie. Lija a mano es inviable en volumen.",
+      "modelos": [
+        { "marca": "Dewalt", "modelo": "DWE6421", "precio_min": 65000, "precio_max": 85000 },
+        { "marca": "Makita", "modelo": "BO5041", "precio_min": 70000, "precio_max": 95000 },
+        { "marca": "Bosch", "modelo": "GEX 125-1 AE", "precio_min": 75000, "precio_max": 100000 }
+      ],
+      "recomendada": "Dewalt DWE6421 o Makita BO5041"
+    },
+    {
+      "id": 3,
+      "nombre": "Lijadora de banda 75x533mm",
+      "prioridad": "alta",
+      "razon": "Desbastar superficies grandes y cuadrar piezas. Complementa la orbital.",
+      "modelos": [
+        { "marca": "Makita", "modelo": "9911", "precio_min": 75000, "precio_max": 110000 },
+        { "marca": "Dewalt", "modelo": "DWE6411", "precio_min": 80000, "precio_max": 115000 }
+      ],
+      "recomendada": "Makita 9911"
+    },
+    {
+      "id": 4,
+      "nombre": "Router / Fresadora de lámina",
+      "prioridad": "alta",
+      "razon": "Abre el 50% de los diseños diferenciadores: cantos perfilados, ranurados, ensambles.",
+      "modelos": [
+        { "marca": "Makita", "modelo": "RT0701C", "precio_min": 110000, "precio_max": 150000 },
+        { "marca": "Dewalt", "modelo": "DWP611", "precio_min": 120000, "precio_max": 160000 },
+        { "marca": "Bosch", "modelo": "POF 1400 ACE", "precio_min": 90000, "precio_max": 130000 }
+      ],
+      "recomendada": "Makita RT0701C"
+    },
+    {
+      "id": 5,
+      "nombre": "Compresor 24L + pistola de clavos 18ga",
+      "prioridad": "media",
+      "razon": "Acelera dramáticamente el ensamble de gabinetes y marcos en serie.",
+      "modelos": [
+        { "marca": "Truper/Black+Decker", "modelo": "Compresor 24L", "precio_min": 90000, "precio_max": 140000 },
+        { "marca": "Genérica", "modelo": "Brad nailer 18ga neumática", "precio_min": 45000, "precio_max": 80000 }
+      ],
+      "recomendada": "Cualquier compresor 24L + pistola 18ga básica"
+    },
+    {
+      "id": 6,
+      "nombre": "Cepillo eléctrico 82mm",
+      "prioridad": "media",
+      "razon": "Permite trabajar con madera aserrada sin cepillar (mucho más barata). Transforma la ecuación de costos.",
+      "modelos": [
+        { "marca": "Makita", "modelo": "KP0800", "precio_min": 80000, "precio_max": 110000 },
+        { "marca": "Dewalt", "modelo": "D26676K", "precio_min": 95000, "precio_max": 130000 }
+      ],
+      "recomendada": "Makita KP0800"
+    },
+    {
+      "id": 7,
+      "nombre": "Sierra de cinta (band saw)",
+      "prioridad": "baja",
+      "razon": "Para cortes curvos y patas torneadas. No urgente si los modelos son geométricos.",
+      "modelos": [
+        { "marca": "Makita", "modelo": "LB1200F", "precio_min": 180000, "precio_max": 280000 },
+        { "marca": "Skil", "modelo": "BS5102", "precio_min": 80000, "precio_max": 120000 }
+      ],
+      "recomendada": "Skil BS5102 para empezar"
+    }
+  ],
+  "accesorios": [
+    { "nombre": "Escuadra combinada 300mm (Starrett/Irwin)", "precio_min": 25000, "precio_max": 45000, "esencial": true },
+    { "nombre": "Falsa escuadra ajustable", "precio_min": 8000, "precio_max": 15000, "esencial": true },
+    { "nombre": "Broca Forstner 19mm (bench dogs)", "precio_min": 8000, "precio_max": 15000, "esencial": true },
+    { "nombre": "Set brocas Forstner 15-50mm (bisagras)", "precio_min": 25000, "precio_max": 40000, "esencial": true },
+    { "nombre": "Set brocas router 12 piezas", "precio_min": 25000, "precio_max": 45000, "esencial": true },
+    { "nombre": "Cepillo de mano #4 Stanley/Irwin", "precio_min": 18000, "precio_max": 35000, "esencial": true },
+    { "nombre": "Sargentos barra 600mm (x4 adicionales)", "precio_min": 48000, "precio_max": 80000, "esencial": true },
+    { "nombre": "F-clamps rápidos 150mm (x8-10)", "precio_min": 40000, "precio_max": 80000, "esencial": false }
+  ]
+}

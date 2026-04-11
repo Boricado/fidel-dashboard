@@ -10,14 +10,25 @@ import {
   ChevronUp, ChevronDown, ChevronsUpDown,
   Search, X, CalendarOff, Circle, CheckCheck,
   Dumbbell, TrendingDown, Target, TrendingUp, Heart, FileText,
+  FlaskConical, AlertTriangle, BadgeCheck, Building2, MapPin,
+  Hammer, Link, ExternalLink, Clock,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import AccountantAgent from '@/components/AccountantAgent';
+import EMPRESAS_DATA    from '@/data/calibracion/empresas_nacionales.json';
+import PRECIOS_DATA     from '@/data/calibracion/precios_mercado.json';
+import IMPL_DATA        from '@/data/calibracion/implementacion.json';
+import RESUMEN_DATA     from '@/data/calibracion/resumen_ejecutivo.json';
+import MODELOS_DATA     from '@/data/muebles/modelos.json';
+import HERR_DATA        from '@/data/muebles/herramientas.json';
+import MESA_DATA        from '@/data/muebles/mesa_carpintera.json';
+import SKETCHUP_DATA    from '@/data/muebles/sketchup.json';
+import MATERIALES_DATA  from '@/data/muebles/materiales.json';
 
 /* ── Types ──────────────────────────────────────────────────── */
 type LicEstado = 'postulado' | 'revisar' | 'descartado' | null;
 type SortDir   = 'asc' | 'desc' | null;
-type Section   = 'home' | 'licitaciones' | 'tareas' | 'salud' | 'proyectos' | 'contador';
+type Section   = 'home' | 'licitaciones' | 'tareas' | 'salud' | 'proyectos' | 'contador' | 'mercado' | 'muebles';
 
 /* ── Nav config ─────────────────────────────────────────────── */
 const NAV: { id: Section; label: string; Icon: React.FC<{ className?: string }> }[] = [
@@ -25,8 +36,10 @@ const NAV: { id: Section; label: string; Icon: React.FC<{ className?: string }> 
   { id: 'licitaciones', label: 'Licitaciones', Icon: Briefcase   },
   { id: 'tareas',       label: 'Tareas',       Icon: CheckSquare },
   { id: 'salud',        label: 'Salud',        Icon: Activity    },
-  { id: 'proyectos',    label: 'Proyectos',    Icon: FolderOpen  },
-  { id: 'contador',     label: 'Contador',     Icon: Receipt     },
+  { id: 'proyectos',    label: 'Proyectos',    Icon: FolderOpen   },
+  { id: 'mercado',      label: 'Calibración',  Icon: FlaskConical },
+  { id: 'muebles',      label: 'Muebles',      Icon: Hammer       },
+  { id: 'contador',     label: 'Contador',     Icon: Receipt      },
 ];
 
 
@@ -74,6 +87,7 @@ export default function Dashboard() {
   const [mostrarDescartadas, setMostrarDescartadas] = useState(false);
   const [ocultarCerradas,    setOcultarCerradas]    = useState(true);
   const [mostrarRealizadas,  setMostrarRealizadas]  = useState(false);
+  const [muebleTab,          setMuebleTab]          = useState('modelos');
 
 
   const [busqueda,     setBusqueda]     = useState('');
@@ -144,6 +158,14 @@ export default function Dashboard() {
     }
     return r;
   }, [licitaciones, mostrarDescartadas, ocultarCerradas, busqueda, filtroCat, filtroRegion, filtroAccion, sortKey, sortDir]);
+
+  const regionSummary = useMemo(() => {
+    if (filtroRegion) return filtroRegion;
+    const unique = [...new Set(licsVisibles.map((l: any) => l.region).filter((r: any) => r && r !== 'Chile'))];
+    if (unique.length === 0) return 'Chile';
+    if (unique.length <= 2) return (unique as string[]).join(', ');
+    return `${unique[0]}, ${unique[1]} y ${unique.length - 2} más`;
+  }, [licsVisibles, filtroRegion]);
 
   const descartadasCount  = licitaciones.filter(l => l.user_accion === 'descartado').length;
   const postuladas        = licitaciones.filter(l => l.user_accion === 'postulado').length;
@@ -403,7 +425,8 @@ export default function Dashboard() {
                   <div>
                     <CardTitle>Licitaciones publicadas</CardTitle>
                     <CardDescription>
-                      {licsVisibles.length} de {licitaciones.length} · Chile · Construcción, topografía, TI y más
+                      {licsVisibles.length} de {licitaciones.length} · {regionSummary}
+                      {filtroCat && <span> · {filtroCat}</span>}
                       {descartadasCount > 0 && <span className="ml-2 text-[#5e5e65]">· {descartadasCount} descartada{descartadasCount !== 1 ? 's' : ''}</span>}
                     </CardDescription>
                   </div>
@@ -1057,6 +1080,867 @@ export default function Dashboard() {
               }
             </div>
           )}
+
+          {/* ────────────────────────────────────────────────────
+              MERCADO — Estudio calibración
+          ──────────────────────────────────────────────────── */}
+          {section === 'mercado' && (
+            <div className="space-y-8">
+
+              {/* ── Hero ──────────────────────────────────────── */}
+              <section className="bg-[#f4f3fc] rounded-xl p-8 relative overflow-hidden">
+                <div className="absolute inset-0 opacity-[0.03]"
+                  style={{ backgroundImage: 'repeating-linear-gradient(45deg, #006e2f 0, #006e2f 1px, transparent 0, transparent 50%)', backgroundSize: '24px 24px' }} />
+                <div className="relative max-w-2xl">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 text-primary rounded-full mb-4">
+                    <FlaskConical className="w-3 h-3" />
+                    <span className="text-[10px] font-bold uppercase tracking-widest font-label">Proyecto 4 — Estudio de Mercado</span>
+                  </div>
+                  <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-[#1a1b22] mb-2">
+                    Laboratorio de Calibración
+                  </h2>
+                  <p className="text-[#5e5e65] text-sm leading-relaxed mb-4">
+                    Análisis de viabilidad para servicio de calibración de instrumentos topográficos, balanzas y otros en la Región de Coquimbo.
+                    Datos basados en investigación de mercado agosto 2025.
+                  </p>
+                  <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold ${
+                    RESUMEN_DATA.veredicto === 'VIABLE con condiciones'
+                      ? 'bg-green-100 text-green-800'
+                      : 'bg-amber-100 text-amber-800'
+                  }`}>
+                    <BadgeCheck className="w-4 h-4" />
+                    Veredicto: {RESUMEN_DATA.veredicto}
+                  </div>
+                </div>
+              </section>
+
+              {/* ── KPIs ──────────────────────────────────────── */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {[
+                  { label: 'Competencia local acreditada', value: '0', unit: 'labs', sub: 'en Coquimbo — primer entrante', color: 'text-primary', bg: 'bg-primary/5' },
+                  { label: 'Inversión inicial (típica)', value: '$41,8M', unit: 'CLP', sub: 'masas + temp + dimensional', color: 'text-[#1a1b22]', bg: 'bg-white' },
+                  { label: 'Tiempo hasta acreditación', value: '18–24', unit: 'meses', sub: 'desde inicio a cert. INN', color: 'text-amber-700', bg: 'bg-amber-50' },
+                  { label: 'Ingreso potencial año 3–4', value: '$9,7–$19,5M', unit: 'CLP/mes', sub: '225 servicios a $65.000 prom.', color: 'text-emerald-700', bg: 'bg-emerald-50' },
+                ].map(({ label, value, unit, sub, color, bg }) => (
+                  <div key={label} className={`${bg} rounded-xl p-5 border border-[rgb(188_203_185/0.18)]`}>
+                    <p className="text-[10px] font-label uppercase tracking-wider text-[#5e5e65] mb-2">{label}</p>
+                    <p className={`text-2xl font-bold font-geist-mono ${color}`}>{value}</p>
+                    <p className="text-[10px] font-label text-[#5e5e65] mt-0.5">{unit} · {sub}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* ── Dos columnas: Fortalezas / Riesgos ────────── */}
+              <div className="grid md:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader><CardTitle className="text-base flex items-center gap-2"><BadgeCheck className="w-4 h-4 text-primary" /> Fortalezas</CardTitle></CardHeader>
+                  <CardContent>
+                    <ul className="space-y-2">
+                      {RESUMEN_DATA.fortalezas.map((f, i) => (
+                        <li key={i} className="flex items-start gap-2 text-sm text-[#1a1b22]">
+                          <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0" />
+                          {f}
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader><CardTitle className="text-base flex items-center gap-2"><AlertTriangle className="w-4 h-4 text-amber-600" /> Riesgos</CardTitle></CardHeader>
+                  <CardContent>
+                    <ul className="space-y-2">
+                      {RESUMEN_DATA.riesgos.map((r, i) => (
+                        <li key={i} className="flex items-start gap-2 text-sm text-[#1a1b22]">
+                          <span className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-2 shrink-0" />
+                          {r}
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* ── Plan de fases ─────────────────────────────── */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Plan de implementación escalonada</CardTitle>
+                  <CardDescription>Estrategia de entrada al mercado en 3 fases para minimizar riesgo financiero</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {IMPL_DATA.fases.map((fase) => (
+                      <div key={fase.id} className="flex gap-4 p-4 rounded-xl border border-[rgb(188_203_185/0.18)] bg-[#faf8ff]">
+                        <div className="shrink-0 w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold font-geist-mono text-lg">
+                          {fase.id}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex flex-wrap items-center gap-2 mb-1">
+                            <p className="font-semibold text-[#1a1b22] text-sm">{fase.nombre}</p>
+                            <span className="text-[10px] font-label text-[#5e5e65] bg-[#eeedf7] px-2 py-0.5 rounded-full">meses {fase.duracion_meses}</span>
+                          </div>
+                          <p className="text-xs text-[#5e5e65] mb-3">{fase.descripcion}</p>
+                          <div className="flex flex-wrap gap-1.5 mb-3">
+                            {fase.acciones.map((a, i) => (
+                              <span key={i} className="text-[10px] bg-white border border-[rgb(188_203_185/0.25)] text-[#5e5e65] px-2 py-0.5 rounded-md font-label">{a}</span>
+                            ))}
+                          </div>
+                          <div className="flex items-center gap-4 text-xs">
+                            <span className="font-label text-[#5e5e65]">Inversión:</span>
+                            <span className="font-geist-mono font-semibold text-[#1a1b22]">${(fase.inversion_min/1e6).toFixed(1)}M – ${(fase.inversion_max/1e6).toFixed(1)}M CLP</span>
+                            <span className="font-label text-[#5e5e65]">Ingresos est.:</span>
+                            <span className="font-geist-mono text-primary font-semibold">${(fase.ingresos_estimados_mes.min/1e6).toFixed(1)}M – ${(fase.ingresos_estimados_mes.max/1e6).toFixed(1)}M /mes</span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* ── Desglose inversión ────────────────────────── */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Desglose de inversión</CardTitle>
+                  <CardDescription>Total laboratorio básico: masas + temperatura + dimensional</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {IMPL_DATA.inversion_total.desglose.map((item) => {
+                      const pct = Math.round((item.tipico / IMPL_DATA.inversion_total.tipica) * 100);
+                      return (
+                        <div key={item.concepto}>
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-sm text-[#1a1b22]">{item.concepto}</span>
+                            <div className="flex items-center gap-3">
+                              <span className="text-xs text-[#5e5e65] font-label">${(item.min/1e6).toFixed(1)}M – ${(item.alto/1e6).toFixed(1)}M</span>
+                              <span className="font-geist-mono font-semibold text-sm text-primary w-16 text-right">${(item.tipico/1e6).toFixed(1)}M</span>
+                            </div>
+                          </div>
+                          <div className="h-1.5 bg-[#eeedf7] rounded-full overflow-hidden">
+                            <div className="h-full bg-primary rounded-full" style={{ width: `${pct}%` }} />
+                          </div>
+                        </div>
+                      );
+                    })}
+                    <div className="pt-3 border-t border-[#eeedf7] flex justify-between">
+                      <span className="font-semibold text-sm">Total típico</span>
+                      <span className="font-geist-mono font-bold text-primary text-lg">${(IMPL_DATA.inversion_total.tipica/1e6).toFixed(1)}M CLP</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* ── Proyección de ingresos ────────────────────── */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Proyección de ingresos por fase</CardTitle>
+                  <CardDescription>Estimación conservadora — precio promedio por servicio</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    {RESUMEN_DATA.proyeccion_ingresos.map((p, i) => (
+                      <div key={i} className="p-4 rounded-xl bg-[#f4f3fc] border border-[rgb(188_203_185/0.18)]">
+                        <p className="text-[10px] font-label uppercase tracking-wider text-[#5e5e65] mb-2">{p.fase}</p>
+                        <p className="text-lg font-bold font-geist-mono text-primary">
+                          ${(p.ingreso_mensual_min/1e6).toFixed(1)}M–${(p.ingreso_mensual_max/1e6).toFixed(1)}M
+                        </p>
+                        <p className="text-[10px] text-[#5e5e65] font-label mt-1">CLP/mes</p>
+                        <div className="mt-2 pt-2 border-t border-[#dddcf0] flex justify-between text-[10px] font-label text-[#5e5e65]">
+                          <span>{p.servicios_mes} servicios/mes</span>
+                          <span>${p.precio_promedio.toLocaleString('es-CL')} prom.</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* ── Precios de mercado ────────────────────────── */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Precios de mercado — referencia Chile 2025</CardTitle>
+                  <CardDescription>Rango de tarifas por tipo de instrumento. Fuente: mercado nacional, verificar cotizaciones actuales.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-6">
+                    {PRECIOS_DATA.categorias.map((cat) => (
+                      <div key={cat.id}>
+                        <div className="flex items-center gap-2 mb-3">
+                          <div className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: cat.color }} />
+                          <h4 className="font-semibold text-sm text-[#1a1b22]">{cat.nombre}</h4>
+                        </div>
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-sm border-collapse">
+                            <thead>
+                              <tr className="border-b border-[#eeedf7]">
+                                <th className="text-left py-2 px-3 text-[10px] font-label font-semibold text-[#5e5e65] uppercase tracking-wide">Instrumento</th>
+                                <th className="text-right py-2 px-3 text-[10px] font-label font-semibold text-[#5e5e65] uppercase tracking-wide">Mínimo</th>
+                                <th className="text-right py-2 px-3 text-[10px] font-label font-semibold text-[#5e5e65] uppercase tracking-wide">Típico</th>
+                                <th className="text-right py-2 px-3 text-[10px] font-label font-semibold text-[#5e5e65] uppercase tracking-wide">Máximo</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {cat.items.map((item, i) => (
+                                <tr key={i} className="border-b border-[#eeedf7] hover:bg-[#faf8ff]">
+                                  <td className="py-2 px-3 text-[#1a1b22]">
+                                    {item.instrumento}
+                                    {item.nota && <span className="ml-1 text-[10px] text-[#5e5e65] font-label">({item.nota})</span>}
+                                  </td>
+                                  <td className="py-2 px-3 text-right font-geist-mono text-[#5e5e65]">${item.min.toLocaleString('es-CL')}</td>
+                                  <td className="py-2 px-3 text-right font-geist-mono font-semibold text-primary">${item.tipico.toLocaleString('es-CL')}</td>
+                                  <td className="py-2 px-3 text-right font-geist-mono text-[#5e5e65]">${item.max.toLocaleString('es-CL')}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* ── Competencia nacional ──────────────────────── */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Competencia nacional</CardTitle>
+                  <CardDescription>{EMPRESAS_DATA.length} laboratorios identificados — ninguno con sede en Coquimbo</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {EMPRESAS_DATA.map((emp) => (
+                      <div key={emp.id} className="p-4 rounded-xl border border-[rgb(188_203_185/0.18)] bg-[#faf8ff] flex flex-col sm:flex-row sm:items-start gap-3">
+                        <div className="shrink-0">
+                          <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
+                            <Building2 className="w-4 h-4 text-primary" />
+                          </div>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex flex-wrap items-center gap-2 mb-1">
+                            <p className="font-semibold text-[#1a1b22] text-sm">{emp.nombre}</p>
+                            <span className={`text-[10px] font-label px-2 py-0.5 rounded-full ${
+                              emp.segmento.includes('Multinacional') ? 'bg-blue-50 text-blue-700' :
+                              emp.segmento.includes('Nacional')      ? 'bg-primary/10 text-primary' :
+                              'bg-[#eeedf7] text-[#5e5e65]'
+                            }`}>{emp.segmento}</span>
+                          </div>
+                          <div className="flex items-center gap-1 text-xs text-[#5e5e65] mb-1.5">
+                            <MapPin className="w-3 h-3 shrink-0" />
+                            <span className="font-label">{emp.sede}</span>
+                          </div>
+                          <div className="flex flex-wrap gap-1 mb-2">
+                            {emp.alcances.map((a) => (
+                              <span key={a} className="text-[10px] bg-white border border-[rgb(188_203_185/0.25)] text-[#5e5e65] px-2 py-0.5 rounded-md font-label">{a}</span>
+                            ))}
+                          </div>
+                          <div className="flex flex-wrap gap-4 text-[10px] font-label text-[#5e5e65]">
+                            <span><span className="font-semibold text-[#1a1b22]">Acreditación:</span> {emp.acreditacion}</span>
+                            <span><span className="font-semibold text-[#1a1b22]">Coquimbo:</span> {emp.presencia_coquimbo}</span>
+                          </div>
+                          {emp.nota && <p className="mt-1 text-[10px] text-[#5e5e65] italic font-label">{emp.nota}</p>}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* ── Acreditación ─────────────────────────────── */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Costos de acreditación INN / ISO 17025</CardTitle>
+                  <CardDescription>Organismo: INN-Chile / DAE — Norma ISO/IEC 17025:2017 — Tiempo total: {IMPL_DATA.acreditacion_inn.tiempo_total_meses.min}–{IMPL_DATA.acreditacion_inn.tiempo_total_meses.max} meses</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid sm:grid-cols-2 gap-3">
+                    {IMPL_DATA.acreditacion_inn.costos.map((c, i) => (
+                      <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-[#f4f3fc] border border-[rgb(188_203_185/0.18)]">
+                        <span className="text-sm text-[#1a1b22]">{c.concepto}</span>
+                        <span className="font-geist-mono text-sm font-semibold text-primary ml-4 shrink-0">
+                          ${(c.min/1e6).toFixed(1)}M–${(c.max/1e6).toFixed(1)}M
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-4 p-4 rounded-xl bg-primary/5 border border-primary/15">
+                    <p className="text-xs text-[#1a1b22] font-semibold mb-1">Fuentes para verificar</p>
+                    <div className="flex flex-wrap gap-2">
+                      {RESUMEN_DATA.fuentes.map((f, i) => (
+                        <span key={i} className="text-[10px] font-label text-primary bg-white border border-primary/20 px-2 py-1 rounded-md">
+                          {f.nombre} — {f.url}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* ── Sectores demandantes ─────────────────────── */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Sectores demandantes en la Región de Coquimbo</CardTitle>
+                  <CardDescription>Análisis de demanda por industria</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {RESUMEN_DATA.sectores_demandantes.map((s, i) => (
+                      <div key={i} className="p-4 rounded-xl border border-[rgb(188_203_185/0.18)] bg-[#faf8ff]">
+                        <div className="flex items-center justify-between mb-2">
+                          <p className="font-semibold text-sm text-[#1a1b22]">{s.sector}</p>
+                          <span className={`text-[10px] font-label px-2 py-0.5 rounded-full font-semibold ${
+                            s.demanda === 'alta' ? 'bg-green-100 text-green-700' : 'bg-amber-50 text-amber-700'
+                          }`}>demanda {s.demanda}</span>
+                        </div>
+                        <p className="text-[10px] text-[#5e5e65] font-label flex items-center gap-1 mb-2">
+                          <MapPin className="w-3 h-3 shrink-0" /> {s.localidad}
+                        </p>
+                        <div className="flex flex-wrap gap-1">
+                          {s.instrumentos.map((inst) => (
+                            <span key={inst} className="text-[10px] bg-primary/8 text-primary px-1.5 py-0.5 rounded font-label">{inst}</span>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+            </div>
+          )}
+
+          {/* ────────────────────────────────────────────────────
+              MUEBLES — Proyecto 5
+          ──────────────────────────────────────────────────── */}
+          {section === 'muebles' && (() => {
+            const TABS = [
+              { id: 'modelos',      label: 'Modelos' },
+              { id: 'mesa',         label: 'Mesa Carpintera' },
+              { id: 'herramientas', label: 'Herramientas' },
+              { id: 'sketchup',     label: 'SketchUp & CNC' },
+              { id: 'materiales',   label: 'Materiales' },
+            ];
+            const totalInvHerr = HERR_DATA.por_comprar
+              .filter((h: any) => h.prioridad === 'alta')
+              .reduce((acc: number, h: any) => acc + h.modelos[0].precio_min, 0);
+            const modCon3D = MODELOS_DATA.filter((m: any) => m.usa_3d).length;
+            return (
+              <div className="space-y-6">
+
+                {/* Hero */}
+                <section className="bg-[#f4f3fc] rounded-xl p-8 relative overflow-hidden">
+                  <div className="absolute inset-0 opacity-[0.03]"
+                    style={{ backgroundImage: 'repeating-linear-gradient(-45deg, #006e2f 0, #006e2f 1px, transparent 0, transparent 50%)', backgroundSize: '20px 20px' }} />
+                  <div className="relative max-w-2xl">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 text-primary rounded-full mb-4">
+                      <Hammer className="w-3 h-3" />
+                      <span className="text-[10px] font-bold uppercase tracking-widest font-label">Proyecto 5 — Muebles de Madera</span>
+                    </div>
+                    <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-[#1a1b22] mb-2">
+                      Taller de Carpintería
+                    </h2>
+                    <p className="text-[#5e5e65] text-sm leading-relaxed mb-4">
+                      Producción en serie de {MODELOS_DATA.length} modelos estándar para marketplace. Mesa carpintera primero, luego escalar.
+                      Ventaja diferencial: impresión 3D + SketchUp para plantillas y corte CNC.
+                    </p>
+                    <div className="flex flex-wrap gap-4 text-sm">
+                      {[
+                        { label: 'Modelos definidos', value: MODELOS_DATA.length, color: 'text-primary' },
+                        { label: 'Usan impresora 3D', value: modCon3D, color: 'text-primary' },
+                        { label: 'Inv. herramientas alta prior.', value: `$${(totalInvHerr/1000).toFixed(0)}k`, color: 'text-amber-700' },
+                        { label: 'Mejor margen', value: '70%', color: 'text-emerald-700' },
+                      ].map(({ label, value, color }) => (
+                        <div key={label} className="bg-white rounded-xl px-4 py-3 border border-[rgb(188_203_185/0.18)]">
+                          <p className="text-[10px] font-label uppercase tracking-wide text-[#5e5e65]">{label}</p>
+                          <p className={`text-xl font-bold font-geist-mono ${color}`}>{value}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </section>
+
+                {/* Tabs */}
+                <div className="flex gap-1 bg-[#eeedf7] p-1 rounded-xl w-fit flex-wrap">
+                  {TABS.map(t => (
+                    <button key={t.id} onClick={() => setMuebleTab(t.id)}
+                      className={`px-4 py-2 rounded-lg text-sm font-label font-medium transition-all ${
+                        muebleTab === t.id ? 'bg-white text-primary shadow-sm' : 'text-[#5e5e65] hover:text-[#1a1b22]'
+                      }`}>
+                      {t.label}
+                    </button>
+                  ))}
+                </div>
+
+                {/* ── TAB: MODELOS ────────────────────────────── */}
+                {muebleTab === 'modelos' && (
+                  <div className="space-y-4">
+                    {/* Resumen márgenes */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                      {[
+                        { label: 'Tiempo más rápido', value: '2h', sub: 'Mesita auxiliar' },
+                        { label: 'Mayor margen', value: '70%', sub: 'Organizador 3D+madera' },
+                        { label: 'Mejor ticket', value: '$280k', sub: 'Mesa de centro' },
+                        { label: 'Envío nacional', value: `${MODELOS_DATA.filter((m:any)=>m.envio_nacional).length} de ${MODELOS_DATA.length}`, sub: 'modelos flat-pack' },
+                      ].map(({ label, value, sub }) => (
+                        <div key={label} className="bg-white rounded-xl p-4 border border-[rgb(188_203_185/0.18)]">
+                          <p className="text-[10px] font-label uppercase tracking-wide text-[#5e5e65]">{label}</p>
+                          <p className="text-xl font-bold font-geist-mono text-primary">{value}</p>
+                          <p className="text-[10px] font-label text-[#5e5e65] mt-0.5">{sub}</p>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Cards de modelos */}
+                    <div className="grid md:grid-cols-2 gap-4">
+                      {MODELOS_DATA.map((m: any) => {
+                        const margen = Math.round(((m.precio_min - m.costo_max) / m.precio_min) * 100);
+                        return (
+                          <div key={m.id} className="bg-white rounded-xl border border-[rgb(188_203_185/0.18)] overflow-hidden">
+                            <div className="px-5 py-4 border-b border-[#eeedf7] flex items-start justify-between gap-3">
+                              <div>
+                                <div className="flex items-center gap-2 mb-1">
+                                  <span className="w-5 h-5 rounded-full bg-primary/10 text-primary text-[10px] font-bold flex items-center justify-center font-geist-mono shrink-0">{m.id}</span>
+                                  <h4 className="font-semibold text-[#1a1b22] text-sm leading-tight">{m.nombre}</h4>
+                                  {m.usa_3d && (
+                                    <span className="text-[9px] font-label bg-primary/10 text-primary px-1.5 py-0.5 rounded-full shrink-0">3D</span>
+                                  )}
+                                </div>
+                                <p className="text-xs text-[#5e5e65] leading-snug">{m.descripcion}</p>
+                              </div>
+                              <div className="shrink-0 text-right">
+                                <p className="text-lg font-bold font-geist-mono text-primary">{margen}%</p>
+                                <p className="text-[9px] font-label text-[#5e5e65]">margen</p>
+                              </div>
+                            </div>
+                            <div className="px-5 py-3 grid grid-cols-3 gap-3 text-center">
+                              <div>
+                                <p className="text-[9px] font-label text-[#5e5e65] uppercase tracking-wide">Costo mat.</p>
+                                <p className="text-sm font-geist-mono font-semibold text-[#1a1b22]">${(m.costo_min/1000).toFixed(0)}k–${(m.costo_max/1000).toFixed(0)}k</p>
+                              </div>
+                              <div>
+                                <p className="text-[9px] font-label text-[#5e5e65] uppercase tracking-wide">Precio venta</p>
+                                <p className="text-sm font-geist-mono font-semibold text-primary">${(m.precio_min/1000).toFixed(0)}k–${(m.precio_max/1000).toFixed(0)}k</p>
+                              </div>
+                              <div>
+                                <p className="text-[9px] font-label text-[#5e5e65] uppercase tracking-wide">Tiempo</p>
+                                <p className="text-sm font-geist-mono font-semibold text-[#1a1b22] flex items-center justify-center gap-0.5">
+                                  <Clock className="w-3 h-3 text-[#5e5e65]" />{m.tiempo_horas}h
+                                </p>
+                              </div>
+                            </div>
+                            <div className="px-5 pb-4">
+                              <div className="flex flex-wrap gap-1 mb-2">
+                                {m.variantes.map((v: string) => (
+                                  <span key={v} className="text-[9px] font-label bg-[#f4f3fc] text-[#5e5e65] px-1.5 py-0.5 rounded-md border border-[rgb(188_203_185/0.2)]">{v}</span>
+                                ))}
+                              </div>
+                              {m.usa_3d && m.nota_3d && (
+                                <p className="text-[10px] text-primary font-label bg-primary/5 px-2 py-1 rounded-lg">
+                                  🖨 {m.nota_3d}
+                                </p>
+                              )}
+                              <div className="mt-2 flex items-center gap-2">
+                                <span className={`text-[9px] font-label px-2 py-0.5 rounded-full ${
+                                  m.dificultad === 'baja' ? 'bg-green-50 text-green-700' : 'bg-amber-50 text-amber-700'
+                                }`}>{m.dificultad}</span>
+                                {m.envio_nacional && <span className="text-[9px] font-label bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full">envío nacional</span>}
+                                <span className="text-[9px] font-label text-[#5e5e65]">prio #{m.prioridad}</span>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* ── TAB: MESA CARPINTERA ─────────────────────── */}
+                {muebleTab === 'mesa' && (
+                  <div className="space-y-4">
+                    {/* Comparativa diseños */}
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Comparativa de diseños</CardTitle>
+                        <CardDescription>Recomendado: <strong>{MESA_DATA.diseno_recomendado}</strong> — {MESA_DATA.razon}</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="grid sm:grid-cols-3 gap-3">
+                          {MESA_DATA.comparativa.map((d: any) => (
+                            <div key={d.tipo} className={`p-4 rounded-xl border ${d.recomendada ? 'border-primary bg-primary/5' : 'border-[rgb(188_203_185/0.18)] bg-[#faf8ff]'}`}>
+                              <div className="flex items-center gap-2 mb-2">
+                                <p className="font-semibold text-sm text-[#1a1b22]">{d.tipo}</p>
+                                {d.recomendada && <BadgeCheck className="w-4 h-4 text-primary" />}
+                              </div>
+                              <p className="text-[10px] font-label text-[#5e5e65] mb-2">Dificultad: <span className="text-[#1a1b22] font-semibold">{d.dificultad}</span></p>
+                              <p className="text-lg font-bold font-geist-mono text-primary">${(d.costo_min/1000).toFixed(0)}k–${(d.costo_max/1000).toFixed(0)}k</p>
+                              <p className="text-[9px] font-label text-[#5e5e65]">{d.nota}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* Medidas */}
+                    <Card>
+                      <CardHeader><CardTitle>Medidas estándar</CardTitle></CardHeader>
+                      <CardContent>
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                          {[
+                            { label: 'Largo', value: `${MESA_DATA.medidas.largo_m}m` },
+                            { label: 'Ancho', value: `${MESA_DATA.medidas.ancho_m}m` },
+                            { label: 'Alto', value: `${MESA_DATA.medidas.alto_m}m` },
+                            { label: 'Espesor tablero', value: `${MESA_DATA.medidas.espesor_tablero_cm}cm` },
+                          ].map(({ label, value }) => (
+                            <div key={label} className="bg-[#f4f3fc] rounded-xl p-4 text-center">
+                              <p className="text-[10px] font-label text-[#5e5e65] uppercase tracking-wide mb-1">{label}</p>
+                              <p className="text-2xl font-bold font-geist-mono text-primary">{value}</p>
+                            </div>
+                          ))}
+                        </div>
+                        <p className="mt-3 text-xs text-[#5e5e65] font-label">{MESA_DATA.medidas.nota_altura}</p>
+                      </CardContent>
+                    </Card>
+
+                    {/* Lista de materiales */}
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Lista de materiales</CardTitle>
+                        <CardDescription>Total estimado: <span className="font-geist-mono font-bold text-primary">${(MESA_DATA.costo_total_min/1000).toFixed(0)}k–${(MESA_DATA.costo_total_max/1000).toFixed(0)}k CLP</span> · Con vise madera: ${(MESA_DATA.costo_vise_madera.min/1000).toFixed(0)}k–${(MESA_DATA.costo_vise_madera.max/1000).toFixed(0)}k</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-sm border-collapse">
+                            <thead>
+                              <tr className="border-b border-[#eeedf7]">
+                                <th className="text-left py-2 px-3 text-[10px] font-label font-semibold text-[#5e5e65] uppercase">Material</th>
+                                <th className="text-center py-2 px-3 text-[10px] font-label font-semibold text-[#5e5e65] uppercase">Cant.</th>
+                                <th className="text-right py-2 px-3 text-[10px] font-label font-semibold text-[#5e5e65] uppercase">Total</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {MESA_DATA.materiales.map((mat: any, i: number) => (
+                                <tr key={i} className="border-b border-[#eeedf7] hover:bg-[#faf8ff]">
+                                  <td className="py-2 px-3 text-[#1a1b22]">{mat.item}</td>
+                                  <td className="py-2 px-3 text-center font-geist-mono text-[#5e5e65]">×{mat.cantidad}</td>
+                                  <td className="py-2 px-3 text-right font-geist-mono font-semibold text-primary">
+                                    ${(mat.total_min/1000).toFixed(0)}k–${(mat.total_max/1000).toFixed(0)}k
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                        {/* Opciones vise */}
+                        <div className="mt-4">
+                          <p className="text-xs font-semibold text-[#1a1b22] mb-2">Opciones tornillo de banco (vise)</p>
+                          <div className="grid sm:grid-cols-3 gap-2">
+                            {MESA_DATA.vise_opciones.map((v: any, i: number) => (
+                              <div key={i} className="p-3 rounded-lg bg-[#f4f3fc] border border-[rgb(188_203_185/0.18)]">
+                                <p className="text-xs text-[#1a1b22] font-semibold mb-1">{v.tipo}</p>
+                                <p className="font-geist-mono text-sm text-primary font-bold">${(v.precio_min/1000).toFixed(0)}k–${(v.precio_max/1000).toFixed(0)}k</p>
+                                {v.nota && <p className="text-[9px] text-[#5e5e65] font-label mt-1">{v.nota}</p>}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* Herramientas adicionales para construirla */}
+                    <Card>
+                      <CardHeader><CardTitle>Herramientas adicionales para construirla</CardTitle><CardDescription>Lo que falta — con lo que tienes cubres el 80%</CardDescription></CardHeader>
+                      <CardContent>
+                        <div className="space-y-2">
+                          {MESA_DATA.herramientas_adicionales_necesarias.map((h: any, i: number) => (
+                            <div key={i} className={`flex items-center justify-between p-3 rounded-lg border ${h.urgente ? 'bg-amber-50 border-amber-200' : 'bg-[#f4f3fc] border-[rgb(188_203_185/0.18)]'}`}>
+                              <div className="flex items-center gap-2">
+                                {h.urgente ? <AlertTriangle className="w-3.5 h-3.5 text-amber-600 shrink-0" /> : <Circle className="w-3.5 h-3.5 text-[#5e5e65] shrink-0" />}
+                                <span className="text-sm text-[#1a1b22]">{h.nombre}</span>
+                              </div>
+                              <span className="font-geist-mono text-sm font-semibold text-primary shrink-0 ml-3">${(h.precio_min/1000).toFixed(0)}k–${(h.precio_max/1000).toFixed(0)}k</span>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="mt-3 p-3 bg-primary/5 rounded-lg text-xs text-[#5e5e65] font-label">
+                          <span className="font-semibold text-primary">Bench dogs:</span> Imprimir en PETG con tu impresora 3D — diámetro 19mm, perforaciones cada 10cm. Costo: filamento solamente.
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                )}
+
+                {/* ── TAB: HERRAMIENTAS ────────────────────────── */}
+                {muebleTab === 'herramientas' && (
+                  <div className="space-y-4">
+                    {/* Existentes */}
+                    <Card>
+                      <CardHeader><CardTitle>Herramientas existentes</CardTitle><CardDescription>Ya tienes el 80% para empezar</CardDescription></CardHeader>
+                      <CardContent>
+                        <div className="flex flex-wrap gap-2">
+                          {HERR_DATA.existentes.map((h: any) => (
+                            <div key={h.nombre} className="flex items-center gap-2 bg-green-50 text-green-800 border border-green-200 px-3 py-2 rounded-xl text-sm font-label font-medium">
+                              <BadgeCheck className="w-3.5 h-3.5 shrink-0" />
+                              {h.nombre}
+                            </div>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* Por comprar — alta prioridad */}
+                    {(['alta', 'media', 'baja'] as const).map(prio => {
+                      const items = HERR_DATA.por_comprar.filter((h: any) => h.prioridad === prio);
+                      const colors = { alta: 'text-red-700 bg-red-50 border-red-200', media: 'text-amber-700 bg-amber-50 border-amber-200', baja: 'text-[#5e5e65] bg-[#f4f3fc] border-[rgb(188_203_185/0.18)]' };
+                      return (
+                        <Card key={prio}>
+                          <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                              <span className={`text-[10px] font-label font-bold px-2 py-0.5 rounded-full border ${colors[prio]}`}>prioridad {prio}</span>
+                              Herramientas por comprar
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="space-y-4">
+                              {items.map((h: any) => (
+                                <div key={h.id} className="p-4 rounded-xl border border-[rgb(188_203_185/0.18)] bg-[#faf8ff]">
+                                  <div className="flex items-start justify-between gap-2 mb-2">
+                                    <div>
+                                      <p className="font-semibold text-sm text-[#1a1b22]">{h.nombre}</p>
+                                      <p className="text-xs text-[#5e5e65] mt-0.5">{h.razon}</p>
+                                    </div>
+                                  </div>
+                                  <div className="flex flex-wrap gap-2">
+                                    {h.modelos.map((mod: any, i: number) => (
+                                      <div key={i} className="bg-white border border-[rgb(188_203_185/0.2)] rounded-lg px-3 py-2 text-xs">
+                                        <span className="font-semibold text-[#1a1b22]">{mod.marca} {mod.modelo}</span>
+                                        <span className="font-geist-mono text-primary ml-2">${(mod.precio_min/1000).toFixed(0)}k–${(mod.precio_max/1000).toFixed(0)}k</span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                  <p className="text-[10px] font-label text-primary mt-2">✓ {h.recomendada}</p>
+                                </div>
+                              ))}
+                            </div>
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
+
+                    {/* Accesorios */}
+                    <Card>
+                      <CardHeader><CardTitle>Accesorios esenciales</CardTitle></CardHeader>
+                      <CardContent>
+                        <div className="grid sm:grid-cols-2 gap-2">
+                          {HERR_DATA.accesorios.map((a: any, i: number) => (
+                            <div key={i} className={`flex items-center justify-between p-3 rounded-lg border ${a.esencial ? 'bg-[#f4f3fc] border-[rgb(188_203_185/0.18)]' : 'bg-white border-[rgb(188_203_185/0.12)]'}`}>
+                              <span className="text-sm text-[#1a1b22]">{a.nombre}</span>
+                              <span className="font-geist-mono text-sm text-primary font-semibold shrink-0 ml-3">${(a.precio_min/1000).toFixed(0)}k–${(a.precio_max/1000).toFixed(0)}k</span>
+                            </div>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                )}
+
+                {/* ── TAB: SKETCHUP & CNC ──────────────────────── */}
+                {muebleTab === 'sketchup' && (
+                  <div className="space-y-4">
+                    {/* Plugin esencial */}
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <BadgeCheck className="w-4 h-4 text-primary" />
+                          Plugin esencial: {SKETCHUP_DATA.plugin_esencial.nombre}
+                        </CardTitle>
+                        <CardDescription>{SKETCHUP_DATA.plugin_esencial.que_hace}</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex flex-wrap gap-3">
+                          <a href={SKETCHUP_DATA.plugin_esencial.url} target="_blank" rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-xl text-sm font-label font-semibold hover:bg-primary/90 transition-colors">
+                            <ExternalLink className="w-3.5 h-3.5" /> Instalar OpenCutList
+                          </a>
+                          <a href={SKETCHUP_DATA.plugin_esencial.sitio} target="_blank" rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 border border-primary text-primary px-4 py-2 rounded-xl text-sm font-label font-semibold hover:bg-primary/5 transition-colors">
+                            <Link className="w-3.5 h-3.5" /> opencutlist.org
+                          </a>
+                        </div>
+                        <p className="text-xs text-[#5e5e65] font-label mt-3">{SKETCHUP_DATA.plugin_esencial.compatibilidad}</p>
+                      </CardContent>
+                    </Card>
+
+                    {/* Flujo de trabajo */}
+                    <Card>
+                      <CardHeader><CardTitle>Flujo SketchUp → CNC</CardTitle><CardDescription>{SKETCHUP_DATA.flujo_trabajo}</CardDescription></CardHeader>
+                      <CardContent>
+                        <div className="space-y-2">
+                          {SKETCHUP_DATA.cnc_chile.flujo.map((paso: string, i: number) => (
+                            <div key={i} className="flex items-start gap-3 p-3 rounded-lg bg-[#f4f3fc] border border-[rgb(188_203_185/0.18)]">
+                              <span className="w-5 h-5 rounded-full bg-primary text-white text-[10px] font-bold font-geist-mono flex items-center justify-center shrink-0 mt-0.5">{i+1}</span>
+                              <p className="text-sm text-[#1a1b22]">{paso}</p>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs font-label text-amber-800">
+                          <strong>Sin SketchUp Pro:</strong> {SKETCHUP_DATA.cnc_chile.workaround_sin_pro}
+                        </div>
+                        {/* Precios CNC */}
+                        <div className="mt-4 grid sm:grid-cols-2 gap-2">
+                          {Object.entries(SKETCHUP_DATA.cnc_chile.precios_referencia).map(([key, val]: any) => (
+                            <div key={key} className="flex items-center justify-between p-3 rounded-lg bg-white border border-[rgb(188_203_185/0.18)]">
+                              <span className="text-xs text-[#5e5e65] font-label">{val.unidad}</span>
+                              <span className="font-geist-mono text-sm text-primary font-bold">${(val.min/1000).toFixed(0)}k–${(val.max/1000).toFixed(0)}k</span>
+                            </div>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* Fuentes de modelos */}
+                    <Card>
+                      <CardHeader><CardTitle>Fuentes de modelos .skp</CardTitle></CardHeader>
+                      <CardContent>
+                        <div className="space-y-2">
+                          {SKETCHUP_DATA.fuentes_modelos.map((f: any, i: number) => (
+                            <div key={i} className="flex items-start justify-between p-3 rounded-xl border border-[rgb(188_203_185/0.18)] bg-[#faf8ff] gap-3">
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <p className="font-semibold text-sm text-[#1a1b22]">{f.nombre}</p>
+                                  <span className={`text-[9px] font-label px-2 py-0.5 rounded-full ${f.costo === 'Gratuito' ? 'bg-green-50 text-green-700' : 'bg-amber-50 text-amber-700'}`}>{f.costo}</span>
+                                  {f.calidad && <span className="text-[9px] font-label text-[#5e5e65]">calidad {f.calidad}</span>}
+                                </div>
+                                <p className="text-xs text-[#5e5e65] mt-0.5">{f.descripcion}</p>
+                                {f.busquedas_utiles && (
+                                  <div className="flex flex-wrap gap-1 mt-1.5">
+                                    {f.busquedas_utiles.slice(0, 4).map((b: string) => (
+                                      <span key={b} className="text-[9px] font-label bg-white border border-[rgb(188_203_185/0.25)] text-[#5e5e65] px-1.5 py-0.5 rounded">{b}</span>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                              <a href={f.url.startsWith('http') ? f.url : '#'} target="_blank" rel="noopener noreferrer"
+                                className="shrink-0 text-primary hover:text-primary/80">
+                                <ExternalLink className="w-4 h-4" />
+                              </a>
+                            </div>
+                          ))}
+                        </div>
+                        {/* Comunidades */}
+                        <div className="mt-4">
+                          <p className="text-xs font-semibold text-[#1a1b22] mb-2">Comunidades y recursos</p>
+                          <div className="flex flex-wrap gap-2">
+                            {SKETCHUP_DATA.comunidades.map((c: any, i: number) => (
+                              <a key={i} href={c.url.startsWith('http') ? c.url : '#'} target="_blank" rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1.5 text-[10px] font-label bg-[#f4f3fc] border border-[rgb(188_203_185/0.2)] text-primary px-2 py-1 rounded-lg hover:bg-primary/5">
+                                <Link className="w-3 h-3" />{c.nombre}
+                              </a>
+                            ))}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                )}
+
+                {/* ── TAB: MATERIALES ──────────────────────────── */}
+                {muebleTab === 'materiales' && (
+                  <div className="space-y-4">
+                    {/* Pino estructural */}
+                    <Card>
+                      <CardHeader><CardTitle>Pino estructural — precios La Serena/Coquimbo</CardTitle><CardDescription>{MATERIALES_DATA.nota}</CardDescription></CardHeader>
+                      <CardContent>
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-sm border-collapse">
+                            <thead>
+                              <tr className="border-b border-[#eeedf7]">
+                                <th className="text-left py-2 px-3 text-[10px] font-label font-semibold text-[#5e5e65] uppercase">Dimensión</th>
+                                <th className="text-center py-2 px-3 text-[10px] font-label font-semibold text-[#5e5e65] uppercase">Largo</th>
+                                <th className="text-right py-2 px-3 text-[10px] font-label font-semibold text-[#5e5e65] uppercase">Precio</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {MATERIALES_DATA.pino_estructural.map((p: any, i: number) => (
+                                <tr key={i} className="border-b border-[#eeedf7] hover:bg-[#faf8ff]">
+                                  <td className="py-2 px-3 font-label text-[#1a1b22]">{p.dimension}</td>
+                                  <td className="py-2 px-3 text-center font-geist-mono text-[#5e5e65]">{p.largo_m}m</td>
+                                  <td className="py-2 px-3 text-right font-geist-mono font-semibold text-primary">${(p.precio_min/1000).toFixed(1)}k–${(p.precio_max/1000).toFixed(1)}k</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                        <p className="mt-3 text-[11px] text-amber-700 bg-amber-50 border border-amber-200 rounded-lg p-2 font-label">{MATERIALES_DATA.consejo_compra}</p>
+                      </CardContent>
+                    </Card>
+
+                    {/* Tableros */}
+                    <Card>
+                      <CardHeader><CardTitle>Tableros y paneles</CardTitle></CardHeader>
+                      <CardContent>
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-sm border-collapse">
+                            <thead>
+                              <tr className="border-b border-[#eeedf7]">
+                                <th className="text-left py-2 px-3 text-[10px] font-label font-semibold text-[#5e5e65] uppercase">Tipo</th>
+                                <th className="text-center py-2 px-3 text-[10px] font-label font-semibold text-[#5e5e65] uppercase hidden sm:table-cell">Dimensiones</th>
+                                <th className="text-right py-2 px-3 text-[10px] font-label font-semibold text-[#5e5e65] uppercase">Precio/lámina</th>
+                                <th className="text-right py-2 px-3 text-[10px] font-label font-semibold text-[#5e5e65] uppercase hidden md:table-cell">CLP/m²</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {MATERIALES_DATA.tableros.map((t: any, i: number) => (
+                                <tr key={i} className="border-b border-[#eeedf7] hover:bg-[#faf8ff]">
+                                  <td className="py-2 px-3 font-label text-[#1a1b22]">{t.tipo}</td>
+                                  <td className="py-2 px-3 text-center font-geist-mono text-[#5e5e65] text-xs hidden sm:table-cell">{t.dim}</td>
+                                  <td className="py-2 px-3 text-right font-geist-mono font-semibold text-primary">${(t.precio_min/1000).toFixed(0)}k–${(t.precio_max/1000).toFixed(0)}k</td>
+                                  <td className="py-2 px-3 text-right font-geist-mono text-xs text-[#5e5e65] hidden md:table-cell">~${Math.round(t.precio_min/t.m2/1000).toFixed(0)}k</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* Acabados */}
+                    <Card>
+                      <CardHeader><CardTitle>Acabados recomendados</CardTitle><CardDescription>Aceite + cera = diferenciador principal vs mueble de fábrica</CardDescription></CardHeader>
+                      <CardContent>
+                        <div className="grid sm:grid-cols-2 gap-2">
+                          {MATERIALES_DATA.acabados.filter((a: any) => a.recomendado).map((a: any, i: number) => (
+                            <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-primary/5 border border-primary/15">
+                              <div>
+                                <p className="text-sm text-[#1a1b22] font-semibold">{a.tipo}</p>
+                                {a.nota && <p className="text-[10px] text-[#5e5e65] font-label">{a.nota}</p>}
+                              </div>
+                              <span className="font-geist-mono text-sm text-primary font-bold shrink-0 ml-3">${(a.precio_min/1000).toFixed(0)}k–${(a.precio_max/1000).toFixed(0)}k</span>
+                            </div>
+                          ))}
+                        </div>
+                        {/* Proveedores */}
+                        <div className="mt-4">
+                          <p className="text-xs font-semibold text-[#1a1b22] mb-2">Proveedores en la región</p>
+                          <div className="grid sm:grid-cols-2 gap-2">
+                            {MATERIALES_DATA.proveedores_zona.map((p: any, i: number) => (
+                              <div key={i} className="flex items-start gap-2 p-3 rounded-lg bg-[#f4f3fc] border border-[rgb(188_203_185/0.18)]">
+                                <MapPin className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" />
+                                <div>
+                                  <p className="text-sm font-semibold text-[#1a1b22]">{p.nombre}</p>
+                                  <p className="text-[10px] text-[#5e5e65] font-label">{p.ciudad}{p.zona ? ` · ${p.zona}` : ''}{p.ventaja ? ` · ${p.ventaja}` : ''}</p>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                )}
+
+              </div>
+            );
+          })()}
 
           {/* ────────────────────────────────────────────────────
               CONTADOR
