@@ -1658,37 +1658,77 @@ export default function Dashboard() {
                       </CardContent>
                     </Card>
 
-                    {/* Lista de materiales */}
-                    <Card>
-                      <CardHeader>
-                        <CardTitle>Lista de materiales</CardTitle>
-                        <CardDescription>Total estimado: <span className="font-geist-mono font-bold text-primary">${(MESA_DATA.costo_total_min/1000).toFixed(0)}k–${(MESA_DATA.costo_total_max/1000).toFixed(0)}k CLP</span></CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="overflow-x-auto">
-                          <table className="w-full text-sm border-collapse">
-                            <thead>
-                              <tr className="border-b border-[#eeedf7]">
-                                <th className="text-left py-2 px-3 text-[10px] font-label font-semibold text-[#5e5e65] uppercase">Material</th>
-                                <th className="text-center py-2 px-3 text-[10px] font-label font-semibold text-[#5e5e65] uppercase">Cant.</th>
-                                <th className="text-right py-2 px-3 text-[10px] font-label font-semibold text-[#5e5e65] uppercase">Total</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {(MESA_DATA.materiales as any[]).map((mat, i) => (
-                                <tr key={i} className="border-b border-[#eeedf7] hover:bg-[#faf8ff]">
-                                  <td className="py-2 px-3 text-[#1a1b22] text-xs">{mat.item}</td>
-                                  <td className="py-2 px-3 text-center font-geist-mono text-[#5e5e65]">×{mat.cantidad}</td>
-                                  <td className="py-2 px-3 text-right font-geist-mono font-semibold text-primary whitespace-nowrap">
-                                    ${(mat.total_min/1000).toFixed(0)}k–${(mat.total_max/1000).toFixed(0)}k
-                                  </td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        </div>
-                      </CardContent>
-                    </Card>
+                    {/* Lista de materiales — precios desde materiales.json */}
+                    {(() => {
+                      // Lookup: material_ref → precio_sodimac por unidad
+                      const lookup: Record<string, number | null> = {
+                        pino_2x4:      (MATERIALES_DATA.pino_estructural as any[]).find(p => p.dimension?.includes('2"x4"'))?.precio_sodimac ?? null,
+                        pino_2x3:      (MATERIALES_DATA.pino_estructural as any[]).find(p => p.dimension?.includes('2"x3"'))?.precio_sodimac ?? null,
+                        terciado_18mm: (MATERIALES_DATA.tableros as any[]).find(t => t.tipo?.includes('18mm') && t.tipo?.includes('Plywood'))?.precio_sodimac ?? null,
+                        terciado_12mm: (MATERIALES_DATA.tableros as any[]).find(t => t.tipo?.includes('12mm') && t.tipo?.includes('Plywood'))?.precio_sodimac ?? null,
+                        mdf_18mm:      (MATERIALES_DATA.tableros as any[]).find(t => t.tipo?.includes('MDF 18mm'))?.precio_sodimac ?? null,
+                        rueda_200kg:   (MATERIALES_DATA.herrajes_y_fijaciones as any[]).find(h => h.tipo?.includes('200 kg'))?.precio_u_sodimac ?? null,
+                        tornillos_3in: (MATERIALES_DATA.herrajes_y_fijaciones as any[]).find(h => h.tipo?.includes('Tornillo'))?.precio_sodimac ?? null,
+                        cola_fria:     (MATERIALES_DATA.herrajes_y_fijaciones as any[]).find(h => h.tipo?.includes('Cola'))?.precio_sodimac ?? null,
+                      };
+                      const rows = (MESA_DATA.materiales as any[]).map(mat => {
+                        const precioU: number | null = mat.material_ref ? (lookup[mat.material_ref] ?? null) : (mat.precio_u_ref ?? null);
+                        const total: number | null = precioU !== null ? precioU * mat.cantidad : null;
+                        return { ...mat, precioU, total, confirmado: precioU !== null };
+                      });
+                      const totalConfirmado = rows.reduce((acc, r) => acc + (r.total ?? 0), 0);
+                      const pendientes = rows.filter(r => !r.confirmado).length;
+                      return (
+                        <Card>
+                          <CardHeader>
+                            <CardTitle>Lista de materiales</CardTitle>
+                            <CardDescription>
+                              Precios desde Sodimac (materiales.json) ·{' '}
+                              <span className="font-geist-mono font-bold text-primary">${totalConfirmado.toLocaleString('es-CL')}</span>
+                              {pendientes > 0 && <span className="text-amber-700"> + {pendientes} ítem(s) por verificar</span>}
+                            </CardDescription>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="overflow-x-auto">
+                              <table className="w-full text-sm border-collapse">
+                                <thead>
+                                  <tr className="border-b border-[#eeedf7]">
+                                    <th className="text-left py-2 px-3 text-[10px] font-label font-semibold text-[#5e5e65] uppercase">Material</th>
+                                    <th className="text-center py-2 px-3 text-[10px] font-label font-semibold text-[#5e5e65] uppercase">Cant.</th>
+                                    <th className="text-right py-2 px-3 text-[10px] font-label font-semibold text-[#5e5e65] uppercase">P/u</th>
+                                    <th className="text-right py-2 px-3 text-[10px] font-label font-semibold text-[#5e5e65] uppercase">Total</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {rows.map((mat, i) => (
+                                    <tr key={i} className={`border-b border-[#eeedf7] ${mat.confirmado ? 'bg-green-50/30' : 'hover:bg-[#faf8ff]'}`}>
+                                      <td className="py-2 px-3 text-[#1a1b22] text-xs">{mat.item}</td>
+                                      <td className="py-2 px-3 text-center font-geist-mono text-[#5e5e65] text-xs">×{mat.cantidad}</td>
+                                      <td className="py-2 px-3 text-right font-geist-mono text-xs text-[#5e5e65]">
+                                        {mat.precioU !== null ? `$${(mat.precioU as number).toLocaleString('es-CL')}` : '—'}
+                                      </td>
+                                      <td className="py-2 px-3 text-right font-geist-mono font-semibold whitespace-nowrap">
+                                        {mat.total !== null ? (
+                                          <span className="text-primary">${(mat.total as number).toLocaleString('es-CL')}</span>
+                                        ) : (
+                                          <span className="text-[10px] font-label text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded">verificar</span>
+                                        )}
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                                <tfoot>
+                                  <tr className="border-t-2 border-[#eeedf7]">
+                                    <td colSpan={3} className="py-2 px-3 text-xs font-semibold text-[#1a1b22]">Total confirmado Sodimac</td>
+                                    <td className="py-2 px-3 text-right font-geist-mono font-bold text-primary text-base">${totalConfirmado.toLocaleString('es-CL')}</td>
+                                  </tr>
+                                </tfoot>
+                              </table>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      );
+                    })()}
 
                     {/* Adaptaciones con impresora 3D */}
                     <Card>

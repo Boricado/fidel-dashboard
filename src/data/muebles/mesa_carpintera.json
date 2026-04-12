@@ -53,19 +53,17 @@
   },
 
   "materiales": [
-    { "item": "2x4 pino 3m (estructura base y patas)", "cantidad": 12, "precio_u_min": 7000, "precio_u_max": 10000, "total_min": 84000, "total_max": 120000 },
-    { "item": "2x3 pino 3m (refuerzos internos)", "cantidad": 4, "precio_u_min": 5500, "precio_u_max": 7500, "total_min": 22000, "total_max": 30000 },
-    { "item": "Plywood 18mm 1.22x2.44m (superficie superior)", "cantidad": 1, "precio_u_min": 28000, "precio_u_max": 38000, "total_min": 28000, "total_max": 38000 },
-    { "item": "MDF 18mm 1.83x2.44m (superficie superior opcional, más plana)", "cantidad": 1, "precio_u_min": 35000, "precio_u_max": 50000, "total_min": 35000, "total_max": 50000 },
-    { "item": "Plywood 12mm (estante inferior)", "cantidad": 1, "precio_u_min": 20000, "precio_u_max": 28000, "total_min": 20000, "total_max": 28000 },
-    { "item": "Ruedas giratorias 5\" con freno (x4)", "cantidad": 4, "precio_u_min": 5000, "precio_u_max": 10000, "total_min": 20000, "total_max": 40000 },
-    { "item": "Caja 2-gang + 4 enchufes + cable 2m (extensión empotrada)", "cantidad": 1, "precio_u_min": 12000, "precio_u_max": 20000, "total_min": 12000, "total_max": 20000 },
-    { "item": "Tornillos tirafondo 3\" caja 100 + 2.5\" caja 100", "cantidad": 2, "precio_u_min": 5500, "precio_u_max": 8000, "total_min": 11000, "total_max": 16000 },
-    { "item": "Cola fría 1L", "cantidad": 1, "precio_u_min": 4500, "precio_u_max": 6000, "total_min": 4500, "total_max": 6000 }
+    { "item": "2x4 pino seco 3.2m (estructura base y patas)", "cantidad": 12, "material_ref": "pino_2x4" },
+    { "item": "2x3 pino seco 3.2m (refuerzos internos)", "cantidad": 4, "material_ref": "pino_2x3" },
+    { "item": "Plywood 18mm 1.22x2.44m (superficie superior)", "cantidad": 1, "material_ref": "terciado_18mm" },
+    { "item": "MDF 18mm 1.52x2.44m (superficie superior — más plana)", "cantidad": 1, "material_ref": "mdf_18mm" },
+    { "item": "Plywood 12mm (estante inferior)", "cantidad": 1, "material_ref": "terciado_12mm" },
+    { "item": "Rueda giratoria con freno 200kg Fixser (×4)", "cantidad": 4, "material_ref": "rueda_200kg" },
+    { "item": "Caja 2-gang + 4 enchufes + cable 2m (extensión empotrada)", "cantidad": 1, "material_ref": null, "precio_u_ref": 16000 },
+    { "item": "Tornillos techo hexagonal 3\" caja 100u (×2)", "cantidad": 2, "material_ref": "tornillos_3in" },
+    { "item": "Cola fría profesional 1kg", "cantidad": 1, "material_ref": "cola_fria" }
   ],
-  "costo_total_min": 201500,
-  "costo_total_max": 312000,
-  "costo_vise_madera": { "min": 0, "max": 0, "nota": "Esta mesa no necesita vise — las sierras son las herramientas principales" },
+  "nota_costos": "Costos calculados en tiempo real desde materiales.json. Verde = precio Sodimac confirmado. Naranja = verificar.",
 
   "pasos_construccion": [
     {
