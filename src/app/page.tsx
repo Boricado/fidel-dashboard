@@ -1957,7 +1957,10 @@ export default function Dashboard() {
                   <div className="space-y-4">
                     {/* Pino estructural */}
                     <Card>
-                      <CardHeader><CardTitle>Pino estructural — precios La Serena/Coquimbo</CardTitle><CardDescription>{MATERIALES_DATA.nota}</CardDescription></CardHeader>
+                      <CardHeader>
+                        <CardTitle>Pino estructural — Sodimac</CardTitle>
+                        <CardDescription>{MATERIALES_DATA.nota}</CardDescription>
+                      </CardHeader>
                       <CardContent>
                         <div className="overflow-x-auto">
                           <table className="w-full text-sm border-collapse">
@@ -1965,15 +1968,28 @@ export default function Dashboard() {
                               <tr className="border-b border-[#eeedf7]">
                                 <th className="text-left py-2 px-3 text-[10px] font-label font-semibold text-[#5e5e65] uppercase">Dimensión</th>
                                 <th className="text-center py-2 px-3 text-[10px] font-label font-semibold text-[#5e5e65] uppercase">Largo</th>
-                                <th className="text-right py-2 px-3 text-[10px] font-label font-semibold text-[#5e5e65] uppercase">Precio</th>
+                                <th className="text-right py-2 px-3 text-[10px] font-label font-semibold text-[#5e5e65] uppercase">Precio Sodimac</th>
                               </tr>
                             </thead>
                             <tbody>
-                              {MATERIALES_DATA.pino_estructural.map((p: any, i: number) => (
-                                <tr key={i} className="border-b border-[#eeedf7] hover:bg-[#faf8ff]">
-                                  <td className="py-2 px-3 font-label text-[#1a1b22]">{p.dimension}</td>
+                              {(MATERIALES_DATA.pino_estructural as any[]).map((p, i) => (
+                                <tr key={i} className={`border-b border-[#eeedf7] ${p.precio_sodimac ? 'bg-green-50/40' : 'hover:bg-[#faf8ff]'}`}>
+                                  <td className="py-2 px-3 font-label text-[#1a1b22]">
+                                    {p.url_sodimac ? (
+                                      <a href={p.url_sodimac} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 hover:text-primary transition-colors">
+                                        {p.dimension}
+                                        <ExternalLink className="w-2.5 h-2.5 text-[#5e5e65]" />
+                                      </a>
+                                    ) : p.dimension}
+                                  </td>
                                   <td className="py-2 px-3 text-center font-geist-mono text-[#5e5e65]">{p.largo_m}m</td>
-                                  <td className="py-2 px-3 text-right font-geist-mono font-semibold text-primary">${(p.precio_min/1000).toFixed(1)}k–${(p.precio_max/1000).toFixed(1)}k</td>
+                                  <td className="py-2 px-3 text-right">
+                                    {p.precio_sodimac ? (
+                                      <span className="font-geist-mono font-bold text-primary">${(p.precio_sodimac as number).toLocaleString('es-CL')}</span>
+                                    ) : (
+                                      <span className="text-[10px] font-label text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded">verificar</span>
+                                    )}
+                                  </td>
                                 </tr>
                               ))}
                             </tbody>
@@ -1985,29 +2001,75 @@ export default function Dashboard() {
 
                     {/* Tableros */}
                     <Card>
-                      <CardHeader><CardTitle>Tableros y paneles</CardTitle></CardHeader>
+                      <CardHeader><CardTitle>Tableros y paneles — Sodimac</CardTitle></CardHeader>
                       <CardContent>
                         <div className="overflow-x-auto">
                           <table className="w-full text-sm border-collapse">
                             <thead>
                               <tr className="border-b border-[#eeedf7]">
                                 <th className="text-left py-2 px-3 text-[10px] font-label font-semibold text-[#5e5e65] uppercase">Tipo</th>
-                                <th className="text-center py-2 px-3 text-[10px] font-label font-semibold text-[#5e5e65] uppercase hidden sm:table-cell">Dimensiones</th>
-                                <th className="text-right py-2 px-3 text-[10px] font-label font-semibold text-[#5e5e65] uppercase">Precio/lámina</th>
-                                <th className="text-right py-2 px-3 text-[10px] font-label font-semibold text-[#5e5e65] uppercase hidden md:table-cell">CLP/m²</th>
+                                <th className="text-center py-2 px-3 text-[10px] font-label font-semibold text-[#5e5e65] uppercase hidden sm:table-cell">Dim.</th>
+                                <th className="text-right py-2 px-3 text-[10px] font-label font-semibold text-[#5e5e65] uppercase">Precio Sodimac</th>
                               </tr>
                             </thead>
                             <tbody>
-                              {MATERIALES_DATA.tableros.map((t: any, i: number) => (
-                                <tr key={i} className="border-b border-[#eeedf7] hover:bg-[#faf8ff]">
-                                  <td className="py-2 px-3 font-label text-[#1a1b22]">{t.tipo}</td>
+                              {(MATERIALES_DATA.tableros as any[]).map((t, i) => (
+                                <tr key={i} className={`border-b border-[#eeedf7] ${t.precio_sodimac ? 'bg-green-50/40' : 'hover:bg-[#faf8ff]'}`}>
+                                  <td className="py-2 px-3 font-label text-[#1a1b22]">
+                                    {t.url_sodimac ? (
+                                      <a href={t.url_sodimac} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 hover:text-primary transition-colors">
+                                        {t.tipo}
+                                        <ExternalLink className="w-2.5 h-2.5 text-[#5e5e65]" />
+                                      </a>
+                                    ) : t.tipo}
+                                    {t.nota_sodimac && <span className="block text-[9px] text-[#5e5e65] font-label mt-0.5">{t.nota_sodimac}</span>}
+                                  </td>
                                   <td className="py-2 px-3 text-center font-geist-mono text-[#5e5e65] text-xs hidden sm:table-cell">{t.dim}</td>
-                                  <td className="py-2 px-3 text-right font-geist-mono font-semibold text-primary">${(t.precio_min/1000).toFixed(0)}k–${(t.precio_max/1000).toFixed(0)}k</td>
-                                  <td className="py-2 px-3 text-right font-geist-mono text-xs text-[#5e5e65] hidden md:table-cell">~${Math.round(t.precio_min/t.m2/1000).toFixed(0)}k</td>
+                                  <td className="py-2 px-3 text-right">
+                                    {t.precio_sodimac ? (
+                                      <span className="font-geist-mono font-bold text-primary">${(t.precio_sodimac as number).toLocaleString('es-CL')}</span>
+                                    ) : (
+                                      <span className="text-[10px] font-label text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded">verificar</span>
+                                    )}
+                                  </td>
                                 </tr>
                               ))}
                             </tbody>
                           </table>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* Herrajes y fijaciones */}
+                    <Card>
+                      <CardHeader><CardTitle>Herrajes y fijaciones — Sodimac</CardTitle></CardHeader>
+                      <CardContent>
+                        <div className="space-y-2">
+                          {(MATERIALES_DATA.herrajes_y_fijaciones as any[]).map((h, i) => (
+                            <div key={i} className={`flex items-start justify-between gap-3 p-3 rounded-lg border ${h.precio_u_sodimac || h.precio_sodimac ? 'bg-green-50/40 border-green-200' : 'bg-[#f4f3fc] border-[rgb(188_203_185/0.18)]'}`}>
+                              <div className="flex-1 min-w-0">
+                                {h.url_sodimac ? (
+                                  <a href={h.url_sodimac} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-sm font-semibold text-[#1a1b22] hover:text-primary transition-colors">
+                                    {h.tipo}
+                                    <ExternalLink className="w-2.5 h-2.5 shrink-0" />
+                                  </a>
+                                ) : (
+                                  <p className="text-sm font-semibold text-[#1a1b22]">{h.tipo}</p>
+                                )}
+                                {h.nota && <p className="text-[10px] text-[#5e5e65] font-label mt-0.5">{h.nota}</p>}
+                              </div>
+                              <div className="shrink-0 text-right">
+                                {(h.precio_u_sodimac || h.precio_sodimac) ? (
+                                  <span className="font-geist-mono font-bold text-primary text-sm">
+                                    ${((h.precio_u_sodimac || h.precio_sodimac) as number).toLocaleString('es-CL')}
+                                    {h.precio_u_sodimac ? '/u' : ''}
+                                  </span>
+                                ) : (
+                                  <span className="text-[10px] font-label text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded">verificar</span>
+                                )}
+                              </div>
+                            </div>
+                          ))}
                         </div>
                       </CardContent>
                     </Card>
@@ -2017,7 +2079,7 @@ export default function Dashboard() {
                       <CardHeader><CardTitle>Acabados recomendados</CardTitle><CardDescription>Aceite + cera = diferenciador principal vs mueble de fábrica</CardDescription></CardHeader>
                       <CardContent>
                         <div className="grid sm:grid-cols-2 gap-2">
-                          {MATERIALES_DATA.acabados.filter((a: any) => a.recomendado).map((a: any, i: number) => (
+                          {(MATERIALES_DATA.acabados as any[]).filter((a) => a.recomendado).map((a, i) => (
                             <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-primary/5 border border-primary/15">
                               <div>
                                 <p className="text-sm text-[#1a1b22] font-semibold">{a.tipo}</p>
@@ -2031,7 +2093,7 @@ export default function Dashboard() {
                         <div className="mt-4">
                           <p className="text-xs font-semibold text-[#1a1b22] mb-2">Proveedores en la región</p>
                           <div className="grid sm:grid-cols-2 gap-2">
-                            {MATERIALES_DATA.proveedores_zona.map((p: any, i: number) => (
+                            {(MATERIALES_DATA.proveedores_zona as any[]).map((p, i) => (
                               <div key={i} className="flex items-start gap-2 p-3 rounded-lg bg-[#f4f3fc] border border-[rgb(188_203_185/0.18)]">
                                 <MapPin className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" />
                                 <div>
