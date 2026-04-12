@@ -1557,47 +1557,105 @@ export default function Dashboard() {
                 {/* ── TAB: MESA CARPINTERA ─────────────────────── */}
                 {muebleTab === 'mesa' && (
                   <div className="space-y-4">
-                    {/* Comparativa diseños */}
+
+                    {/* Hero diseño elegido */}
+                    <div className="bg-[#f4f3fc] rounded-xl p-5 border border-[rgb(188_203_185/0.18)] flex flex-col sm:flex-row gap-4 items-start">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-2">
+                          <BadgeCheck className="w-4 h-4 text-primary shrink-0" />
+                          <p className="font-semibold text-[#1a1b22]">{MESA_DATA.diseno_recomendado}</p>
+                        </div>
+                        <p className="text-sm text-[#5e5e65] leading-relaxed mb-3">{MESA_DATA.razon}</p>
+                        <div className="flex flex-wrap gap-2">
+                          {(MESA_DATA.caracteristicas_clave as string[]).map((c, i) => (
+                            <span key={i} className="text-[10px] font-label bg-white border border-[rgb(188_203_185/0.25)] text-[#5e5e65] px-2 py-1 rounded-lg">{c}</span>
+                          ))}
+                        </div>
+                      </div>
+                      <a href={MESA_DATA.referencia} target="_blank" rel="noopener noreferrer"
+                        className="shrink-0 inline-flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-xl text-sm font-label font-semibold hover:bg-primary/90 transition-colors">
+                        <ExternalLink className="w-3.5 h-3.5" /> Ver en Instructables
+                      </a>
+                    </div>
+
+                    {/* Medidas */}
                     <Card>
-                      <CardHeader>
-                        <CardTitle>Comparativa de diseños</CardTitle>
-                        <CardDescription>Recomendado: <strong>{MESA_DATA.diseno_recomendado}</strong> — {MESA_DATA.razon}</CardDescription>
-                      </CardHeader>
+                      <CardHeader><CardTitle>Dimensiones</CardTitle></CardHeader>
                       <CardContent>
+                        <div className="grid grid-cols-3 gap-3">
+                          {[
+                            { label: 'Largo', value: `${MESA_DATA.medidas.largo_m}m`, sub: MESA_DATA.medidas.largo_ft },
+                            { label: 'Ancho', value: `${MESA_DATA.medidas.ancho_m}m`, sub: MESA_DATA.medidas.ancho_ft },
+                            { label: 'Alto estructura', value: `${MESA_DATA.medidas.alto_m}m`, sub: MESA_DATA.medidas.alto_ft },
+                          ].map(({ label, value, sub }) => (
+                            <div key={label} className="bg-[#f4f3fc] rounded-xl p-4 text-center">
+                              <p className="text-[10px] font-label text-[#5e5e65] uppercase tracking-wide mb-1">{label}</p>
+                              <p className="text-2xl font-bold font-geist-mono text-primary">{value}</p>
+                              <p className="text-[10px] font-label text-[#5e5e65]">{sub}</p>
+                            </div>
+                          ))}
+                        </div>
+                        <p className="mt-3 text-xs text-[#5e5e65] font-label bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">{MESA_DATA.medidas.nota_altura}</p>
+                      </CardContent>
+                    </Card>
+
+                    {/* Zonas de la mesa */}
+                    <Card>
+                      <CardHeader><CardTitle>Zonas de trabajo</CardTitle><CardDescription>Distribución del espacio en los 183cm de largo</CardDescription></CardHeader>
+                      <CardContent>
+                        {/* Diagrama visual simple */}
+                        <div className="flex gap-1 mb-4 h-16 rounded-xl overflow-hidden border border-[rgb(188_203_185/0.25)]">
+                          <div className="bg-primary/10 border-r border-primary/20 flex items-center justify-center text-center p-2" style={{width:'15%'}}>
+                            <p className="text-[9px] font-label text-primary font-semibold leading-tight">Trabajo libre</p>
+                          </div>
+                          <div className="bg-amber-50 border-r border-amber-200 flex items-center justify-center text-center p-2" style={{width:'33%'}}>
+                            <p className="text-[9px] font-label text-amber-800 font-semibold leading-tight">Sierra de inglete<br/>~60cm</p>
+                          </div>
+                          <div className="bg-blue-50 border-r border-blue-200 flex items-center justify-center text-center p-2" style={{width:'36%'}}>
+                            <p className="text-[9px] font-label text-blue-800 font-semibold leading-tight">Table saw / trabajo<br/>~65cm</p>
+                          </div>
+                          <div className="bg-primary/10 flex items-center justify-center text-center p-2" style={{width:'16%'}}>
+                            <p className="text-[9px] font-label text-primary font-semibold leading-tight">Trabajo libre</p>
+                          </div>
+                        </div>
                         <div className="grid sm:grid-cols-3 gap-3">
-                          {MESA_DATA.comparativa.map((d: any) => (
-                            <div key={d.tipo} className={`p-4 rounded-xl border ${d.recomendada ? 'border-primary bg-primary/5' : 'border-[rgb(188_203_185/0.18)] bg-[#faf8ff]'}`}>
-                              <div className="flex items-center gap-2 mb-2">
-                                <p className="font-semibold text-sm text-[#1a1b22]">{d.tipo}</p>
-                                {d.recomendada && <BadgeCheck className="w-4 h-4 text-primary" />}
-                              </div>
-                              <p className="text-[10px] font-label text-[#5e5e65] mb-2">Dificultad: <span className="text-[#1a1b22] font-semibold">{d.dificultad}</span></p>
-                              <p className="text-lg font-bold font-geist-mono text-primary">${(d.costo_min/1000).toFixed(0)}k–${(d.costo_max/1000).toFixed(0)}k</p>
-                              <p className="text-[9px] font-label text-[#5e5e65]">{d.nota}</p>
+                          {(MESA_DATA.estructura.zonas as any[]).map((z, i) => (
+                            <div key={i} className="p-3 rounded-xl bg-[#f4f3fc] border border-[rgb(188_203_185/0.18)]">
+                              <p className="font-semibold text-sm text-[#1a1b22] mb-1">{z.nombre}</p>
+                              <p className="text-[10px] text-[#5e5e65] font-label leading-snug">{z.descripcion}</p>
+                              {z.ancho_aprox_cm && <p className="text-[10px] font-geist-mono text-primary mt-1">~{z.ancho_aprox_cm}×{z.profundidad_aprox_cm}cm</p>}
                             </div>
                           ))}
                         </div>
                       </CardContent>
                     </Card>
 
-                    {/* Medidas */}
+                    {/* Pasos de construcción */}
                     <Card>
-                      <CardHeader><CardTitle>Medidas estándar</CardTitle></CardHeader>
+                      <CardHeader>
+                        <CardTitle>Pasos de construcción</CardTitle>
+                        <CardDescription>7 pasos — {MESA_DATA.autor_original}</CardDescription>
+                      </CardHeader>
                       <CardContent>
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                          {[
-                            { label: 'Largo', value: `${MESA_DATA.medidas.largo_m}m` },
-                            { label: 'Ancho', value: `${MESA_DATA.medidas.ancho_m}m` },
-                            { label: 'Alto', value: `${MESA_DATA.medidas.alto_m}m` },
-                            { label: 'Espesor tablero', value: `${MESA_DATA.medidas.espesor_tablero_cm}cm` },
-                          ].map(({ label, value }) => (
-                            <div key={label} className="bg-[#f4f3fc] rounded-xl p-4 text-center">
-                              <p className="text-[10px] font-label text-[#5e5e65] uppercase tracking-wide mb-1">{label}</p>
-                              <p className="text-2xl font-bold font-geist-mono text-primary">{value}</p>
+                        <div className="space-y-3">
+                          {(MESA_DATA.pasos_construccion as any[]).map((p) => (
+                            <div key={p.paso} className="p-4 rounded-xl border border-[rgb(188_203_185/0.18)] bg-[#faf8ff]">
+                              <div className="flex items-start gap-3">
+                                <span className="w-7 h-7 rounded-lg bg-primary text-white text-xs font-bold font-geist-mono flex items-center justify-center shrink-0">{p.paso}</span>
+                                <div className="flex-1 min-w-0">
+                                  <p className="font-semibold text-sm text-[#1a1b22] mb-1">{p.titulo}</p>
+                                  <p className="text-xs text-[#5e5e65] leading-relaxed mb-2">{p.descripcion}</p>
+                                  <div className="flex flex-wrap gap-1 mb-2">
+                                    {p.herramientas.map((h: string) => (
+                                      <span key={h} className="text-[9px] font-label bg-white border border-[rgb(188_203_185/0.2)] text-[#5e5e65] px-1.5 py-0.5 rounded">{h}</span>
+                                    ))}
+                                  </div>
+                                  <p className="text-[10px] font-label text-primary bg-primary/5 px-2 py-1 rounded-lg">💡 {p.tips}</p>
+                                </div>
+                              </div>
                             </div>
                           ))}
                         </div>
-                        <p className="mt-3 text-xs text-[#5e5e65] font-label">{MESA_DATA.medidas.nota_altura}</p>
                       </CardContent>
                     </Card>
 
@@ -1605,7 +1663,7 @@ export default function Dashboard() {
                     <Card>
                       <CardHeader>
                         <CardTitle>Lista de materiales</CardTitle>
-                        <CardDescription>Total estimado: <span className="font-geist-mono font-bold text-primary">${(MESA_DATA.costo_total_min/1000).toFixed(0)}k–${(MESA_DATA.costo_total_max/1000).toFixed(0)}k CLP</span> · Con vise madera: ${(MESA_DATA.costo_vise_madera.min/1000).toFixed(0)}k–${(MESA_DATA.costo_vise_madera.max/1000).toFixed(0)}k</CardDescription>
+                        <CardDescription>Total estimado: <span className="font-geist-mono font-bold text-primary">${(MESA_DATA.costo_total_min/1000).toFixed(0)}k–${(MESA_DATA.costo_total_max/1000).toFixed(0)}k CLP</span></CardDescription>
                       </CardHeader>
                       <CardContent>
                         <div className="overflow-x-auto">
@@ -1618,11 +1676,11 @@ export default function Dashboard() {
                               </tr>
                             </thead>
                             <tbody>
-                              {MESA_DATA.materiales.map((mat: any, i: number) => (
+                              {(MESA_DATA.materiales as any[]).map((mat, i) => (
                                 <tr key={i} className="border-b border-[#eeedf7] hover:bg-[#faf8ff]">
-                                  <td className="py-2 px-3 text-[#1a1b22]">{mat.item}</td>
+                                  <td className="py-2 px-3 text-[#1a1b22] text-xs">{mat.item}</td>
                                   <td className="py-2 px-3 text-center font-geist-mono text-[#5e5e65]">×{mat.cantidad}</td>
-                                  <td className="py-2 px-3 text-right font-geist-mono font-semibold text-primary">
+                                  <td className="py-2 px-3 text-right font-geist-mono font-semibold text-primary whitespace-nowrap">
                                     ${(mat.total_min/1000).toFixed(0)}k–${(mat.total_max/1000).toFixed(0)}k
                                   </td>
                                 </tr>
@@ -1630,28 +1688,30 @@ export default function Dashboard() {
                             </tbody>
                           </table>
                         </div>
-                        {/* Opciones vise */}
-                        <div className="mt-4">
-                          <p className="text-xs font-semibold text-[#1a1b22] mb-2">Opciones tornillo de banco (vise)</p>
-                          <div className="grid sm:grid-cols-3 gap-2">
-                            {MESA_DATA.vise_opciones.map((v: any, i: number) => (
-                              <div key={i} className="p-3 rounded-lg bg-[#f4f3fc] border border-[rgb(188_203_185/0.18)]">
-                                <p className="text-xs text-[#1a1b22] font-semibold mb-1">{v.tipo}</p>
-                                <p className="font-geist-mono text-sm text-primary font-bold">${(v.precio_min/1000).toFixed(0)}k–${(v.precio_max/1000).toFixed(0)}k</p>
-                                {v.nota && <p className="text-[9px] text-[#5e5e65] font-label mt-1">{v.nota}</p>}
-                              </div>
-                            ))}
-                          </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* Adaptaciones con impresora 3D */}
+                    <Card>
+                      <CardHeader><CardTitle>Adaptaciones con tu impresora 3D</CardTitle><CardDescription>Extras que puedes agregar sin costo</CardDescription></CardHeader>
+                      <CardContent>
+                        <div className="grid sm:grid-cols-2 gap-2">
+                          {(MESA_DATA.adaptaciones_para_ti as string[]).map((a, i) => (
+                            <div key={i} className="flex items-start gap-2 p-3 rounded-lg bg-primary/5 border border-primary/15">
+                              <span className="text-primary mt-0.5 shrink-0 text-sm">🖨</span>
+                              <p className="text-xs text-[#1a1b22]">{a}</p>
+                            </div>
+                          ))}
                         </div>
                       </CardContent>
                     </Card>
 
-                    {/* Herramientas adicionales para construirla */}
+                    {/* Herramientas adicionales */}
                     <Card>
-                      <CardHeader><CardTitle>Herramientas adicionales para construirla</CardTitle><CardDescription>Lo que falta — con lo que tienes cubres el 80%</CardDescription></CardHeader>
+                      <CardHeader><CardTitle>Herramientas adicionales para construirla</CardTitle></CardHeader>
                       <CardContent>
                         <div className="space-y-2">
-                          {MESA_DATA.herramientas_adicionales_necesarias.map((h: any, i: number) => (
+                          {(MESA_DATA.herramientas_adicionales_necesarias as any[]).map((h, i) => (
                             <div key={i} className={`flex items-center justify-between p-3 rounded-lg border ${h.urgente ? 'bg-amber-50 border-amber-200' : 'bg-[#f4f3fc] border-[rgb(188_203_185/0.18)]'}`}>
                               <div className="flex items-center gap-2">
                                 {h.urgente ? <AlertTriangle className="w-3.5 h-3.5 text-amber-600 shrink-0" /> : <Circle className="w-3.5 h-3.5 text-[#5e5e65] shrink-0" />}
@@ -1660,9 +1720,6 @@ export default function Dashboard() {
                               <span className="font-geist-mono text-sm font-semibold text-primary shrink-0 ml-3">${(h.precio_min/1000).toFixed(0)}k–${(h.precio_max/1000).toFixed(0)}k</span>
                             </div>
                           ))}
-                        </div>
-                        <div className="mt-3 p-3 bg-primary/5 rounded-lg text-xs text-[#5e5e65] font-label">
-                          <span className="font-semibold text-primary">Bench dogs:</span> Imprimir en PETG con tu impresora 3D — diámetro 19mm, perforaciones cada 10cm. Costo: filamento solamente.
                         </div>
                       </CardContent>
                     </Card>

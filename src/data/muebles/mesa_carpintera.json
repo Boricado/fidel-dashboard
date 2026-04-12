@@ -1,44 +1,139 @@
 {
-  "diseno_recomendado": "Nicholson modificada",
-  "razon": "Equilibrio ideal: construible con tus herramientas actuales, superficie suficiente, vise funcional, sin maderas macizas caras como la Roubo.",
+  "diseno_recomendado": "Mobile Workbench — Mesa rodante con sierra de inglete integrada",
+  "referencia": "https://www.instructables.com/Mobile-Workbench-With-Built-in-Table-Miter-Saws/",
+  "autor_original": "beerdidtrev (Instructables, nov 2016)",
+  "razon": "Mesa rodante que integra la sierra de inglete al nivel de la superficie + espacio para sierra de mesa. Mucho más funcional que una mesa estática para taller pequeño: se empuja afuera cuando se usa, se guarda contra la pared.",
+
   "medidas": {
-    "largo_m": 1.9,
-    "ancho_m": 0.62,
-    "alto_m": 0.88,
-    "espesor_tablero_cm": 7,
-    "nota_altura": "Codo doblado + 2-3 cm hacia abajo según tu estatura"
+    "largo_m": 1.83,
+    "ancho_m": 0.91,
+    "alto_m": 0.76,
+    "nota_altura": "76cm (30\") — más baja que mesa estándar porque las sierras tienen su propia altura de mesa. Con ruedas de 5\" queda ~89cm total.",
+    "largo_ft": "6'",
+    "ancho_ft": "3'",
+    "alto_ft": "30\""
   },
+
+  "caracteristicas_clave": [
+    "Ruedas giratorias 5\" (125mm) — se mueve fácil solo o hacia afuera del taller",
+    "Sierra de inglete integrada al ras de la superficie de trabajo",
+    "Espacio dedicado para sierra de mesa (table saw) al mismo nivel",
+    "Toma corriente 2-gang (4 enchufes) montada en el frente — todo siempre enchufado",
+    "Estante inferior de almacenamiento con plywood",
+    "Superficie de trabajo en los laterales de las sierras"
+  ],
+
   "comparativa": [
-    { "tipo": "Roubo", "dificultad": "Alta", "costo_min": 150000, "costo_max": 200000, "recomendada": false, "nota": "Excesiva para taller pequeño" },
-    { "tipo": "Nicholson", "dificultad": "Media", "costo_min": 80000, "costo_max": 120000, "recomendada": true, "nota": "IDEAL — equilibrio costo/funcionalidad" },
-    { "tipo": "Básica europea", "dificultad": "Baja", "costo_min": 50000, "costo_max": 80000, "recomendada": false, "nota": "Suficiente si el espacio es muy reducido" }
+    { "tipo": "Mesa Roubo (tradicional)", "dificultad": "Alta", "costo_min": 150000, "costo_max": 200000, "recomendada": false, "nota": "Excelente pero estática y costosa" },
+    { "tipo": "Mesa Nicholson", "dificultad": "Media", "costo_min": 80000, "costo_max": 120000, "recomendada": false, "nota": "Funcional pero no integra herramientas" },
+    { "tipo": "Mobile Workbench (esta)", "dificultad": "Media", "costo_min": 120000, "costo_max": 200000, "recomendada": true, "nota": "IDEAL — integra sierra inglete + tabla saw + ruedas + enchufes" }
   ],
-  "materiales": [
-    { "item": "Pino 2\"x6\"x2.1m (tablero top)", "cantidad": 4, "precio_u_min": 6500, "precio_u_max": 8000, "total_min": 26000, "total_max": 32000 },
-    { "item": "Pino 2\"x4\"x3m (estructura)", "cantidad": 8, "precio_u_min": 4500, "precio_u_max": 5500, "total_min": 36000, "total_max": 44000 },
-    { "item": "Plywood 18mm 1.22x2.44m (bandeja inferior)", "cantidad": 1, "precio_u_min": 28000, "precio_u_max": 38000, "total_min": 28000, "total_max": 38000 },
-    { "item": "Tornillo de banco metálico básico", "cantidad": 1, "precio_u_min": 35000, "precio_u_max": 55000, "total_min": 35000, "total_max": 55000 },
-    { "item": "Cola fría + tornillos + herrajes", "cantidad": 1, "precio_u_min": 18000, "precio_u_max": 25000, "total_min": 18000, "total_max": 25000 },
-    { "item": "Lija + acabado", "cantidad": 1, "precio_u_min": 5000, "precio_u_max": 8000, "total_min": 5000, "total_max": 8000 }
-  ],
-  "costo_total_min": 148000,
-  "costo_total_max": 202000,
-  "costo_vise_madera": { "min": 90000, "max": 130000, "nota": "Con vise de madera hecho a mano + tornillo trapecial $8.000-15.000 CLP" },
-  "vise_opciones": [
-    { "tipo": "Metálico importado (Record/Irwin)", "precio_min": 35000, "precio_max": 80000 },
-    { "tipo": "Vise de madera + tornillo trapecial", "precio_min": 8000, "precio_max": 15000 },
-    { "tipo": "Cuerpo impreso en 3D + tornillo trapecial", "precio_min": 8000, "precio_max": 16000, "nota": "Imprime estructura, compra solo el tornillo" }
-  ],
-  "bench_dogs": {
-    "material": "PETG (uso intensivo) o PLA para pruebas",
-    "costo_filamento": "casi cero con tu impresora",
-    "diametro_mm": 19,
-    "separacion_cm": 10
+
+  "estructura": {
+    "descripcion": "Marco base de 2x4 con patas, tablero superior MDF/plywood, rebaje para encajar sierras al ras, estante inferior, ruedas con freno.",
+    "zonas": [
+      {
+        "nombre": "Zona sierra de inglete",
+        "descripcion": "Receso en la superficie al tamaño exacto de tu sierra. La mesa de la sierra queda al ras de la superficie de trabajo — puedes apoyar piezas largas en ambos lados.",
+        "ancho_aprox_cm": 60,
+        "profundidad_aprox_cm": 50
+      },
+      {
+        "nombre": "Zona tabla saw / sierra circular mesa",
+        "descripcion": "Receso o soporte ajustable para sierra de mesa. Alternativamente: superficie de trabajo plana si no tienes table saw aún.",
+        "ancho_aprox_cm": 65,
+        "profundidad_aprox_cm": 55
+      },
+      {
+        "nombre": "Zona trabajo libre",
+        "descripcion": "Superficie restante para apoyar piezas, ensamblar, etc. Ambos lados de las sierras.",
+        "nota": "Con 183cm de largo hay suficiente espacio en los costados de las sierras"
+      }
+    ]
   },
+
+  "materiales": [
+    { "item": "2x4 pino 3m (estructura base y patas)", "cantidad": 12, "precio_u_min": 7000, "precio_u_max": 10000, "total_min": 84000, "total_max": 120000 },
+    { "item": "2x3 pino 3m (refuerzos internos)", "cantidad": 4, "precio_u_min": 5500, "precio_u_max": 7500, "total_min": 22000, "total_max": 30000 },
+    { "item": "Plywood 18mm 1.22x2.44m (superficie superior)", "cantidad": 1, "precio_u_min": 28000, "precio_u_max": 38000, "total_min": 28000, "total_max": 38000 },
+    { "item": "MDF 18mm 1.83x2.44m (superficie superior opcional, más plana)", "cantidad": 1, "precio_u_min": 35000, "precio_u_max": 50000, "total_min": 35000, "total_max": 50000 },
+    { "item": "Plywood 12mm (estante inferior)", "cantidad": 1, "precio_u_min": 20000, "precio_u_max": 28000, "total_min": 20000, "total_max": 28000 },
+    { "item": "Ruedas giratorias 5\" con freno (x4)", "cantidad": 4, "precio_u_min": 5000, "precio_u_max": 10000, "total_min": 20000, "total_max": 40000 },
+    { "item": "Caja 2-gang + 4 enchufes + cable 2m (extensión empotrada)", "cantidad": 1, "precio_u_min": 12000, "precio_u_max": 20000, "total_min": 12000, "total_max": 20000 },
+    { "item": "Tornillos tirafondo 3\" caja 100 + 2.5\" caja 100", "cantidad": 2, "precio_u_min": 5500, "precio_u_max": 8000, "total_min": 11000, "total_max": 16000 },
+    { "item": "Cola fría 1L", "cantidad": 1, "precio_u_min": 4500, "precio_u_max": 6000, "total_min": 4500, "total_max": 6000 }
+  ],
+  "costo_total_min": 201500,
+  "costo_total_max": 312000,
+  "costo_vise_madera": { "min": 0, "max": 0, "nota": "Esta mesa no necesita vise — las sierras son las herramientas principales" },
+
+  "pasos_construccion": [
+    {
+      "paso": 1,
+      "titulo": "Marco base y patas",
+      "descripcion": "Cortar 4 patas de 2x4 a 76cm (30\"). Armar 2 marcos rectangulares de 183x91cm con 2x4: un marco superior y uno inferior separados por las patas. Tornillos tirafondo 3\" en cada unión. Verificar que queda perfectamente cuadrado con diagonal igual.",
+      "herramientas": ["sierra circular o sierra inglete", "taladro", "escuadra", "sargentos"],
+      "tips": "Usa el piso plano para ensamblar — garantiza que no quede chueca. Verifica diagonal antes de apretar definitivo."
+    },
+    {
+      "paso": 2,
+      "titulo": "Refuerzos internos y soporte para sierras",
+      "descripcion": "Añadir travesaños de 2x4 o 2x3 donde irán apoyadas las sierras. El soporte de la sierra de inglete debe quedar a la altura exacta para que su superficie quede al ras del tablero superior. Medir la altura de tu sierra específica antes de cortar.",
+      "herramientas": ["sierra circular", "taladro", "cinta métrica", "nivel"],
+      "tips": "CRÍTICO: Mide la altura de tu sierra de inglete desde la base hasta la superficie de corte. El soporte interno debe compensar exactamente esa diferencia con el tablero superior."
+    },
+    {
+      "paso": 3,
+      "titulo": "Instalar ruedas",
+      "descripcion": "Atornillar las 4 ruedas giratorias (5\") en las esquinas inferiores del marco base. Usar pernos pasantes si la carga será alta. Verificar que las 4 rueden libremente y que la mesa quede nivelada.",
+      "herramientas": ["taladro", "llave"],
+      "tips": "Consigue ruedas con freno — al menos 2 deben tener freno para fijar la mesa mientras trabajas. Busca en ferreterías industriales, más baratas que Sodimac."
+    },
+    {
+      "paso": 4,
+      "titulo": "Tablero superior con receso para sierras",
+      "descripcion": "Cortar el tablero superior de plywood/MDF 18mm al tamaño del marco (183x91cm). Marcar y cortar los recesos para cada sierra. El receso debe ser exactamente el tamaño de la base de cada sierra. Fijar el tablero al marco con tornillos y cola.",
+      "herramientas": ["sierra circular", "sierra de calar (jigsaw)", "taladro", "escuadra"],
+      "tips": "Usa sierra de calar para los recesos interiores. Empieza haciendo un agujero piloto con broca grande para introducir la hoja. Mide 3 veces antes de cortar."
+    },
+    {
+      "paso": 5,
+      "titulo": "Estante inferior",
+      "descripcion": "Cortar plywood 12mm o 1/2\" para el estante inferior. Puede ser una sola pieza o dividida en secciones. Fijar con tornillos a los travesaños del marco inferior.",
+      "herramientas": ["sierra circular", "taladro"],
+      "tips": "Deja espacio entre el borde y la pata para meter las manos al cargar la mesa. El estante es ideal para almacenar tableros, listones y herramientas de mano."
+    },
+    {
+      "paso": 6,
+      "titulo": "Instalación eléctrica",
+      "descripcion": "Montar caja 2-gang con 4 enchufes en el frente de la mesa (zona accesible). Conectar a un cable de extensión industrial que sale por la parte trasera. Así ambas sierras quedan siempre enchufadas y solo desenchufas la extensión.",
+      "herramientas": ["taladro", "destornillador", "cuchilla pelacables"],
+      "tips": "IMPORTANTE: Usa cable de al menos 2.5mm² para aguantar la carga de ambas sierras. Contrata un electricista si no tienes experiencia — las sierras consumen mucho amperaje."
+    },
+    {
+      "paso": 7,
+      "titulo": "Ajuste fino y acabado",
+      "descripcion": "Verificar que la superficie de la sierra de inglete queda perfectamente al ras del tablero. Lija todos los bordes expuestos. Opcional: barniz o aceite al tablero superior para protegerlo. Colocar la sierra de inglete en su receso y hacer un corte de prueba.",
+      "herramientas": ["lijadora orbital", "cepillo de mano (para pequeños ajustes de altura)"],
+      "tips": "Si la sierra queda muy alta: cepilla o lija el soporte interno. Si queda muy baja: agrega una lámina de plywood delgada bajo la sierra. Los calzos de 3mm impresos en 3D son perfectos para ajuste fino de altura."
+    }
+  ],
+
+  "adaptaciones_para_ti": [
+    "Bench dogs impresos en 3D: agrega fila de perforaciones de 19mm en el tablero libre para sujetar piezas",
+    "Soportes laterales abatibles: agrega tablas plegables a cada lado para apoyar piezas largas al serruchar",
+    "Calzos de nivelación 3D: imprime cuñas ajustables para que la sierra quede exactamente al ras",
+    "Guías de stop block: ranuras en T (aluminio) en el frente de la sierra de inglete para repetir cortes"
+  ],
+
+  "vise_opciones": [
+    { "tipo": "No aplica — esta mesa usa las sierras como herramienta principal", "precio_min": 0, "precio_max": 0, "nota": "Si necesitas sujeción, agrega un vise de mano al costado libre del tablero" }
+  ],
+
   "herramientas_adicionales_necesarias": [
-    { "nombre": "Escuadra de carpintero 300mm", "precio_min": 8000, "precio_max": 15000, "urgente": true },
-    { "nombre": "Cepillo de mano #4 o #5 (aplanar uniones tablero)", "precio_min": 18000, "precio_max": 35000, "urgente": true },
-    { "nombre": "Broca Forstner 19mm (perforaciones bench dogs)", "precio_min": 8000, "precio_max": 15000, "urgente": true },
-    { "nombre": "Serrucho de costilla o japonesa (cortes detalle)", "precio_min": 12000, "precio_max": 25000, "urgente": false }
+    { "nombre": "Sierra de calar (jigsaw) — para cortar recesos de las sierras en el tablero", "precio_min": 35000, "precio_max": 80000, "urgente": true },
+    { "nombre": "Nivel de burbuja 60cm", "precio_min": 8000, "precio_max": 18000, "urgente": true },
+    { "nombre": "Escuadra combinada 300mm", "precio_min": 8000, "precio_max": 15000, "urgente": true },
+    { "nombre": "Broca Forstner 19mm (bench dogs)", "precio_min": 8000, "precio_max": 15000, "urgente": false }
   ]
 }
