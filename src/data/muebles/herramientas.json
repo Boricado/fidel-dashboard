@@ -1,4 +1,6 @@
 {
+  "nota_precios": "Precios verificados directamente en tienda o sitio web. Formato CLP chileno. Marca 'confirmado' = precio real scrapeado. 'verificar' = ir a sodimac.cl o tienda.",
+
   "existentes": [
     { "nombre": "Sierra circular manual", "estado": "ok" },
     { "nombre": "Sargentos (varios)", "estado": "ok" },
@@ -6,97 +8,106 @@
     { "nombre": "Galletera (biscuit joiner)", "estado": "ok" },
     { "nombre": "Impresora 3D", "estado": "ok" }
   ],
-  "por_comprar": [
+
+  "seleccionadas": [
     {
       "id": 1,
-      "nombre": "Sierra de inglete deslizante 10\"",
-      "prioridad": "alta",
-      "razon": "70% de cortes en serie son angulares/largo. Más segura que table saw para operar solo.",
-      "modelos": [
-        { "marca": "Dewalt", "modelo": "DWS779", "precio_min": 280000, "precio_max": 350000 },
-        { "marca": "Bosch", "modelo": "GCM 10 SD", "precio_min": 290000, "precio_max": 370000 },
-        { "marca": "Makita", "modelo": "LS1019L", "precio_min": 320000, "precio_max": 400000 },
-        { "marca": "Dewalt", "modelo": "DW713 (fija)", "precio_min": 180000, "precio_max": 230000 }
-      ],
-      "recomendada": "Dewalt DWS779 o Bosch GCM 10 SD"
+      "nombre": "Sierra de banco 10\" 1800W Einhell TC-TS 2025/2U",
+      "tienda": "Paris.cl",
+      "precio": null,
+      "precio_estado": "verificar",
+      "url": "https://www.paris.cl/sierra-de-banco-10-1800w-tc-ts-20252u-einhell-MKIIXDEHTP.html",
+      "specs": ["1800W", "Disco 10\" (254mm)", "Mesa de aluminio", "Guía paralela incluida"],
+      "uso_mesa": "Cortes longitudinales de tableros y listones. Va integrada al banco de trabajo.",
+      "prioridad": "alta"
     },
     {
       "id": 2,
-      "nombre": "Lijadora orbital 125mm",
-      "prioridad": "alta",
-      "razon": "Imprescindible para producción en serie. Lija a mano es inviable en volumen.",
-      "modelos": [
-        { "marca": "Dewalt", "modelo": "DWE6421", "precio_min": 65000, "precio_max": 85000 },
-        { "marca": "Makita", "modelo": "BO5041", "precio_min": 70000, "precio_max": 95000 },
-        { "marca": "Bosch", "modelo": "GEX 125-1 AE", "precio_min": 75000, "precio_max": 100000 }
-      ],
-      "recomendada": "Dewalt DWE6421 o Makita BO5041"
+      "nombre": "Ingleteadora telescópica 8\" 1500W Einhell TC-SM 2131/2 Dual",
+      "tienda": "Easy.cl",
+      "precio": null,
+      "precio_estado": "verificar",
+      "url": "https://www.easy.cl/ingleteadora-telescopica-8-1500w-tc-sm-21312-dual-einhell-1269615/p?idsku=101402",
+      "specs": ["1500W", "Disco 8\" (216mm)", "Corte telescópico/deslizante", "Inglete y bisel doble"],
+      "uso_mesa": "Va integrada al banco de trabajo al ras de la superficie. Cortes de largo y angulares de precisión.",
+      "prioridad": "alta"
     },
     {
       "id": 3,
-      "nombre": "Lijadora de banda 75x533mm",
-      "prioridad": "alta",
-      "razon": "Desbastar superficies grandes y cuadrar piezas. Complementa la orbital.",
-      "modelos": [
-        { "marca": "Makita", "modelo": "9911", "precio_min": 75000, "precio_max": 110000 },
-        { "marca": "Dewalt", "modelo": "DWE6411", "precio_min": 80000, "precio_max": 115000 }
-      ],
-      "recomendada": "Makita 9911"
-    },
+      "nombre": "Fresadora eléctrica 550W + 6 fresas Bauker",
+      "tienda": "Sodimac.cl",
+      "precio": 48990,
+      "precio_estado": "confirmado",
+      "url": "https://www.sodimac.cl/sodimac-cl/articulo/120411352/fresadora-electrica-550-w-6-fresas/120411353",
+      "specs": ["550W", "6 fresas incluidas", "4.8★ (119 reseñas)", "23×16cm"],
+      "uso_mesa": "Perfiles de canto, ranurados, ensambles. Usar con guía o mesa de router.",
+      "prioridad": "alta"
+    }
+  ],
+
+  "por_comprar": [
     {
       "id": 4,
-      "nombre": "Router / Fresadora de lámina",
-      "prioridad": "alta",
-      "razon": "Abre el 50% de los diseños diferenciadores: cantos perfilados, ranurados, ensambles.",
+      "nombre": "Atornillador inalámbrico de impacto",
+      "prioridad": "media",
+      "razon": "Reemplaza el taladro para atornillar en serie. Mucho más rápido en ensamble de muebles.",
       "modelos": [
-        { "marca": "Makita", "modelo": "RT0701C", "precio_min": 110000, "precio_max": 150000 },
-        { "marca": "Dewalt", "modelo": "DWP611", "precio_min": 120000, "precio_max": 160000 },
-        { "marca": "Bosch", "modelo": "POF 1400 ACE", "precio_min": 90000, "precio_max": 130000 }
+        {
+          "marca": "Dewalt",
+          "modelo": "DCF787D1 12V MAX",
+          "precio_min": 79990,
+          "precio_max": 99990,
+          "tienda": "Sodimac / Easy",
+          "nota": "Compacto, liviano, ideal para muebles. Batería 12V dura un día completo."
+        },
+        {
+          "marca": "Black+Decker",
+          "modelo": "BDCIM18 18V",
+          "precio_min": 49990,
+          "precio_max": 69990,
+          "tienda": "Sodimac / Easy",
+          "nota": "Buena relación precio/calidad para producción no intensiva."
+        },
+        {
+          "marca": "Einhell",
+          "modelo": "TE-CI 18/1 (sin batería)",
+          "precio_min": 29990,
+          "precio_max": 45990,
+          "tienda": "Easy",
+          "nota": "Económico. Si ya vas a comprar Einhell, las baterías son compatibles entre herramientas de la misma línea."
+        }
       ],
-      "recomendada": "Makita RT0701C"
+      "recomendada": "Einhell TE-CI 18/1 — compatible con baterías de tus otras Einhell (sierra banco + inglete). Una batería sirve para todas."
     },
     {
       "id": 5,
-      "nombre": "Compresor 24L + pistola de clavos 18ga",
-      "prioridad": "media",
-      "razon": "Acelera dramáticamente el ensamble de gabinetes y marcos en serie.",
+      "nombre": "Lijadora orbital 125mm",
+      "prioridad": "baja",
+      "razon": "Por ahora a mano. Cuando el volumen suba, esta es la primera que comprar.",
       "modelos": [
-        { "marca": "Truper/Black+Decker", "modelo": "Compresor 24L", "precio_min": 90000, "precio_max": 140000 },
-        { "marca": "Genérica", "modelo": "Brad nailer 18ga neumática", "precio_min": 45000, "precio_max": 80000 }
+        { "marca": "Dewalt", "modelo": "DWE6421", "precio_min": 65000, "precio_max": 85000, "tienda": "Sodimac / Easy", "nota": "" },
+        { "marca": "Makita", "modelo": "BO5041", "precio_min": 70000, "precio_max": 95000, "tienda": "Sodimac / Easy", "nota": "" }
       ],
-      "recomendada": "Cualquier compresor 24L + pistola 18ga básica"
+      "recomendada": "Dewalt DWE6421 — para futuro"
     },
     {
       "id": 6,
-      "nombre": "Cepillo eléctrico 82mm",
-      "prioridad": "media",
-      "razon": "Permite trabajar con madera aserrada sin cepillar (mucho más barata). Transforma la ecuación de costos.",
-      "modelos": [
-        { "marca": "Makita", "modelo": "KP0800", "precio_min": 80000, "precio_max": 110000 },
-        { "marca": "Dewalt", "modelo": "D26676K", "precio_min": 95000, "precio_max": 130000 }
-      ],
-      "recomendada": "Makita KP0800"
-    },
-    {
-      "id": 7,
-      "nombre": "Sierra de cinta (band saw)",
+      "nombre": "Lijadora de banda 75x533mm",
       "prioridad": "baja",
-      "razon": "Para cortes curvos y patas torneadas. No urgente si los modelos son geométricos.",
+      "razon": "Para aplanar superficies grandes. Después de la orbital.",
       "modelos": [
-        { "marca": "Makita", "modelo": "LB1200F", "precio_min": 180000, "precio_max": 280000 },
-        { "marca": "Skil", "modelo": "BS5102", "precio_min": 80000, "precio_max": 120000 }
+        { "marca": "Makita", "modelo": "9911", "precio_min": 75000, "precio_max": 110000, "tienda": "Sodimac / Easy", "nota": "" }
       ],
-      "recomendada": "Skil BS5102 para empezar"
+      "recomendada": "Makita 9911 — para futuro"
     }
   ],
+
   "accesorios": [
-    { "nombre": "Escuadra combinada 300mm (Starrett/Irwin)", "precio_min": 25000, "precio_max": 45000, "esencial": true },
-    { "nombre": "Falsa escuadra ajustable", "precio_min": 8000, "precio_max": 15000, "esencial": true },
-    { "nombre": "Broca Forstner 19mm (bench dogs)", "precio_min": 8000, "precio_max": 15000, "esencial": true },
-    { "nombre": "Set brocas Forstner 15-50mm (bisagras)", "precio_min": 25000, "precio_max": 40000, "esencial": true },
-    { "nombre": "Set brocas router 12 piezas", "precio_min": 25000, "precio_max": 45000, "esencial": true },
-    { "nombre": "Cepillo de mano #4 Stanley/Irwin", "precio_min": 18000, "precio_max": 35000, "esencial": true },
-    { "nombre": "Sargentos barra 600mm (x4 adicionales)", "precio_min": 48000, "precio_max": 80000, "esencial": true },
-    { "nombre": "F-clamps rápidos 150mm (x8-10)", "precio_min": 40000, "precio_max": 80000, "esencial": false }
+    { "nombre": "Escuadra combinada 300mm", "precio_sodimac": null, "precio_estado": "verificar", "esencial": true },
+    { "nombre": "Nivel de burbuja 60cm", "precio_sodimac": null, "precio_estado": "verificar", "esencial": true },
+    { "nombre": "Set brocas Forstner 15-50mm (bisagras)", "precio_sodimac": null, "precio_estado": "verificar", "esencial": true },
+    { "nombre": "Set brocas router 12 piezas", "precio_sodimac": null, "precio_estado": "verificar", "esencial": true },
+    { "nombre": "Tornillos tirafondo 3\"x10 caja 100", "precio_sodimac": null, "precio_estado": "verificar", "esencial": true },
+    { "nombre": "Cola fría PVA 1 litro", "precio_sodimac": null, "precio_estado": "verificar", "esencial": true }
   ]
 }

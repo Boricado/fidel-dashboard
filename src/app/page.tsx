@@ -1420,9 +1420,8 @@ export default function Dashboard() {
               { id: 'sketchup',     label: 'SketchUp & CNC' },
               { id: 'materiales',   label: 'Materiales' },
             ];
-            const totalInvHerr = HERR_DATA.por_comprar
-              .filter((h: any) => h.prioridad === 'alta')
-              .reduce((acc: number, h: any) => acc + h.modelos[0].precio_min, 0);
+            const totalInvHerr = (HERR_DATA.seleccionadas as any[])
+              .reduce((acc: number, h: any) => acc + (h.precio ?? 0), 0);
             const modCon3D = MODELOS_DATA.filter((m: any) => m.usa_3d).length;
             return (
               <div className="space-y-6">
@@ -1447,7 +1446,7 @@ export default function Dashboard() {
                       {[
                         { label: 'Modelos definidos', value: MODELOS_DATA.length, color: 'text-primary' },
                         { label: 'Usan impresora 3D', value: modCon3D, color: 'text-primary' },
-                        { label: 'Inv. herramientas alta prior.', value: `$${(totalInvHerr/1000).toFixed(0)}k`, color: 'text-amber-700' },
+                        { label: 'Herramientas seleccionadas', value: `$${totalInvHerr.toLocaleString('es-CL')}+`, color: 'text-amber-700' },
                         { label: 'Mejor margen', value: '70%', color: 'text-emerald-700' },
                       ].map(({ label, value, color }) => (
                         <div key={label} className="bg-white rounded-xl px-4 py-3 border border-[rgb(188_203_185/0.18)]">
@@ -1744,33 +1743,82 @@ export default function Dashboard() {
                       </CardContent>
                     </Card>
 
-                    {/* Por comprar — alta prioridad */}
-                    {(['alta', 'media', 'baja'] as const).map(prio => {
-                      const items = HERR_DATA.por_comprar.filter((h: any) => h.prioridad === prio);
-                      const colors = { alta: 'text-red-700 bg-red-50 border-red-200', media: 'text-amber-700 bg-amber-50 border-amber-200', baja: 'text-[#5e5e65] bg-[#f4f3fc] border-[rgb(188_203_185/0.18)]' };
+                    {/* Seleccionadas — próxima compra */}
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <span className="text-[10px] font-label font-bold px-2 py-0.5 rounded-full border text-red-700 bg-red-50 border-red-200">comprar ahora</span>
+                          Herramientas seleccionadas
+                        </CardTitle>
+                        <CardDescription>{HERR_DATA.nota_precios}</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-3">
+                          {(HERR_DATA.seleccionadas as any[]).map((h) => (
+                            <div key={h.id} className="p-4 rounded-xl border border-[rgb(188_203_185/0.18)] bg-[#faf8ff]">
+                              <div className="flex items-start justify-between gap-3 mb-3">
+                                <div className="flex-1 min-w-0">
+                                  <p className="font-semibold text-sm text-[#1a1b22] leading-snug">{h.nombre}</p>
+                                  <p className="text-xs text-[#5e5e65] mt-1 leading-relaxed">{h.uso_mesa}</p>
+                                </div>
+                                <div className="flex flex-col items-end gap-1.5 shrink-0">
+                                  {h.precio_estado === 'confirmado' ? (
+                                    <span className="font-geist-mono text-lg font-bold text-primary">
+                                      ${h.precio.toLocaleString('es-CL')}
+                                    </span>
+                                  ) : (
+                                    <span className="font-geist-mono text-sm font-semibold text-amber-700">precio por verificar</span>
+                                  )}
+                                  <span className="text-[10px] font-label font-semibold px-2 py-0.5 rounded bg-white border border-[rgb(188_203_185/0.3)] text-[#5e5e65]">{h.tienda}</span>
+                                </div>
+                              </div>
+                              <div className="flex flex-wrap gap-1.5 mb-3">
+                                {h.specs.map((s: string) => (
+                                  <span key={s} className="text-[10px] font-label bg-white border border-[rgb(188_203_185/0.25)] text-[#5e5e65] px-2 py-0.5 rounded">{s}</span>
+                                ))}
+                              </div>
+                              <a
+                                href={h.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={`inline-flex items-center gap-1.5 text-xs font-label font-semibold px-3 py-1.5 rounded-lg transition-colors ${h.precio_estado === 'confirmado' ? 'bg-green-50 text-green-800 border border-green-200 hover:bg-green-100' : 'bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100'}`}
+                              >
+                                <ExternalLink className="w-3 h-3" />
+                                {h.precio_estado === 'confirmado' ? `Ver en ${h.tienda}` : `Verificar precio en ${h.tienda}`}
+                              </a>
+                            </div>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* Por comprar — media / baja */}
+                    {(['media', 'baja'] as const).map(prio => {
+                      const items = (HERR_DATA.por_comprar as any[]).filter((h) => h.prioridad === prio);
+                      if (items.length === 0) return null;
+                      const colors = { media: 'text-amber-700 bg-amber-50 border-amber-200', baja: 'text-[#5e5e65] bg-[#f4f3fc] border-[rgb(188_203_185/0.18)]' };
                       return (
                         <Card key={prio}>
                           <CardHeader>
                             <CardTitle className="flex items-center gap-2">
                               <span className={`text-[10px] font-label font-bold px-2 py-0.5 rounded-full border ${colors[prio]}`}>prioridad {prio}</span>
-                              Herramientas por comprar
+                              {prio === 'media' ? 'A futuro — recomendado' : 'A futuro — cuando suba el volumen'}
                             </CardTitle>
                           </CardHeader>
                           <CardContent>
                             <div className="space-y-4">
                               {items.map((h: any) => (
                                 <div key={h.id} className="p-4 rounded-xl border border-[rgb(188_203_185/0.18)] bg-[#faf8ff]">
-                                  <div className="flex items-start justify-between gap-2 mb-2">
-                                    <div>
-                                      <p className="font-semibold text-sm text-[#1a1b22]">{h.nombre}</p>
-                                      <p className="text-xs text-[#5e5e65] mt-0.5">{h.razon}</p>
-                                    </div>
-                                  </div>
+                                  <p className="font-semibold text-sm text-[#1a1b22] mb-1">{h.nombre}</p>
+                                  <p className="text-xs text-[#5e5e65] mb-3">{h.razon}</p>
                                   <div className="flex flex-wrap gap-2">
                                     {h.modelos.map((mod: any, i: number) => (
                                       <div key={i} className="bg-white border border-[rgb(188_203_185/0.2)] rounded-lg px-3 py-2 text-xs">
                                         <span className="font-semibold text-[#1a1b22]">{mod.marca} {mod.modelo}</span>
-                                        <span className="font-geist-mono text-primary ml-2">${(mod.precio_min/1000).toFixed(0)}k–${(mod.precio_max/1000).toFixed(0)}k</span>
+                                        <span className="font-geist-mono text-primary ml-2">
+                                          ${mod.precio_min.toLocaleString('es-CL')}–${mod.precio_max.toLocaleString('es-CL')}
+                                        </span>
+                                        {mod.nota && <span className="block text-[#5e5e65] mt-0.5">{mod.nota}</span>}
                                       </div>
                                     ))}
                                   </div>
@@ -1785,13 +1833,17 @@ export default function Dashboard() {
 
                     {/* Accesorios */}
                     <Card>
-                      <CardHeader><CardTitle>Accesorios esenciales</CardTitle></CardHeader>
+                      <CardHeader><CardTitle>Accesorios esenciales</CardTitle><CardDescription>Verificar precios en Sodimac</CardDescription></CardHeader>
                       <CardContent>
                         <div className="grid sm:grid-cols-2 gap-2">
                           {HERR_DATA.accesorios.map((a: any, i: number) => (
-                            <div key={i} className={`flex items-center justify-between p-3 rounded-lg border ${a.esencial ? 'bg-[#f4f3fc] border-[rgb(188_203_185/0.18)]' : 'bg-white border-[rgb(188_203_185/0.12)]'}`}>
+                            <div key={i} className="flex items-center justify-between p-3 rounded-lg border bg-[#f4f3fc] border-[rgb(188_203_185/0.18)]">
                               <span className="text-sm text-[#1a1b22]">{a.nombre}</span>
-                              <span className="font-geist-mono text-sm text-primary font-semibold shrink-0 ml-3">${(a.precio_min/1000).toFixed(0)}k–${(a.precio_max/1000).toFixed(0)}k</span>
+                              {a.precio_sodimac ? (
+                                <span className="font-geist-mono text-sm text-primary font-semibold shrink-0 ml-3">${(a.precio_sodimac as number).toLocaleString('es-CL')}</span>
+                              ) : (
+                                <span className="text-[10px] font-label text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded shrink-0 ml-3">verificar</span>
+                              )}
                             </div>
                           ))}
                         </div>
