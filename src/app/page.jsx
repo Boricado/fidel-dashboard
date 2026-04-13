@@ -12,7 +12,7 @@ import {
   Search, X, CalendarOff, Circle, CheckCheck,
   Dumbbell, TrendingDown, Target, TrendingUp, Heart, FileText,
   FlaskConical, AlertTriangle, BadgeCheck, Building2, MapPin,
-  Hammer, Link, ExternalLink, Clock, LogOut,
+  Hammer, Link, ExternalLink, Clock, LogOut, Pencil,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import AccountantAgent from '@/components/AccountantAgent';
@@ -55,6 +55,35 @@ function EstadoIcon({ estado, size = 'w-4 h-4' }) {
   if (estado === 'no_realizado') return <XCircle        className={`${size} text-red-400 shrink-0`} />;
   if (estado === 'pendiente')    return <Clock          className={`${size} text-[#5e5e65] shrink-0`} />;
   return <Circle className={`${size} text-[#bccbb9] shrink-0`} />;
+}
+
+function PrecioEditable({ valor, onGuardar }) {
+  const [editando, setEditando] = React.useState(false);
+  const [draft, setDraft] = React.useState('');
+  if (editando) {
+    return (
+      <input type="number" min="0" step="1" autoFocus value={draft}
+        onChange={e => setDraft(e.target.value)}
+        onBlur={() => { if (draft !== '' && Number(draft) > 0) onGuardar(Number(draft)); setEditando(false); }}
+        onKeyDown={e => {
+          if (e.key === 'Enter' && draft !== '' && Number(draft) > 0) { onGuardar(Number(draft)); setEditando(false); }
+          if (e.key === 'Escape') setEditando(false);
+        }}
+        className="w-28 px-2 py-0.5 text-sm font-geist-mono border border-primary/50 rounded focus:outline-none text-right bg-white"
+      />
+    );
+  }
+  return (
+    <button onClick={() => { setDraft(valor != null ? String(valor) : ''); setEditando(true); }}
+      title="Click para editar precio"
+      className="group inline-flex items-center gap-1 font-geist-mono text-sm transition-colors hover:text-primary">
+      {valor != null
+        ? <span className="font-bold text-primary">{`$${valor.toLocaleString('es-CL')}`}</span>
+        : <span className="text-[10px] font-label text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded">editar</span>
+      }
+      <Pencil className="w-2.5 h-2.5 opacity-0 group-hover:opacity-40 transition-opacity shrink-0" />
+    </button>
+  );
 }
 
 /* â”€â”€ SVG donut â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
@@ -109,6 +138,10 @@ export default function Dashboard() {
   const [ocultarCerradas,    setOcultarCerradas]    = useState(true);
   const [mostrarRealizadas,  setMostrarRealizadas]  = useState(false);
   const [muebleTab,          setMuebleTab]          = useState('modelos');
+  const [preciosEdit,        setPreciosEdit]        = useState(() => {
+    try { return JSON.parse(typeof window !== 'undefined' ? (localStorage.getItem('muebles_precios') ?? '{}') : '{}'); }
+    catch { return {}; }
+  });
 
 
   const [busqueda,     setBusqueda]     = useState('');
@@ -1652,7 +1685,13 @@ export default function Dashboard() {
               MUEBLES â€” Proyecto 5
           â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
           {section === 'muebles' && (() => {
-            const TABS = [
+            function getPrecio(key, fallback) { return preciosEdit[key] ?? fallback; }
+            function setPrecioMat(key, valor) {
+              const next = { ...preciosEdit, [key]: valor };
+              setPreciosEdit(next);
+              try { localStorage.setItem('muebles_precios', JSON.stringify(next)); } catch {}
+            }
+                        const TABS = [
               { id: 'modelos',      label: 'Modelos' },
               { id: 'mesa',         label: 'Mesa Carpintera' },
               { id: 'herramientas', label: 'Herramientas' },
@@ -1660,7 +1699,7 @@ export default function Dashboard() {
               { id: 'materiales',   label: 'Materiales' },
             ];
             const totalInvHerr = HERR_DATA.seleccionadas
-              .reduce((acc, h) => acc + (h.precio ?? 0), 0);
+              .reduce((acc, h) => acc + (preciosEdit[`herr_${h.id}`] ?? h.precio ?? 0), 0);
             const modCon3D = MODELOS_DATA.filter((m) => m.usa_3d).length;
             return (
               <div className="space-y-6">
@@ -1900,15 +1939,23 @@ export default function Dashboard() {
                     {/* Lista de materiales â€” precios desde materiales.json */}
                     {(() => {
                       // Lookup: material_ref â†’ precio_sodimac por unidad
+                      const p2x4i = MATERIALES_DATA.pino_estructural.findIndex(p => p.dimension?.includes('2"x4"'));
+                      const p2x3i = MATERIALES_DATA.pino_estructural.findIndex(p => p.dimension?.includes('2"x3"'));
+                      const t18i  = MATERIALES_DATA.tableros.findIndex(t => t.tipo?.includes('18mm') && t.tipo?.includes('Plywood'));
+                      const t12i  = MATERIALES_DATA.tableros.findIndex(t => t.tipo?.includes('12mm') && t.tipo?.includes('Plywood'));
+                      const tmdi  = MATERIALES_DATA.tableros.findIndex(t => t.tipo?.includes('MDF 18mm'));
+                      const hri   = MATERIALES_DATA.herrajes_y_fijaciones.findIndex(h => h.tipo?.includes('200 kg'));
+                      const hti   = MATERIALES_DATA.herrajes_y_fijaciones.findIndex(h => h.tipo?.includes('Tornillo'));
+                      const hci   = MATERIALES_DATA.herrajes_y_fijaciones.findIndex(h => h.tipo?.includes('Cola'));
                       const lookup = {
-                        pino_2x4:      MATERIALES_DATA.pino_estructural.find(p => p.dimension?.includes('2"x4"'))?.precio_sodimac ?? null,
-                        pino_2x3:      MATERIALES_DATA.pino_estructural.find(p => p.dimension?.includes('2"x3"'))?.precio_sodimac ?? null,
-                        terciado_18mm: MATERIALES_DATA.tableros.find(t => t.tipo?.includes('18mm') && t.tipo?.includes('Plywood'))?.precio_sodimac ?? null,
-                        terciado_12mm: MATERIALES_DATA.tableros.find(t => t.tipo?.includes('12mm') && t.tipo?.includes('Plywood'))?.precio_sodimac ?? null,
-                        mdf_18mm:      MATERIALES_DATA.tableros.find(t => t.tipo?.includes('MDF 18mm'))?.precio_sodimac ?? null,
-                        rueda_200kg:   MATERIALES_DATA.herrajes_y_fijaciones.find(h => h.tipo?.includes('200 kg'))?.precio_u_sodimac ?? null,
-                        tornillos_3in: MATERIALES_DATA.herrajes_y_fijaciones.find(h => h.tipo?.includes('Tornillo'))?.precio_sodimac ?? null,
-                        cola_fria:     MATERIALES_DATA.herrajes_y_fijaciones.find(h => h.tipo?.includes('Cola'))?.precio_sodimac ?? null,
+                        pino_2x4:      getPrecio(`pino_${p2x4i}`,      MATERIALES_DATA.pino_estructural[p2x4i]?.precio_sodimac ?? null),
+                        pino_2x3:      getPrecio(`pino_${p2x3i}`,      MATERIALES_DATA.pino_estructural[p2x3i]?.precio_sodimac ?? null),
+                        terciado_18mm: getPrecio(`tablero_${t18i}`,    MATERIALES_DATA.tableros[t18i]?.precio_sodimac ?? null),
+                        terciado_12mm: getPrecio(`tablero_${t12i}`,    MATERIALES_DATA.tableros[t12i]?.precio_sodimac ?? null),
+                        mdf_18mm:      getPrecio(`tablero_${tmdi}`,    MATERIALES_DATA.tableros[tmdi]?.precio_sodimac ?? null),
+                        rueda_200kg:   getPrecio(`herraje_${hri}`,     MATERIALES_DATA.herrajes_y_fijaciones[hri]?.precio_u_sodimac ?? null),
+                        tornillos_3in: getPrecio(`herraje_${hti}`,     MATERIALES_DATA.herrajes_y_fijaciones[hti]?.precio_sodimac ?? null),
+                        cola_fria:     getPrecio(`herraje_${hci}`,     MATERIALES_DATA.herrajes_y_fijaciones[hci]?.precio_sodimac ?? null),
                       };
                       const rows = MESA_DATA.materiales.map(mat => {
                         const precioU = mat.material_ref ? (lookup[mat.material_ref] ?? null) : (mat.precio_u_ref ?? null);
@@ -1922,7 +1969,7 @@ export default function Dashboard() {
                           <CardHeader>
                             <CardTitle>Lista de materiales</CardTitle>
                             <CardDescription>
-                              Precios desde Sodimac (materiales.json) Â·{' '}
+                              Precios Sodimac — click en cualquier precio para editar Â·{' '}
                               <span className="font-geist-mono font-bold text-primary">${totalConfirmado.toLocaleString('es-CL')}</span>
                               {pendientes > 0 && <span className="text-amber-700"> + {pendientes} Ã­tem(s) por verificar</span>}
                             </CardDescription>
@@ -2041,13 +2088,10 @@ export default function Dashboard() {
                                   <p className="text-xs text-[#5e5e65] mt-1 leading-relaxed">{h.uso_mesa}</p>
                                 </div>
                                 <div className="flex flex-col items-end gap-1.5 shrink-0">
-                                  {h.precio_estado === 'confirmado' ? (
-                                    <span className="font-geist-mono text-lg font-bold text-primary">
-                                      ${h.precio.toLocaleString('es-CL')}
-                                    </span>
-                                  ) : (
-                                    <span className="font-geist-mono text-sm font-semibold text-amber-700">precio por verificar</span>
-                                  )}
+                                  <PrecioEditable
+                                    valor={getPrecio(`herr_${h.id}`, h.precio ?? null)}
+                                    onGuardar={v => setPrecioMat(`herr_${h.id}`, v)}
+                                  />
                                   <span className="text-[10px] font-label font-semibold px-2 py-0.5 rounded bg-white border border-[rgb(188_203_185/0.3)] text-[#5e5e65]">{h.tienda}</span>
                                 </div>
                               </div>
@@ -2263,11 +2307,7 @@ export default function Dashboard() {
                                   </td>
                                   <td className="py-2 px-3 text-center font-geist-mono text-[#5e5e65]">{p.largo_m}m</td>
                                   <td className="py-2 px-3 text-right">
-                                    {p.precio_sodimac ? (
-                                      <span className="font-geist-mono font-bold text-primary">${p.precio_sodimac.toLocaleString('es-CL')}</span>
-                                    ) : (
-                                      <span className="text-[10px] font-label text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded">verificar</span>
-                                    )}
+                                    <PrecioEditable valor={getPrecio(`pino_${i}`, p.precio_sodimac)} onGuardar={v => setPrecioMat(`pino_${i}`, v)} />
                                   </td>
                                 </tr>
                               ))}
@@ -2305,11 +2345,7 @@ export default function Dashboard() {
                                   </td>
                                   <td className="py-2 px-3 text-center font-geist-mono text-[#5e5e65] text-xs hidden sm:table-cell">{t.dim}</td>
                                   <td className="py-2 px-3 text-right">
-                                    {t.precio_sodimac ? (
-                                      <span className="font-geist-mono font-bold text-primary">${t.precio_sodimac.toLocaleString('es-CL')}</span>
-                                    ) : (
-                                      <span className="text-[10px] font-label text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded">verificar</span>
-                                    )}
+                                    <PrecioEditable valor={getPrecio(`tablero_${i}`, t.precio_sodimac)} onGuardar={v => setPrecioMat(`tablero_${i}`, v)} />
                                   </td>
                                 </tr>
                               ))}
@@ -2325,7 +2361,7 @@ export default function Dashboard() {
                       <CardContent>
                         <div className="space-y-2">
                           {MATERIALES_DATA.herrajes_y_fijaciones.map((h, i) => (
-                            <div key={i} className={`flex items-start justify-between gap-3 p-3 rounded-lg border ${h.precio_u_sodimac || h.precio_sodimac ? 'bg-green-50/40 border-green-200' : 'bg-[#f4f3fc] border-[rgb(188_203_185/0.18)]'}`}>
+                            <div key={i} className={`flex items-start justify-between gap-3 p-3 rounded-lg border ${getPrecio(`herraje_${i}`, h.precio_u_sodimac ?? h.precio_sodimac ?? null) != null ? 'bg-green-50/40 border-green-200' : 'bg-[#f4f3fc] border-[rgb(188_203_185/0.18)]'}`}>
                               <div className="flex-1 min-w-0">
                                 {h.url_sodimac ? (
                                   <a href={h.url_sodimac} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-sm font-semibold text-[#1a1b22] hover:text-primary transition-colors">
@@ -2338,14 +2374,11 @@ export default function Dashboard() {
                                 {h.nota && <p className="text-[10px] text-[#5e5e65] font-label mt-0.5">{h.nota}</p>}
                               </div>
                               <div className="shrink-0 text-right">
-                                {(h.precio_u_sodimac || h.precio_sodimac) ? (
-                                  <span className="font-geist-mono font-bold text-primary text-sm">
-                                    ${(h.precio_u_sodimac || h.precio_sodimac).toLocaleString('es-CL')}
-                                    {h.precio_u_sodimac ? '/u' : ''}
-                                  </span>
-                                ) : (
-                                  <span className="text-[10px] font-label text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded">verificar</span>
-                                )}
+                                <PrecioEditable
+                                  valor={getPrecio(`herraje_${i}`, h.precio_u_sodimac ?? h.precio_sodimac ?? null)}
+                                  onGuardar={v => setPrecioMat(`herraje_${i}`, v)}
+                                />
+                                {h.precio_u_sodimac && <span className="text-[10px] text-[#5e5e65] font-label ml-0.5">/u</span>}
                               </div>
                             </div>
                           ))}
