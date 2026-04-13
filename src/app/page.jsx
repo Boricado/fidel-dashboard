@@ -58,8 +58,8 @@ function EstadoIcon({ estado, size = 'w-4 h-4' }) {
 }
 
 function PrecioEditable({ valor, onGuardar }) {
-  const [editando, setEditando] = React.useState(false);
-  const [draft, setDraft] = React.useState('');
+  const [editando, setEditando] = useState(false);
+  const [draft, setDraft] = useState('');
   if (editando) {
     return (
       <input type="number" min="0" step="1" autoFocus value={draft}
