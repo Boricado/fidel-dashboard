@@ -4,14 +4,14 @@ Dashboard personal construido con Next.js 16 y conectado a Supabase.
 
 ## Integraciones preparadas
 
-- Supabase: cliente configurado en [`src/lib/supabase.ts`](/C:/Users/fidel/Documents/fidel-dashboard/src/lib/supabase.ts)
-- Backend Next.js: acceso servidor en [`src/lib/dashboard-api.ts`](/C:/Users/fidel/Documents/fidel-dashboard/src/lib/dashboard-api.ts)
+- Supabase: cliente configurado en `src/lib/supabase.js`
+- Backend Next.js: acceso servidor en `src/lib/dashboard-api.js`
 - Vercel: configuracion base en [`vercel.json`](/C:/Users/fidel/Documents/fidel-dashboard/vercel.json)
 - Render: servicio web definido en [`render.yaml`](/C:/Users/fidel/Documents/fidel-dashboard/render.yaml)
 
 ## Variables de entorno
 
-Usa [`\.env.example`](/C:/Users/fidel/Documents/fidel-dashboard/.env.example) como referencia:
+Usa `.env.example` como referencia:
 
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=https://tu-proyecto.supabase.co
@@ -67,6 +67,6 @@ Si al iniciar sesion aparece `Email not confirmed`, tienes dos caminos:
 ## Despliegue en Render
 
 1. Crea un nuevo `Blueprint` o `Web Service` desde este repositorio.
-2. Render detectara [`render.yaml`](/C:/Users/fidel/Documents/fidel-dashboard/render.yaml).
+2. Render detectara `render.yaml`.
 3. Completa las variables `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`.
 4. Usa `/api/health` como health check.
