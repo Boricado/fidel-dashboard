@@ -48,6 +48,14 @@ function SortIcon({ dir }) {
   return <ChevronsUpDown className="w-3 h-3 inline ml-1 opacity-30" />;
 }
 
+function EstadoIcon({ estado, size = 'w-4 h-4' }) {
+  if (estado === 'completado')   return <CheckCircle2   className={`${size} text-primary shrink-0`} />;
+  if (estado === 'parcial')      return <AlertTriangle  className={`${size} text-amber-500 shrink-0`} />;
+  if (estado === 'no_realizado') return <XCircle        className={`${size} text-red-400 shrink-0`} />;
+  if (estado === 'pendiente')    return <Clock          className={`${size} text-[#5e5e65] shrink-0`} />;
+  return <Circle className={`${size} text-[#bccbb9] shrink-0`} />;
+}
+
 /* â”€â”€ SVG donut â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function DonutStat({ pct, label, color = '#006e2f' }) {
   const r = 40, c = 2 * Math.PI * r;
@@ -91,6 +99,11 @@ export default function Dashboard() {
   const [gymSesiones,        setGymSesiones]        = useState([]);
   const [gymEjercicios,      setGymEjercicios]      = useState([]);
   const [sesionExpandida,    setSesionExpandida]    = useState(null);
+  const [showGymModal,      setShowGymModal]      = useState(false);
+  const [gymForm,           setGymForm]           = useState({ tipo: '', estado: 'completado', notas: '' });
+  const [gymEjsForm,        setGymEjsForm]        = useState([{ nombre: '', series: '', reps: '', carga: '', notas: '' }]);
+  const [gymSaving,         setGymSaving]         = useState(false);
+  const [gymSaveError,      setGymSaveError]      = useState('');
   const [mostrarDescartadas, setMostrarDescartadas] = useState(false);
   const [ocultarCerradas,    setOcultarCerradas]    = useState(true);
   const [mostrarRealizadas,  setMostrarRealizadas]  = useState(false);
@@ -299,10 +312,6 @@ export default function Dashboard() {
     { dia:'Jue', tipo:'Cardio Z2' }, { dia:'Vie', tipo:'Push A' },
     { dia:'SÃ¡b', tipo:'Deporte' }, { dia:'Dom', tipo:'Descanso' },
   ];
-  const ESTADO_ICONS = {
-    completado:'âœ…', parcial:'âš¡', no_realizado:'âŒ', pendiente:'â³',
-  };
-
   const semanasSesiones = useMemo(() => {
     const m = {};
     gymSesiones.forEach(s => {
@@ -310,6 +319,33 @@ export default function Dashboard() {
     });
     return Object.entries(m).sort((a,b)=>Number(a[0])-Number(b[0])).map(([sem,count]) => ({ semana:`S${sem}`, sesiones:count }));
   }, [gymSesiones]);
+
+  async function registrarSesion(e) {
+    e.preventDefault();
+    if (!gymForm.tipo || !gymForm.estado) return;
+    setGymSaving(true);
+    setGymSaveError('');
+    try {
+      await apiFetch('/api/gym/sesiones', {
+        method: 'POST',
+        body: JSON.stringify({
+          tipo: gymForm.tipo,
+          semana: semanaActual,
+          fecha: new Date().toISOString().split('T')[0],
+          estado: gymForm.estado,
+          notas: gymForm.notas || null,
+          ejercicios: gymEjsForm.filter(ej => ej.nombre.trim()),
+        }),
+      });
+      setShowGymModal(false);
+      setGymForm({ tipo: '', estado: 'completado', notas: '' });
+      setGymEjsForm([{ nombre: '', series: '', reps: '', carga: '', notas: '' }]);
+      await loadData();
+    } catch (err) {
+      setGymSaveError(err.message);
+    }
+    setGymSaving(false);
+  }
 
   function estadoClass(estado) {
     const map = {
@@ -599,7 +635,7 @@ export default function Dashboard() {
                           <span className="text-[9px] font-label font-bold leading-none">{dia}</span>
                         </div>
                         <p className="flex-1 text-sm font-medium text-[#1a1b22]">{tipo}</p>
-                        <span className="text-sm">{ESTADO_ICONS[sesion?.estado ?? ''] ?? (tipo === 'Descanso' ? 'â€”' : 'â³')}</span>
+                        <span className="flex items-center"><EstadoIcon estado={sesion?.estado ?? (tipo === 'Descanso' ? 'descanso' : 'pendiente')} /></span>
                       </div>
                     );
                   })}
@@ -937,6 +973,15 @@ export default function Dashboard() {
                           <FileText className="w-3 h-3" /> Ver rutina
                         </Button>
                       </a>
+                      <Button size="sm" className="text-xs gap-1" onClick={() => {
+                        const dayIdx = new Date().getDay();
+                        const pplIdx = dayIdx === 0 ? 6 : dayIdx - 1;
+                        setGymForm({ tipo: PPL_DIAS[pplIdx]?.tipo ?? '', estado: 'completado', notas: '' });
+                        setGymEjsForm([{ nombre: '', series: '', reps: '', carga: '', notas: '' }]);
+                        setShowGymModal(true);
+                      }}>
+                        <Dumbbell className="w-3 h-3" /> Registrar
+                      </Button>
                     </div>
                     <div className="space-y-2">
                       {PPL_DIAS.map(({ dia, tipo }) => {
@@ -965,7 +1010,7 @@ export default function Dashboard() {
                                 </span>
                               )}
                               {isToday && !sesion && <span className="px-2 py-1 bg-[#eeedf7] text-[#5e5e65] text-[10px] font-bold rounded font-label">HOY</span>}
-                              <span className="text-base">{ESTADO_ICONS[sesion?.estado ?? ''] ?? (tipo === 'Descanso' ? 'â€”' : 'â³')}</span>
+                              <span className="flex items-center"><EstadoIcon estado={sesion?.estado ?? (tipo === 'Descanso' ? 'descanso' : 'pendiente')} /></span>
                             </div>
                           </div>
                         );
@@ -1073,7 +1118,7 @@ export default function Dashboard() {
                         <div key={s.id} className="border border-[#eeedf7] rounded-xl overflow-hidden">
                           <button onClick={() => setSesionExpandida(expanded ? null : s.id)}
                             className="w-full flex items-center gap-3 px-4 py-3 hover:bg-[#f4f3fc] transition-colors text-left">
-                            <span className="text-base w-6 text-center">{ESTADO_ICONS[s.estado] ?? 'â€¢'}</span>
+                            <span className="text-base w-6 text-center flex items-center justify-center"><EstadoIcon estado={s.estado} /></span>
                             <span className="text-xs text-[#5e5e65] w-16 shrink-0 font-geist-mono">{new Date(s.fecha).toLocaleDateString('es-CL',{day:'numeric',month:'short'})}</span>
                             <span className="text-xs text-[#5e5e65] w-8 shrink-0 font-geist-mono">S{s.semana}</span>
                             <span className="text-sm font-medium text-[#1a1b22] flex-1">{s.tipo}</span>
@@ -2365,6 +2410,89 @@ export default function Dashboard() {
         ))}
       </nav>
 
+      {/* Gym Modal */}
+      {showGymModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={() => setShowGymModal(false)}>
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-[#eeedf7]">
+              <h2 className="text-lg font-bold font-inter text-[#1a1b22]">Registrar sesion</h2>
+              <button onClick={() => setShowGymModal(false)} className="p-1.5 rounded-lg hover:bg-[#f4f3fc] transition-colors">
+                <X className="w-4 h-4 text-[#5e5e65]" />
+              </button>
+            </div>
+            <form onSubmit={registrarSesion} className="px-6 py-5 space-y-5">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-xs font-label text-[#5e5e65] uppercase tracking-wide mb-1.5 block">Tipo</label>
+                  <select value={gymForm.tipo} onChange={e => setGymForm(f => ({ ...f, tipo: e.target.value }))} required
+                    className="w-full px-3 py-2 text-sm border border-[rgb(188_203_185/0.4)] rounded-lg focus:outline-none focus:border-primary/40">
+                    <option value="">Seleccionar...</option>
+                    {PPL_DIAS.filter(d => d.tipo !== 'Descanso').map(d => (
+                      <option key={d.tipo} value={d.tipo}>{d.tipo}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs font-label text-[#5e5e65] uppercase tracking-wide mb-1.5 block">Estado</label>
+                  <select value={gymForm.estado} onChange={e => setGymForm(f => ({ ...f, estado: e.target.value }))} required
+                    className="w-full px-3 py-2 text-sm border border-[rgb(188_203_185/0.4)] rounded-lg focus:outline-none focus:border-primary/40">
+                    <option value="completado">Completado</option>
+                    <option value="parcial">Parcial</option>
+                    <option value="no_realizado">No realizado</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label className="text-xs font-label text-[#5e5e65] uppercase tracking-wide mb-1.5 block">Notas (opcional)</label>
+                <input type="text" value={gymForm.notas} onChange={e => setGymForm(f => ({ ...f, notas: e.target.value }))}
+                  placeholder="ej: buen ritmo, subi peso en press..."
+                  className="w-full px-3 py-2 text-sm border border-[rgb(188_203_185/0.4)] rounded-lg focus:outline-none focus:border-primary/40" />
+              </div>
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-xs font-label text-[#5e5e65] uppercase tracking-wide">Ejercicios</label>
+                  <button type="button" onClick={() => setGymEjsForm(ejs => [...ejs, { nombre: '', series: '', reps: '', carga: '', notas: '' }])}
+                    className="text-xs text-primary font-semibold hover:underline font-label">+ Agregar</button>
+                </div>
+                <div className="space-y-3">
+                  {gymEjsForm.map((ej, i) => (
+                    <div key={i} className="bg-[#f4f3fc] rounded-xl p-3 space-y-2">
+                      <div className="flex gap-2">
+                        <input type="text" value={ej.nombre}
+                          onChange={e => setGymEjsForm(ejs => ejs.map((x,j) => j===i ? {...x, nombre: e.target.value} : x))}
+                          placeholder="Ejercicio (ej: Press banca)"
+                          className="flex-1 px-2.5 py-1.5 text-sm border border-[rgb(188_203_185/0.4)] rounded-lg focus:outline-none focus:border-primary/40 bg-white" />
+                        {gymEjsForm.length > 1 && (
+                          <button type="button" onClick={() => setGymEjsForm(ejs => ejs.filter((_,j) => j !== i))}
+                            className="p-1.5 text-red-400 hover:text-red-600 transition-colors">
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                      </div>
+                      <div className="grid grid-cols-3 gap-2">
+                        {[['series','Series'],['reps','Reps'],['carga','kg']].map(([field, ph]) => (
+                          <input key={field} type="number" min="0" step="0.5" value={ej[field]}
+                            onChange={e => setGymEjsForm(ejs => ejs.map((x,j) => j===i ? {...x, [field]: e.target.value} : x))}
+                            placeholder={ph}
+                            className="w-full px-2.5 py-1.5 text-sm border border-[rgb(188_203_185/0.4)] rounded-lg focus:outline-none focus:border-primary/40 bg-white text-center font-geist-mono" />
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              {gymSaveError && <p className="text-xs text-red-500 font-label">{gymSaveError}</p>}
+              <div className="flex gap-3 pt-1">
+                <Button type="button" variant="outline" className="flex-1" onClick={() => setShowGymModal(false)}>Cancelar</Button>
+                <Button type="submit" className="flex-1 gap-2" disabled={gymSaving}>
+                  {gymSaving ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
+                  {gymSaving ? 'Guardando...' : 'Guardar sesion'}
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
