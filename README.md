@@ -49,6 +49,15 @@ Estas rutas ahora esperan una sesion valida de Supabase en el cliente y reciben 
 
 Si luego quieres permisos servidor mas fuertes, agrega `SUPABASE_SERVICE_ROLE_KEY` en Vercel. Si no la agregas, el backend usa la clave publica configurada.
 
+## Login
+
+El proyecto ahora usa login por correo y clave con Supabase desde la portada.
+
+Si al iniciar sesion aparece `Email not confirmed`, tienes dos caminos:
+
+1. Confirmar el correo desde el email enviado por Supabase.
+2. Desactivar `Confirm email` en `Supabase > Authentication > Providers > Email`.
+
 ## Despliegue en Vercel
 
 1. Importa este repositorio en Vercel.

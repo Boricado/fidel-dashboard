@@ -115,7 +115,7 @@ export default function Dashboard() {
     supabase.auth.getSession().then(({ data, error }) => {
       if (!mounted) return;
       if (error) {
-        setAuthError(error.message);
+        setAuthError(getAuthMessage(error.message));
       }
       setSession(data.session ?? null);
       setAuthLoading(false);
@@ -203,7 +203,7 @@ export default function Dashboard() {
     });
 
     if (error) {
-      setAuthError(error.message);
+      setAuthError(getAuthMessage(error.message));
       setLoginSubmitting(false);
       return;
     }
@@ -2369,3 +2369,14 @@ export default function Dashboard() {
   );
 }
 
+  function getAuthMessage(message) {
+    if (message?.includes('Email not confirmed')) {
+      return 'Tu correo aun no esta confirmado en Supabase. Revisa tu bandeja o desactiva la confirmacion por email en Auth.';
+    }
+
+    if (message?.includes('Invalid login credentials')) {
+      return 'Correo o clave incorrectos.';
+    }
+
+    return message || 'No se pudo iniciar sesion.';
+  }
