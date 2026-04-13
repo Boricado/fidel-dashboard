@@ -1002,7 +1002,7 @@ export default function Dashboard() {
                   <section className="bg-white rounded-xl p-8 border border-[rgb(188_203_185/0.18)] shadow-sm">
                     <div className="flex justify-between items-center mb-6">
                       <h3 className="text-xl font-bold text-[#1a1b22] font-inter">Semana {semanaActual} â€” PPL</h3>
-                      <a href="/rutina_semana5.html" target="_blank" rel="noopener noreferrer">
+                      <a href="/rutina_semana11.html" target="_blank" rel="noopener noreferrer">
                         <Button variant="outline" size="sm" className="text-xs gap-1">
                           <FileText className="w-3 h-3" /> Ver rutina
                         </Button>
