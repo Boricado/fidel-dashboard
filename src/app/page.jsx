@@ -359,7 +359,11 @@ export default function Dashboard() {
   const semanasSesiones = useMemo(() => {
     const m = {};
     gymSesiones.forEach(s => {
-      if (s.estado === 'completado' || s.estado === 'parcial') m[s.semana] = (m[s.semana]||0) + 1;
+      if (s.estado !== 'completado' && s.estado !== 'parcial') return;
+      const sem = s.fecha
+        ? Math.max(1, Math.floor((new Date(s.fecha + 'T12:00:00') - INICIO_PROGRAMA) / (7*86400000)) + 1)
+        : s.semana;
+      if (sem) m[sem] = (m[sem] || 0) + 1;
     });
     return Object.entries(m).sort((a,b)=>Number(a[0])-Number(b[0])).map(([sem,count]) => ({ semana:`S${sem}`, sesiones:count }));
   }, [gymSesiones]);
