@@ -338,7 +338,7 @@ export default function Dashboard() {
     score:   m.score_inbody,
   }));
 
-  const INICIO_PROGRAMA = new Date('2026-02-10');
+  const INICIO_PROGRAMA = new Date('2026-02-02'); // lunes de la semana en que empezó el programa
   const semanaActual = Math.max(1, Math.floor((Date.now() - INICIO_PROGRAMA.getTime()) / (7*86400000)) + 1);
   const _hoy = new Date();
   const _dow = _hoy.getDay();
@@ -1170,7 +1170,7 @@ export default function Dashboard() {
                             className="w-full flex items-center gap-3 px-4 py-3 hover:bg-[#f4f3fc] transition-colors text-left">
                             <span className="text-base w-6 text-center flex items-center justify-center"><EstadoIcon estado={s.estado} /></span>
                             <span className="text-xs text-[#5e5e65] w-16 shrink-0 font-geist-mono">{new Date(s.fecha).toLocaleDateString('es-CL',{day:'numeric',month:'short'})}</span>
-                            <span className="text-xs text-[#5e5e65] w-8 shrink-0 font-geist-mono">S{s.semana}</span>
+                            <span className="text-xs text-[#5e5e65] w-8 shrink-0 font-geist-mono">S{s.fecha ? Math.max(1, Math.floor((new Date(s.fecha + 'T12:00:00') - INICIO_PROGRAMA) / (7*86400000)) + 1) : s.semana}</span>
                             <span className="text-sm font-medium text-[#1a1b22] flex-1">{s.tipo}</span>
                             {ejs.length > 0 && <span className="text-xs text-[#5e5e65] font-label">{ejs.length} ej.</span>}
                             {s.notas && <span className="text-xs text-[#5e5e65] max-w-[180px] truncate hidden md:block">{s.notas}</span>}
