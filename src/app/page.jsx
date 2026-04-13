@@ -132,7 +132,13 @@ export default function Dashboard() {
   const [showGymModal,      setShowGymModal]      = useState(false);
   const [gymForm,           setGymForm]           = useState({ tipo: '', estado: 'completado', notas: '', fecha: new Date().toISOString().split('T')[0] });
   const [gymEjsForm,        setGymEjsForm]        = useState([{ nombre: '', series: '', reps: '', carga: '', notas: '' }]);
-  const [gymSaving,         setGymSaving]         = useState(false);
+  const [gymSaving,          setGymSaving]          = useState(false);
+  const [mostrarFormTarea,   setMostrarFormTarea]   = useState(false);
+  const [nuevaTareaTitulo,   setNuevaTareaTitulo]   = useState('');
+  const [nuevaTareaDesc,     setNuevaTareaDesc]     = useState('');
+  const [nuevaTareaCategoria,setNuevaTareaCategoria]= useState('');
+  const [nuevaTareaPrioridad,setNuevaTareaPrioridad]= useState('normal');
+  const [creandoTarea,       setCreandoTarea]       = useState(false);
   const [gymSaveError,      setGymSaveError]      = useState('');
   const [mostrarDescartadas, setMostrarDescartadas] = useState(false);
   const [ocultarCerradas,    setOcultarCerradas]    = useState(true);
@@ -439,6 +445,34 @@ export default function Dashboard() {
       body: JSON.stringify({ estado }),
     });
     setTareas(prev => prev.map(t => t.id === id ? { ...t, estado } : t));
+  }
+
+  async function crearTarea(e) {
+    e.preventDefault();
+    if (!nuevaTareaTitulo.trim()) return;
+    setCreandoTarea(true);
+    try {
+      const res = await apiFetch('/api/tareas', {
+        method: 'POST',
+        body: JSON.stringify({
+          titulo: nuevaTareaTitulo.trim(),
+          descripcion: nuevaTareaDesc.trim() || null,
+          categoria: nuevaTareaCategoria.trim() || null,
+          prioridad: nuevaTareaPrioridad,
+        }),
+      });
+      const data = await res.json();
+      if (data.tarea) {
+        setTareas(prev => [data.tarea, ...prev]);
+        setNuevaTareaTitulo('');
+        setNuevaTareaDesc('');
+        setNuevaTareaCategoria('');
+        setNuevaTareaPrioridad('normal');
+        setMostrarFormTarea(false);
+      }
+    } finally {
+      setCreandoTarea(false);
+    }
   }
 
   if (!isSupabaseConfigured) return (
@@ -852,13 +886,54 @@ export default function Dashboard() {
                       <CardTitle>Pendientes</CardTitle>
                       <CardDescription>{tareasPendientes.length} tarea{tareasPendientes.length !== 1 ? 's' : ''} por hacer</CardDescription>
                     </div>
-                    {tareasRealizadas.length > 0 && (
-                      <Button variant="ghost" size="sm" onClick={() => setMostrarRealizadas(v => !v)} className="text-xs text-[#5e5e65] gap-1">
-                        <CheckCheck className="w-3 h-3" />
-                        {mostrarRealizadas ? 'Ocultar realizadas' : `Ver ${tareasRealizadas.length} realizada${tareasRealizadas.length !== 1 ? 's' : ''}`}
+                    <div className="flex items-center gap-2">
+                      {tareasRealizadas.length > 0 && (
+                        <Button variant="ghost" size="sm" onClick={() => setMostrarRealizadas(v => !v)} className="text-xs text-[#5e5e65] gap-1">
+                          <CheckCheck className="w-3 h-3" />
+                          {`Ver ${tareasRealizadas.length} realizada${tareasRealizadas.length !== 1 ? 's' : ''}`}
+                        </Button>
+                      )}
+                      <Button size="sm" className="text-xs gap-1" onClick={() => setMostrarFormTarea(v => !v)}>
+                        <X className={`w-3 h-3 transition-transform ${mostrarFormTarea ? 'rotate-0' : 'rotate-45'}`} />
+                        Nueva
                       </Button>
-                    )}
+                    </div>
                   </div>
+                  {mostrarFormTarea && (
+                    <form onSubmit={crearTarea} className="mt-4 space-y-3 border-t border-[#eeedf7] pt-4">
+                      <input
+                        type="text" required placeholder="Título de la tarea"
+                        value={nuevaTareaTitulo} onChange={e => setNuevaTareaTitulo(e.target.value)}
+                        className="w-full px-3 py-2 text-sm border border-[rgb(188_203_185/0.4)] rounded-lg focus:outline-none focus:border-primary/40"
+                      />
+                      <input
+                        type="text" placeholder="Descripción (opcional)"
+                        value={nuevaTareaDesc} onChange={e => setNuevaTareaDesc(e.target.value)}
+                        className="w-full px-3 py-2 text-sm border border-[rgb(188_203_185/0.4)] rounded-lg focus:outline-none focus:border-primary/40"
+                      />
+                      <div className="flex gap-2">
+                        <input
+                          type="text" placeholder="Categoría (ej: gym, muebles)"
+                          value={nuevaTareaCategoria} onChange={e => setNuevaTareaCategoria(e.target.value)}
+                          className="flex-1 px-3 py-2 text-sm border border-[rgb(188_203_185/0.4)] rounded-lg focus:outline-none focus:border-primary/40"
+                        />
+                        <select
+                          value={nuevaTareaPrioridad} onChange={e => setNuevaTareaPrioridad(e.target.value)}
+                          className="px-3 py-2 text-sm border border-[rgb(188_203_185/0.4)] rounded-lg focus:outline-none focus:border-primary/40 bg-white"
+                        >
+                          <option value="normal">Normal</option>
+                          <option value="alta">Alta</option>
+                          <option value="baja">Baja</option>
+                        </select>
+                      </div>
+                      <div className="flex gap-2 justify-end">
+                        <Button type="button" variant="ghost" size="sm" onClick={() => setMostrarFormTarea(false)} className="text-xs">Cancelar</Button>
+                        <Button type="submit" size="sm" disabled={creandoTarea} className="text-xs">
+                          {creandoTarea ? 'Guardando...' : 'Guardar tarea'}
+                        </Button>
+                      </div>
+                    </form>
+                  )}
                 </CardHeader>
                 <CardContent>
                   {tareasPendientes.length === 0
@@ -919,8 +994,8 @@ export default function Dashboard() {
                 {[
                   { label:'Peso actual',    Icon:Activity,     value:pesoActual,                  unit:'kg',   sub:ultimaMedicion?.grasa ? `${ultimaMedicion.grasa}% grasa` : '—',                                          color:'text-primary' },
                   { label:'Masa muscular',  Icon:Dumbbell,     value:ultimaMedicion?.musculo ?? '—', unit:'kg', sub:ultimaMedicion?.bmr ? `BMR: ${ultimaMedicion.bmr} kcal` : '—',                                          color:'text-primary' },
-                  { label:'Grasa visceral', Icon:Heart,        value:ultimaMedicion?.visceral ?? '—', unit:'', sub:'nivel (objetivo â‰¤ 8)',                                                                                   color:'text-amber-600' },
-                  { label:'Score InBody',   Icon:Target,       value:ultimaMedicion?.score_inbody ?? '—', unit:'pts', sub:'objetivo â‰¥ 90',                                                                                   color:(ultimaMedicion?.score_inbody ?? 0) >= 80 ? 'text-primary' : 'text-amber-600' },
+                  { label:'Grasa visceral', Icon:Heart,        value:ultimaMedicion?.visceral ?? '—', unit:'', sub:'nivel (objetivo ≤ 8)',                                                                                   color:'text-amber-600' },
+                  { label:'Score InBody',   Icon:Target,       value:ultimaMedicion?.score_inbody ?? '—', unit:'pts', sub:'objetivo ≥ 90',                                                                                   color:(ultimaMedicion?.score_inbody ?? 0) >= 80 ? 'text-primary' : 'text-amber-600' },
                 ].map(({ label, Icon, value, unit, sub, color }) => (
                   <div key={label} className="bg-white rounded-xl p-6 border border-[rgb(188_203_185/0.18)] shadow-sm flex flex-col justify-between gap-4">
                     <div className="flex justify-between items-start">
@@ -1178,7 +1253,7 @@ export default function Dashboard() {
                             <span className="text-sm font-medium text-[#1a1b22] flex-1">{s.tipo}</span>
                             {ejs.length > 0 && <span className="text-xs text-[#5e5e65] font-label">{ejs.length} ej.</span>}
                             {s.notas && <span className="text-xs text-[#5e5e65] max-w-[180px] truncate hidden md:block">{s.notas}</span>}
-                            {ejs.length > 0 && <span className="text-[#bccbb9] ml-1 text-xs">{expanded ? 'â–²' : 'â–¼'}</span>}
+                            {ejs.length > 0 && <span className="text-[#bccbb9] ml-1 text-xs">{expanded ? '▲' : '▼'}</span>}
                           </button>
                           {expanded && ejs.length > 0 && (
                             <div className="bg-[#f4f3fc] border-t border-[#eeedf7] px-4 py-3">
@@ -1295,7 +1370,7 @@ export default function Dashboard() {
                                   </div>
                                 ))}
                                 <div className="flex justify-between items-center pt-2 font-bold">
-                                  <span className="text-[#1a1b22] text-sm">TOTAL INVERSIÃ“N</span>
+                                  <span className="text-[#1a1b22] text-sm">TOTAL INVERSIÓN</span>
                                   <span className="font-geist-mono text-primary">${desglose.reduce((a, d) => a + d.monto, 0).toLocaleString('es-CL')}</span>
                                 </div>
                                 {meta.arriendo_mensual && (
@@ -1319,7 +1394,7 @@ export default function Dashboard() {
                                   return (
                                     <div key={i} className={`flex items-center justify-between py-2.5 border-b border-[#eeedf7] last:border-0 ${oport ? 'text-primary' : 'text-[#1a1b22]'}`}>
                                       <div className="flex items-center gap-2">
-                                        <span>{oport ? 'ðŸŸ¢' : precio != null ? 'ðŸ”´' : 'â³'}</span>
+                                        <span>{oport ? '🟢' : precio != null ? 'ðŸ”´' : '⏳'}</span>
                                         <div>
                                           <p className="text-sm font-medium">{d.modelo}</p>
                                           <p className="text-[10px] text-[#5e5e65] font-label">Umbral: ${d.umbral.toLocaleString('es-CL')} CLP</p>
@@ -2454,14 +2529,16 @@ export default function Dashboard() {
       </main>
 
       {/* â•â•â• MOBILE BOTTOM NAV â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-[#faf8ff] flex items-center justify-around z-50 border-t border-[rgb(188_203_185/0.2)] shadow-[0_-4px_12px_rgba(0,0,0,0.04)]">
-        {NAV.slice(0, 5).map(({ id, label, Icon }) => (
-          <button key={id} onClick={() => setSection(id)}
-            className={`flex flex-col items-center gap-0.5 transition-colors ${section === id ? 'text-primary' : 'text-[#5e5e65]'}`}>
-            <Icon className="w-5 h-5" />
-            <span className="text-[9px] font-label font-medium">{label}</span>
-          </button>
-        ))}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-[#faf8ff] z-50 border-t border-[rgb(188_203_185/0.2)] shadow-[0_-4px_12px_rgba(0,0,0,0.04)]">
+        <div className="flex items-center h-full overflow-x-auto scrollbar-none px-2 gap-1">
+          {NAV.map(({ id, label, Icon }) => (
+            <button key={id} onClick={() => setSection(id)}
+              className={`flex flex-col items-center gap-0.5 transition-colors shrink-0 min-w-[60px] px-2 py-1 rounded-lg ${section === id ? 'text-primary bg-primary/5' : 'text-[#5e5e65]'}`}>
+              <Icon className="w-5 h-5" />
+              <span className="text-[9px] font-label font-medium">{label}</span>
+            </button>
+          ))}
+        </div>
       </nav>
 
       {/* Gym Modal */}

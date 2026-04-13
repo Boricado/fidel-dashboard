@@ -75,21 +75,13 @@ const BADGE_LABEL = {
 };
 
 export default function AccountantAgent() {
-  // Estado del checklist (persistente)
-  const [checked, setChecked] = useState({});
+  const [checked, setChecked] = useState(() => {
+    try {
+      const s = typeof window !== 'undefined' ? localStorage.getItem('conta_checked') : null;
+      return s ? JSON.parse(s) : {};
+    } catch { return {}; }
+  });
   const f29List = generarF29(EMPRESA.inicio);
-
-  const checkedStorage =
-    typeof window === 'undefined'
-      ? {}
-      : (() => {
-          try {
-            const s = localStorage.getItem('conta_checked');
-            return s ? JSON.parse(s) : {};
-          } catch {
-            return {};
-          }
-        })();
 
   function toggle(id) {
     setChecked(prev => {
@@ -100,9 +92,9 @@ export default function AccountantAgent() {
   }
 
   // El F29 de Marzo 2026 ya fue presentado
-  const checkedF29 = { ...checkedStorage, ...checked, 'f29-2026-2': true };
+  const checkedF29 = { ...checked, 'f29-2026-2': true };
   // ini-1 siempre completado
-  const checkedIni = { ...checkedStorage, ...checked, 'ini-1': true };
+  const checkedIni = { ...checked, 'ini-1': true };
 
   const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 
