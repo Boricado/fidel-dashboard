@@ -340,11 +340,21 @@ export default function Dashboard() {
 
   const INICIO_PROGRAMA = new Date('2026-02-10');
   const semanaActual = Math.max(1, Math.floor((Date.now() - INICIO_PROGRAMA.getTime()) / (7*86400000)) + 1);
-  const sesionesSemanActual = gymSesiones.filter(s => s.semana === semanaActual);
+  const _hoy = new Date();
+  const _dow = _hoy.getDay();
+  const _lun = new Date(_hoy);
+  _lun.setDate(_hoy.getDate() - (_dow === 0 ? 6 : _dow - 1));
+  const _inicioSem = _lun.toISOString().split('T')[0];
+  const _dom = new Date(_lun);
+  _dom.setDate(_lun.getDate() + 6);
+  const _finSem = _dom.toISOString().split('T')[0];
+  const sesionesSemanActual = gymSesiones.filter(s =>
+    s.semana === semanaActual || (s.fecha && s.fecha >= _inicioSem && s.fecha <= _finSem)
+  );
   const PPL_DIAS = [
-    { dia:'Lun', tipo:'Push B' }, { dia:'Mar', tipo:'Pull A' }, { dia:'MiÃ©', tipo:'Pierna' },
-    { dia:'Jue', tipo:'Cardio Z2' }, { dia:'Vie', tipo:'Push A' },
-    { dia:'SÃ¡b', tipo:'Deporte' }, { dia:'Dom', tipo:'Descanso' },
+    { dia:'Lun', tipo:'Push A' }, { dia:'Mar', tipo:'Carrera' }, { dia:'MiÃ©', tipo:'Pierna' },
+    { dia:'Jue', tipo:'Cardio Z2' }, { dia:'Vie', tipo:'Pull A' },
+    { dia:'SÃ¡b', tipo:'Tirada Larga' }, { dia:'Dom', tipo:'Descanso' },
   ];
   const semanasSesiones = useMemo(() => {
     const m = {};
