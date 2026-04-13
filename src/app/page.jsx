@@ -365,14 +365,14 @@ export default function Dashboard() {
         body: JSON.stringify({
           tipo: gymForm.tipo,
           semana: semanaActual,
-          fecha: new Date().toISOString().split('T')[0],
+          fecha: gymForm.fecha || new Date().toISOString().split('T')[0],
           estado: gymForm.estado,
           notas: gymForm.notas || null,
           ejercicios: gymEjsForm.filter(ej => ej.nombre.trim()),
         }),
       });
       setShowGymModal(false);
-      setGymForm({ tipo: '', estado: 'completado', notas: '' });
+      setGymForm({ tipo: '', estado: 'completado', notas: '', fecha: new Date().toISOString().split('T')[0] });
       setGymEjsForm([{ nombre: '', series: '', reps: '', carga: '', notas: '' }]);
       await loadData();
     } catch (err) {
@@ -1010,8 +1010,14 @@ export default function Dashboard() {
                       <Button size="sm" className="text-xs gap-1" onClick={() => {
                         const dayIdx = new Date().getDay();
                         const pplIdx = dayIdx === 0 ? 6 : dayIdx - 1;
-                        setGymForm({ tipo: PPL_DIAS[pplIdx]?.tipo ?? '', estado: 'completado', notas: '' });
-                        setGymEjsForm([{ nombre: '', series: '', reps: '', carga: '', notas: '' }]);
+                        const tipo = PPL_DIAS[pplIdx]?.tipo ?? '';
+                        const hoy = new Date().toISOString().split('T')[0];
+                        setGymForm({ tipo, estado: 'completado', notas: '', fecha: hoy });
+                        const ejsRutina = RUTINA_DATA[tipo] ?? [];
+                        setGymEjsForm(ejsRutina.length > 0
+                          ? ejsRutina.map(e => ({ nombre: e.nombre, series: String(e.series ?? ''), reps: String(e.reps ?? ''), carga: e.carga != null ? String(e.carga) : '', notas: e.notas ?? '' }))
+                          : [{ nombre: '', series: '', reps: '', carga: '', notas: '' }]
+                        );
                         setShowGymModal(true);
                       }}>
                         <Dumbbell className="w-3 h-3" /> Registrar
@@ -2458,7 +2464,17 @@ export default function Dashboard() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="text-xs font-label text-[#5e5e65] uppercase tracking-wide mb-1.5 block">Tipo</label>
-                  <select value={gymForm.tipo} onChange={e => setGymForm(f => ({ ...f, tipo: e.target.value }))} required
+                  <select value={gymForm.tipo} onChange={e => {
+                    const t = e.target.value;
+                    setGymForm(f => ({ ...f, tipo: t }));
+                    const ejs = RUTINA_DATA[t] ?? [];
+                    if (ejs.length > 0) {
+                      setGymEjsForm(ejs.map(ex => ({
+                        nombre: ex.nombre, series: String(ex.series ?? ''),
+                        reps: String(ex.reps ?? ''), carga: ex.carga != null ? String(ex.carga) : '', notas: ex.notas ?? '',
+                      })));
+                    }
+                  }} required
                     className="w-full px-3 py-2 text-sm border border-[rgb(188_203_185/0.4)] rounded-lg focus:outline-none focus:border-primary/40">
                     <option value="">Seleccionar...</option>
                     {PPL_DIAS.filter(d => d.tipo !== 'Descanso').map(d => (
