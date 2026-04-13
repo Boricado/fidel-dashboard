@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Fidel Dashboard
 
-## Getting Started
+Dashboard personal construido con Next.js 16 y conectado a Supabase.
 
-First, run the development server:
+## Integraciones preparadas
+
+- Supabase: cliente configurado en [`src/lib/supabase.ts`](/C:/Users/fidel/Documents/fidel-dashboard/src/lib/supabase.ts)
+- Backend Next.js: acceso servidor en [`src/lib/dashboard-api.ts`](/C:/Users/fidel/Documents/fidel-dashboard/src/lib/dashboard-api.ts)
+- Vercel: configuracion base en [`vercel.json`](/C:/Users/fidel/Documents/fidel-dashboard/vercel.json)
+- Render: servicio web definido en [`render.yaml`](/C:/Users/fidel/Documents/fidel-dashboard/render.yaml)
+
+## Variables de entorno
+
+Usa [`\.env.example`](/C:/Users/fidel/Documents/fidel-dashboard/.env.example) como referencia:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+NEXT_PUBLIC_SUPABASE_URL=https://tu-proyecto.supabase.co
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=tu-publishable-key
+NEXT_PUBLIC_SUPABASE_ANON_KEY=tu-anon-key-opcional
+SUPABASE_SERVICE_ROLE_KEY=tu-service-role-key-opcional
+SUPABASE_JWT_SECRET=tu-jwt-secret-opcional
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Desarrollo local
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm install
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Supabase
 
-## Learn More
+1. Crea o abre tu proyecto en Supabase.
+2. Copia la `Project URL`.
+3. Copia la `publishable key`.
+4. Crea un archivo `.env.local` con esos valores.
 
-To learn more about Next.js, take a look at the following resources:
+La app ahora muestra una pantalla de configuracion si faltan esas variables, en vez de fallar al iniciar.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Backend
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+El dashboard ya no consulta Supabase directo desde el navegador para las operaciones principales.
 
-## Deploy on Vercel
+- `GET /api/dashboard`: carga los datos del panel
+- `PATCH /api/licitaciones/:id`: actualiza `user_accion`
+- `PATCH /api/tareas/:id`: actualiza `estado`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Estas rutas ahora esperan una sesion valida de Supabase en el cliente y reciben el token por `Authorization: Bearer ...`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Si luego quieres permisos servidor mas fuertes, agrega `SUPABASE_SERVICE_ROLE_KEY` en Vercel. Si no la agregas, el backend usa la clave publica configurada.
+
+## Despliegue en Vercel
+
+1. Importa este repositorio en Vercel.
+2. Agrega `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` en Environment Variables.
+3. Despliega.
+
+## Despliegue en Render
+
+1. Crea un nuevo `Blueprint` o `Web Service` desde este repositorio.
+2. Render detectara [`render.yaml`](/C:/Users/fidel/Documents/fidel-dashboard/render.yaml).
+3. Completa las variables `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`.
+4. Usa `/api/health` como health check.

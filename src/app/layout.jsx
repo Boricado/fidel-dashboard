@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { Inter, Work_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -20,16 +19,14 @@ const jetbrainsMono = JetBrains_Mono({
   weight: ["400", "500", "600"],
 });
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "Dashboard Fidel",
   description: "Panel de control personal",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="es" className={`${inter.variable} ${workSans.variable} ${jetbrainsMono.variable} h-full antialiased`}>
       <body className="min-h-full">{children}</body>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { AlertCircle, CheckCircle2, Calendar, Wallet, ClipboardList, Building2 } from "lucide-react";
 
@@ -11,7 +11,7 @@ const EMPRESA = {
 };
 
 // ── Calendario F29 (IVA/PPM) — genera próximos 12 meses ─────────────────────
-function generarF29(desde: Date): { id: string; periodo: string; vencimiento: Date; label: string }[] {
+function generarF29(desde) {
   const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
                  'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
   const resultado = [];
@@ -52,7 +52,7 @@ const ANUALES = [
   { id: 'an-4', texto: 'Balance anual y cierre contable 2026',            fecha: 'Dic 2026',    nota: 'Cierre contable del primer año. Útil para la F22.' },
 ];
 
-function estadoF29(venc: Date, completado: boolean): 'done' | 'vencido' | 'proximo' | 'futuro' {
+function estadoF29(venc, completado) {
   const hoy = new Date();
   if (completado) return 'done';
   const diff = (venc.getTime() - hoy.getTime()) / 86_400_000;
@@ -61,13 +61,13 @@ function estadoF29(venc: Date, completado: boolean): 'done' | 'vencido' | 'proxi
   return 'futuro';
 }
 
-const BADGE: Record<string, string> = {
+const BADGE = {
   done:    'bg-green-100 text-green-700 border-green-200',
   vencido: 'bg-red-100 text-red-700 border-red-200',
   proximo: 'bg-amber-100 text-amber-700 border-amber-200',
   futuro:  'bg-zinc-100 text-zinc-500 border-zinc-200',
 };
-const BADGE_LABEL: Record<string, string> = {
+const BADGE_LABEL = {
   done:    'Presentado',
   vencido: 'Vencido',
   proximo: 'Próximo',
@@ -76,17 +76,22 @@ const BADGE_LABEL: Record<string, string> = {
 
 export default function AccountantAgent() {
   // Estado del checklist (persistente)
-  const [checked, setChecked] = useState<Record<string, boolean>>({});
+  const [checked, setChecked] = useState({});
   const f29List = generarF29(EMPRESA.inicio);
 
-  useEffect(() => {
-    try {
-      const s = localStorage.getItem('conta_checked');
-      if (s) setChecked(JSON.parse(s));
-    } catch {}
-  }, []);
+  const checkedStorage =
+    typeof window === 'undefined'
+      ? {}
+      : (() => {
+          try {
+            const s = localStorage.getItem('conta_checked');
+            return s ? JSON.parse(s) : {};
+          } catch {
+            return {};
+          }
+        })();
 
-  function toggle(id: string) {
+  function toggle(id) {
     setChecked(prev => {
       const next = { ...prev, [id]: !prev[id] };
       try { localStorage.setItem('conta_checked', JSON.stringify(next)); } catch {}
@@ -95,9 +100,9 @@ export default function AccountantAgent() {
   }
 
   // El F29 de Marzo 2026 ya fue presentado
-  const checkedF29: Record<string, boolean> = { ...checked, 'f29-2026-2': true };
+  const checkedF29 = { ...checkedStorage, ...checked, 'f29-2026-2': true };
   // ini-1 siempre completado
-  const checkedIni: Record<string, boolean> = { ...checked, 'ini-1': true };
+  const checkedIni = { ...checkedStorage, ...checked, 'ini-1': true };
 
   const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 
