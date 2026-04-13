@@ -1,0 +1,39 @@
+{
+  "Push B": [
+    { "nombre": "Press inclinado con barra (30–45°)",              "series": 4, "reps": "8–12",  "carga": 38,   "notas": "" },
+    { "nombre": "Dips en paralelas",                               "series": 3, "reps": "8–12",  "carga": null, "notas": "Corporal" },
+    { "nombre": "Press de hombro sentado con mancuernas",          "series": 3, "reps": "10–12", "carga": 15,   "notas": "c/u" },
+    { "nombre": "Elevaciones laterales sentado",                   "series": 4, "reps": "15",    "carga": 7.5,  "notas": "c/u" },
+    { "nombre": "Skullcrusher EZ + press agarre cerrado (superset)","series": 3, "reps": "10+10", "carga": 20,  "notas": "" }
+  ],
+  "Pull A": [
+    { "nombre": "Dominadas sin banda / Jalón asistido",            "series": 4, "reps": "4–6",   "carga": null, "notas": "Sin banda" },
+    { "nombre": "T-bar row",                                       "series": 4, "reps": "8–10",  "carga": 35,   "notas": "" },
+    { "nombre": "Remo unilateral con mancuerna",                   "series": 3, "reps": "10–12", "carga": 28,   "notas": "c/u" },
+    { "nombre": "Face pulls (polea o banda)",                      "series": 4, "reps": "15–20", "carga": 25,   "notas": "" },
+    { "nombre": "Curl EZ en banco predicador",                     "series": 3, "reps": "10–12", "carga": 20,   "notas": "" },
+    { "nombre": "Curl martillo con mancuernas",                    "series": 3, "reps": "10–12", "carga": 15,   "notas": "c/u" }
+  ],
+  "Pierna": [
+    { "nombre": "Goblet squat con mancuerna",                      "series": 4, "reps": "10–12", "carga": 22.5, "notas": "max 90° rodilla" },
+    { "nombre": "Romanian Deadlift con mancuernas",                "series": 4, "reps": "10–12", "carga": 22.5, "notas": "c/u" },
+    { "nombre": "Hip thrust con barra",                            "series": 4, "reps": "12–15", "carga": 55,   "notas": "" },
+    { "nombre": "Curl de isquio en máquina",                       "series": 3, "reps": "12–15", "carga": null, "notas": "50 lbs" },
+    { "nombre": "Elevaciones de talón excéntricas (escalón)",      "series": 4, "reps": "15",    "carga": null, "notas": "Corporal" },
+    { "nombre": "Extensión terminal de rodilla (banda)",           "series": 3, "reps": "15",    "carga": null, "notas": "Banda ligera" },
+    { "nombre": "Abductor en máquina (abrir)",                     "series": 3, "reps": "15–20", "carga": null, "notas": "85 lbs" },
+    { "nombre": "Aductor en máquina (cerrar)",                     "series": 2, "reps": "15–20", "carga": null, "notas": "80 lbs" }
+  ],
+  "Cardio Z2": [
+    { "nombre": "Caminadora Z2",                                   "series": 1, "reps": null,    "carga": null, "notas": "44 min · 8 km/h · 3.5% pendiente · FC 118–138" }
+  ],
+  "Push A": [
+    { "nombre": "Press de banca plano (barra)",                    "series": 4, "reps": "8–12",  "carga": 50,   "notas": "" },
+    { "nombre": "Press inclinado con mancuernas (30–45°)",         "series": 3, "reps": "10–12", "carga": 20,   "notas": "c/u" },
+    { "nombre": "Press militar con barra (de pie)",                "series": 4, "reps": "8–10",  "carga": 30,   "notas": "" },
+    { "nombre": "Elevaciones laterales con mancuernas",            "series": 4, "reps": "12–15", "carga": 10,   "notas": "c/u" },
+    { "nombre": "Aperturas con mancuernas (banco plano)",          "series": 3, "reps": "12–15", "carga": 17.5, "notas": "c/u" }
+  ],
+  "Deporte": [],
+  "Descanso": []
+}

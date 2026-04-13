@@ -25,6 +25,7 @@ import HERR_DATA        from '@/data/muebles/herramientas.json';
 import MESA_DATA        from '@/data/muebles/mesa_carpintera.json';
 import SKETCHUP_DATA    from '@/data/muebles/sketchup.json';
 import MATERIALES_DATA  from '@/data/muebles/materiales.json';
+import RUTINA_DATA      from '@/data/rutina.json';
 
 /* â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
@@ -100,7 +101,7 @@ export default function Dashboard() {
   const [gymEjercicios,      setGymEjercicios]      = useState([]);
   const [sesionExpandida,    setSesionExpandida]    = useState(null);
   const [showGymModal,      setShowGymModal]      = useState(false);
-  const [gymForm,           setGymForm]           = useState({ tipo: '', estado: 'completado', notas: '' });
+  const [gymForm,           setGymForm]           = useState({ tipo: '', estado: 'completado', notas: '', fecha: new Date().toISOString().split('T')[0] });
   const [gymEjsForm,        setGymEjsForm]        = useState([{ nombre: '', series: '', reps: '', carga: '', notas: '' }]);
   const [gymSaving,         setGymSaving]         = useState(false);
   const [gymSaveError,      setGymSaveError]      = useState('');
@@ -2447,6 +2448,11 @@ export default function Dashboard() {
                 <input type="text" value={gymForm.notas} onChange={e => setGymForm(f => ({ ...f, notas: e.target.value }))}
                   placeholder="ej: buen ritmo, subi peso en press..."
                   className="w-full px-3 py-2 text-sm border border-[rgb(188_203_185/0.4)] rounded-lg focus:outline-none focus:border-primary/40" />
+              </div>
+              <div>
+                <label className="text-xs font-label text-[#5e5e65] uppercase tracking-wide mb-1.5 block">Fecha</label>
+                <input type="date" value={gymForm.fecha} onChange={e => setGymForm(f => ({ ...f, fecha: e.target.value }))}
+                  className="w-full px-3 py-2 text-sm border border-[rgb(188_203_185/0.4)] rounded-lg focus:outline-none focus:border-primary/40 font-geist-mono" />
               </div>
               <div>
                 <div className="flex items-center justify-between mb-2">
