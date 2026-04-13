@@ -36,7 +36,7 @@ const NAV = [
   { id: 'tareas',       label: 'Tareas',       Icon: CheckSquare },
   { id: 'salud',        label: 'Salud',        Icon: Activity    },
   { id: 'proyectos',    label: 'Proyectos',    Icon: FolderOpen   },
-  { id: 'mercado',      label: 'CalibraciÃ³n',  Icon: FlaskConical },
+  { id: 'mercado',      label: 'Calibración',  Icon: FlaskConical },
   { id: 'muebles',      label: 'Muebles',      Icon: Hammer       },
   { id: 'contador',     label: 'Contador',     Icon: Receipt      },
 ];
@@ -315,7 +315,7 @@ export default function Dashboard() {
     const unique = [...new Set(licsVisibles.map((l) => l.region).filter((r) => r && r !== 'Chile'))];
     if (unique.length === 0) return 'Chile';
     if (unique.length <= 2) return unique.join(', ');
-    return `${unique[0]}, ${unique[1]} y ${unique.length - 2} mÃ¡s`;
+    return `${unique[0]}, ${unique[1]} y ${unique.length - 2} más`;
   }, [licsVisibles, filtroRegion]);
 
   const descartadasCount  = licitaciones.filter(l => l.user_accion === 'descartado').length;
@@ -352,9 +352,9 @@ export default function Dashboard() {
     s.semana === semanaActual || (s.fecha && s.fecha >= _inicioSem && s.fecha <= _finSem)
   );
   const PPL_DIAS = [
-    { dia:'Lun', tipo:'Push A' }, { dia:'Mar', tipo:'Carrera' }, { dia:'MiÃ©', tipo:'Pierna' },
+    { dia:'Lun', tipo:'Push A' }, { dia:'Mar', tipo:'Carrera' }, { dia:'Mié', tipo:'Pierna' },
     { dia:'Jue', tipo:'Cardio Z2' }, { dia:'Vie', tipo:'Pull A' },
-    { dia:'SÃ¡b', tipo:'Tirada Larga' }, { dia:'Dom', tipo:'Descanso' },
+    { dia:'Sáb', tipo:'Tirada Larga' }, { dia:'Dom', tipo:'Descanso' },
   ];
   const semanasSesiones = useMemo(() => {
     const m = {};
@@ -405,11 +405,11 @@ export default function Dashboard() {
   }
 
   function diasRestantes(fecha) {
-    if (!fecha) return { texto:'â€”', clase:'text-[#5e5e65]' };
+    if (!fecha) return { texto:'—', clase:'text-[#5e5e65]' };
     const diff = Math.ceil((new Date(fecha).getTime() - Date.now()) / 86400000);
     if (diff < 0) return { texto:'Cerrada', clase:'text-[#5e5e65] line-through' };
     if (diff === 0) return { texto:'Hoy',    clase:'text-red-600 font-semibold' };
-    if (diff === 1) return { texto:'MaÃ±ana', clase:'text-red-500 font-medium' };
+    if (diff === 1) return { texto:'Mañana', clase:'text-red-500 font-medium' };
     if (diff <= 3)  return { texto:`${diff}d`, clase:'text-orange-500 font-medium' };
     if (diff <= 7)  return { texto:`${diff}d`, clase:'text-amber-600' };
     return { texto:`${diff}d`, clase:'text-[#5e5e65]' };
@@ -424,7 +424,7 @@ export default function Dashboard() {
   async function setAccion(id, accion) {
     const actual = licitaciones.find(l => l.id === id)?.user_accion ?? null;
     const nuevo  = actual === accion ? null : accion;
-    // Optimistic update â€” la UI responde inmediato
+    // Optimistic update — la UI responde inmediato
     setLicitaciones(prev => prev.map(l => l.id === id ? { ...l, user_accion: nuevo } : l));
     await apiFetch(`/api/licitaciones/${id}`, {
       method: 'PATCH',
@@ -609,7 +609,7 @@ export default function Dashboard() {
                   </div>
                   <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-[#1a1b22] mb-2">Bienvenido, Fidel</h2>
                   <p className="text-[#5e5e65] text-sm leading-relaxed">
-                    {nuevas} licitaciones nuevas Â· {tareasPendientes.length} tareas pendientes Â· Semana {semanaActual} de entrenamiento
+                    {nuevas} licitaciones nuevas · {tareasPendientes.length} tareas pendientes · Semana {semanaActual} de entrenamiento
                   </p>
                 </div>
               </section>
@@ -647,7 +647,7 @@ export default function Dashboard() {
                     <button onClick={() => setSection('tareas')} className="text-[10px] text-primary font-semibold hover:underline font-label">Ver todas</button>
                   </div>
                   {tareasPendientes.length === 0
-                    ? <p className="px-6 py-8 text-sm text-[#5e5e65] text-center">Â¡Todo al dÃ­a!</p>
+                    ? <p className="px-6 py-8 text-sm text-[#5e5e65] text-center">¡Todo al día!</p>
                     : tareasPendientes.slice(0,4).map(t => (
                         <div key={t.id} className="flex items-center gap-4 px-6 py-4 hover:bg-[#f4f3fc] transition-colors border-b border-[#eeedf7] last:border-0">
                           <button onClick={() => marcarTarea(t.id, true)}
@@ -667,14 +667,14 @@ export default function Dashboard() {
                   <div className="flex items-center justify-between px-6 py-4 border-b border-[#eeedf7]">
                     <div className="flex items-center gap-2">
                       <Dumbbell className="w-4 h-4 text-primary" />
-                      <h3 className="font-bold text-sm font-inter">Semana {semanaActual} â€” PPL</h3>
+                      <h3 className="font-bold text-sm font-inter">Semana {semanaActual} — PPL</h3>
                     </div>
                     <button onClick={() => setSection('salud')} className="text-[10px] text-primary font-semibold hover:underline font-label">Ver salud</button>
                   </div>
                   {PPL_DIAS.map(({ dia, tipo }) => {
                     const sesion = sesionesSemanActual.find(s => s.tipo === tipo || s.tipo.startsWith(tipo.split('/')[0]));
                     const hoyIdx = new Date().getDay(); // 0=Dom
-                    const map = { Dom:0, Lun:1, Mar:2, 'MiÃ©':3, Jue:4, Vie:5, 'SÃ¡b':6 };
+                    const map = { Dom:0, Lun:1, Mar:2, 'Mié':3, Jue:4, Vie:5, 'Sáb':6 };
                     const isToday = map[dia] === hoyIdx;
                     return (
                       <div key={dia}
@@ -702,9 +702,9 @@ export default function Dashboard() {
                   <div>
                     <CardTitle>Licitaciones publicadas</CardTitle>
                     <CardDescription>
-                      {licsVisibles.length} de {licitaciones.length} Â· {regionSummary}
-                      {filtroCat && <span> Â· {filtroCat}</span>}
-                      {descartadasCount > 0 && <span className="ml-2 text-[#5e5e65]">Â· {descartadasCount} descartada{descartadasCount !== 1 ? 's' : ''}</span>}
+                      {licsVisibles.length} de {licitaciones.length} · {regionSummary}
+                      {filtroCat && <span> · {filtroCat}</span>}
+                      {descartadasCount > 0 && <span className="ml-2 text-[#5e5e65]">· {descartadasCount} descartada{descartadasCount !== 1 ? 's' : ''}</span>}
                     </CardDescription>
                   </div>
                   <div className="flex gap-1">
@@ -726,13 +726,13 @@ export default function Dashboard() {
                 <div className="flex flex-wrap gap-2 mt-3">
                   <div className="relative flex-1 min-w-[180px]">
                     <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#5e5e65]" />
-                    <input type="text" placeholder="Buscar nombre, ID, regiÃ³n..."
+                    <input type="text" placeholder="Buscar nombre, ID, región..."
                       value={busqueda} onChange={e => setBusqueda(e.target.value)}
                       className="w-full pl-8 pr-3 py-1.5 text-sm border border-[rgb(188_203_185/0.4)] rounded-lg bg-white focus:outline-none focus:border-primary/40 transition-colors" />
                   </div>
                   <select value={filtroCat} onChange={e => setFiltroCat(e.target.value)}
                     className="px-2 py-1.5 text-sm border border-[rgb(188_203_185/0.4)] rounded-lg bg-white focus:outline-none text-[#5e5e65]">
-                    <option value="">Todas las categorÃ­as</option>
+                    <option value="">Todas las categorías</option>
                     {categorias.map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
                   <select value={filtroRegion} onChange={e => setFiltroRegion(e.target.value)}
@@ -770,10 +770,10 @@ export default function Dashboard() {
                             Nombre <SortIcon dir={colSortDir('nombre')} />
                           </th>
                           <th className="text-left px-4 py-3 text-xs font-label font-semibold text-[#5e5e65] uppercase tracking-wide cursor-pointer select-none hidden lg:table-cell w-[140px]" onClick={() => toggleSort('categoria')}>
-                            CategorÃ­a <SortIcon dir={colSortDir('categoria')} />
+                            Categoría <SortIcon dir={colSortDir('categoria')} />
                           </th>
                           <th className="text-left px-4 py-3 text-xs font-label font-semibold text-[#5e5e65] uppercase tracking-wide cursor-pointer select-none hidden md:table-cell w-[150px]" onClick={() => toggleSort('region')}>
-                            RegiÃ³n <SortIcon dir={colSortDir('region')} />
+                            Región <SortIcon dir={colSortDir('region')} />
                           </th>
                           <th className="text-right px-4 py-3 text-xs font-label font-semibold text-[#5e5e65] uppercase tracking-wide cursor-pointer select-none whitespace-nowrap w-[120px]" onClick={() => toggleSort('monto')}>
                             Monto <SortIcon dir={colSortDir('monto')} />
@@ -782,7 +782,7 @@ export default function Dashboard() {
                             Cierre <SortIcon dir={colSortDir('fecha_publicacion')} />
                           </th>
                           <th className="text-center px-4 py-3 text-xs font-label font-semibold text-[#5e5e65] uppercase tracking-wide w-[100px]">
-                            AcciÃ³n
+                            Acción
                           </th>
                         </tr>
                       </thead>
@@ -808,7 +808,7 @@ export default function Dashboard() {
                               <td className="px-4 py-3 text-[#5e5e65] hidden lg:table-cell align-top leading-snug">{l.categoria}</td>
                               <td className="px-4 py-3 text-[#5e5e65] hidden md:table-cell align-top leading-snug">{l.region}</td>
                               <td className="px-4 py-3 text-right font-geist-mono whitespace-nowrap">
-                                {l.monto ? `$${l.monto.toLocaleString('es-CL')}` : <span className="text-[#bccbb9]">â€”</span>}
+                                {l.monto ? `$${l.monto.toLocaleString('es-CL')}` : <span className="text-[#bccbb9]">—</span>}
                               </td>
                               <td className="px-4 py-3 text-center whitespace-nowrap">
                                 {(() => { const d = diasRestantes(l.fecha_publicacion); return <span className={`text-xs font-geist-mono ${d.clase}`}>{d.texto}</span>; })()}
@@ -862,7 +862,7 @@ export default function Dashboard() {
                 </CardHeader>
                 <CardContent>
                   {tareasPendientes.length === 0
-                    ? <p className="text-sm text-[#5e5e65] py-6 text-center">Â¡Todo al dÃ­a! Sin tareas pendientes.</p>
+                    ? <p className="text-sm text-[#5e5e65] py-6 text-center">¡Todo al día! Sin tareas pendientes.</p>
                     : (
                       <div className="space-y-0">
                         {tareasPendientes.map(t => (
@@ -917,10 +917,10 @@ export default function Dashboard() {
               {/* Stats row */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[
-                  { label:'Peso actual',    Icon:Activity,     value:pesoActual,                  unit:'kg',   sub:ultimaMedicion?.grasa ? `${ultimaMedicion.grasa}% grasa` : 'â€”',                                          color:'text-primary' },
-                  { label:'Masa muscular',  Icon:Dumbbell,     value:ultimaMedicion?.musculo ?? 'â€”', unit:'kg', sub:ultimaMedicion?.bmr ? `BMR: ${ultimaMedicion.bmr} kcal` : 'â€”',                                          color:'text-primary' },
-                  { label:'Grasa visceral', Icon:Heart,        value:ultimaMedicion?.visceral ?? 'â€”', unit:'', sub:'nivel (objetivo â‰¤ 8)',                                                                                   color:'text-amber-600' },
-                  { label:'Score InBody',   Icon:Target,       value:ultimaMedicion?.score_inbody ?? 'â€”', unit:'pts', sub:'objetivo â‰¥ 90',                                                                                   color:(ultimaMedicion?.score_inbody ?? 0) >= 80 ? 'text-primary' : 'text-amber-600' },
+                  { label:'Peso actual',    Icon:Activity,     value:pesoActual,                  unit:'kg',   sub:ultimaMedicion?.grasa ? `${ultimaMedicion.grasa}% grasa` : '—',                                          color:'text-primary' },
+                  { label:'Masa muscular',  Icon:Dumbbell,     value:ultimaMedicion?.musculo ?? '—', unit:'kg', sub:ultimaMedicion?.bmr ? `BMR: ${ultimaMedicion.bmr} kcal` : '—',                                          color:'text-primary' },
+                  { label:'Grasa visceral', Icon:Heart,        value:ultimaMedicion?.visceral ?? '—', unit:'', sub:'nivel (objetivo â‰¤ 8)',                                                                                   color:'text-amber-600' },
+                  { label:'Score InBody',   Icon:Target,       value:ultimaMedicion?.score_inbody ?? '—', unit:'pts', sub:'objetivo â‰¥ 90',                                                                                   color:(ultimaMedicion?.score_inbody ?? 0) >= 80 ? 'text-primary' : 'text-amber-600' },
                 ].map(({ label, Icon, value, unit, sub, color }) => (
                   <div key={label} className="bg-white rounded-xl p-6 border border-[rgb(188_203_185/0.18)] shadow-sm flex flex-col justify-between gap-4">
                     <div className="flex justify-between items-start">
@@ -938,7 +938,7 @@ export default function Dashboard() {
                 ))}
               </div>
 
-              {/* InBody Analysis â€” 12 col grid */}
+              {/* InBody Analysis — 12 col grid */}
               <div className="grid lg:grid-cols-12 gap-8">
                 {/* Left 8: InBody + Training */}
                 <div className="lg:col-span-8 space-y-8">
@@ -947,9 +947,9 @@ export default function Dashboard() {
                   <section className="bg-white rounded-xl p-8 border border-[rgb(188_203_185/0.18)] shadow-sm">
                     <div className="flex justify-between items-end mb-8">
                       <div>
-                        <h3 className="text-xl font-bold text-[#1a1b22] font-inter">ComposiciÃ³n InBody</h3>
+                        <h3 className="text-xl font-bold text-[#1a1b22] font-inter">Composición InBody</h3>
                         {ultimaMedicion?.fecha_registro && (
-                          <p className="text-sm text-[#5e5e65]">Ãšltima mediciÃ³n: <span className="font-geist-mono">{new Date(ultimaMedicion.fecha_registro).toLocaleDateString('es-CL',{day:'2-digit',month:'short',year:'numeric'})}</span></p>
+                          <p className="text-sm text-[#5e5e65]">Última medición: <span className="font-geist-mono">{new Date(ultimaMedicion.fecha_registro).toLocaleDateString('es-CL',{day:'2-digit',month:'short',year:'numeric'})}</span></p>
                         )}
                       </div>
                       <button onClick={() => {}} className="text-sm text-primary font-medium hover:underline font-inter">Ver historial</button>
@@ -960,7 +960,7 @@ export default function Dashboard() {
                         {/* Donut grasa */}
                         <DonutStat pct={ultimaMedicion.grasa ?? 0} label="Body Fat" color="#006e2f" />
 
-                        {/* Barras mÃ©tricas */}
+                        {/* Barras métricas */}
                         <div className="flex flex-col justify-center space-y-5">
                           {[
                             { label:'Masa muscular', value:ultimaMedicion.musculo, unit:'kg', max:60, color:'bg-primary' },
@@ -970,7 +970,7 @@ export default function Dashboard() {
                             <div key={label}>
                               <div className="flex justify-between mb-1">
                                 <span className="text-xs text-[#5e5e65] font-label">{label}</span>
-                                <span className="text-xs font-geist-mono font-bold">{value ?? 'â€”'} {unit}</span>
+                                <span className="text-xs font-geist-mono font-bold">{value ?? '—'} {unit}</span>
                               </div>
                               <div className="h-2 bg-[#eeedf7] rounded-full overflow-hidden">
                                 <div className={`h-full ${color} rounded-full`}
@@ -1015,7 +1015,7 @@ export default function Dashboard() {
                   {/* Training schedule */}
                   <section className="bg-white rounded-xl p-8 border border-[rgb(188_203_185/0.18)] shadow-sm">
                     <div className="flex justify-between items-center mb-6">
-                      <h3 className="text-xl font-bold text-[#1a1b22] font-inter">Semana {semanaActual} â€” PPL</h3>
+                      <h3 className="text-xl font-bold text-[#1a1b22] font-inter">Semana {semanaActual} — PPL</h3>
                       <a href="/rutina_semana11.html" target="_blank" rel="noopener noreferrer">
                         <Button variant="outline" size="sm" className="text-xs gap-1">
                           <FileText className="w-3 h-3" /> Ver rutina
@@ -1041,7 +1041,7 @@ export default function Dashboard() {
                       {PPL_DIAS.map(({ dia, tipo }) => {
                         const sesion = sesionesSemanActual.find(s => s.tipo === tipo || s.tipo.startsWith(tipo.split('/')[0]));
                         const hoyIdx = new Date().getDay();
-                        const map = { Dom:0, Lun:1, Mar:2, 'MiÃ©':3, Jue:4, Vie:5, 'SÃ¡b':6 };
+                        const map = { Dom:0, Lun:1, Mar:2, 'Mié':3, Jue:4, Vie:5, 'Sáb':6 };
                         const isToday = map[dia] === hoyIdx;
                         return (
                           <div key={dia}
@@ -1108,7 +1108,7 @@ export default function Dashboard() {
                           <div className="flex items-center justify-between mb-1">
                             <span className="text-xs text-[#5e5e65] flex items-center gap-1 font-label">{icon}{label}</span>
                             <div className="flex items-center gap-2">
-                              <span className="text-xs font-geist-mono font-bold">{current ?? 'â€”'}{unit}</span>
+                              <span className="text-xs font-geist-mono font-bold">{current ?? '—'}{unit}</span>
                               {reached && <span className="text-[9px] text-primary font-bold font-label">âœ“ META</span>}
                             </div>
                           </div>
@@ -1116,13 +1116,13 @@ export default function Dashboard() {
                             <div className={`h-full rounded-full transition-all ${reached ? 'bg-[#22c55e]' : 'bg-primary'}`}
                               style={{width:`${pct}%`}} />
                           </div>
-                          <p className="text-[9px] text-[#5e5e65] mt-0.5 text-right font-geist-mono">{Math.round(pct)}% â†’ meta {goal}{unit}</p>
+                          <p className="text-[9px] text-[#5e5e65] mt-0.5 text-right font-geist-mono">{Math.round(pct)}% → meta {goal}{unit}</p>
                         </div>
                       );
                     })}
                   </section>
 
-                  {/* Ãšltimas mediciones */}
+                  {/* Últimas mediciones */}
                   <section className="bg-white rounded-xl p-6 border border-[rgb(188_203_185/0.18)] shadow-sm">
                     <h3 className="text-base font-bold text-[#1a1b22] font-inter mb-4">Historial InBody</h3>
                     <div className="space-y-3">
@@ -1130,7 +1130,7 @@ export default function Dashboard() {
                         <div key={m.id} className="flex items-center justify-between py-2 border-b border-[#eeedf7] last:border-0">
                           <span className="text-xs text-[#5e5e65] font-label">{new Date(m.fecha_registro).toLocaleDateString('es-CL',{day:'2-digit',month:'short'})}</span>
                           <span className="font-geist-mono text-sm font-bold">{m.peso} kg</span>
-                          <span className={`text-xs font-geist-mono px-2 py-0.5 rounded font-bold ${(m.score_inbody??0)>=80 ? 'bg-primary/10 text-primary' : 'bg-[#eeedf7] text-[#5e5e65]'}`}>{m.score_inbody ?? 'â€”'}</span>
+                          <span className={`text-xs font-geist-mono px-2 py-0.5 rounded font-bold ${(m.score_inbody??0)>=80 ? 'bg-primary/10 text-primary' : 'bg-[#eeedf7] text-[#5e5e65]'}`}>{m.score_inbody ?? '—'}</span>
                         </div>
                       ))}
                       {metricasSalud.length === 0 && <p className="text-xs text-[#5e5e65] text-center py-4">Sin mediciones</p>}
@@ -1139,10 +1139,10 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              {/* GrÃ¡fico tendencia corporal */}
+              {/* Gráfico tendencia corporal */}
               <section className="bg-white rounded-xl p-8 border border-[rgb(188_203_185/0.18)] shadow-sm">
-                <h3 className="text-lg font-bold text-[#1a1b22] font-inter mb-1">EvoluciÃ³n corporal</h3>
-                <p className="text-sm text-[#5e5e65] font-label mb-6">Peso Â· MÃºsculo Â· Grasa</p>
+                <h3 className="text-lg font-bold text-[#1a1b22] font-inter mb-1">Evolución corporal</h3>
+                <p className="text-sm text-[#5e5e65] font-label mb-6">Peso · Músculo · Grasa</p>
                 <ResponsiveContainer width="100%" height={240}>
                   <LineChart data={graficaInBody} margin={{top:5,right:10,left:-10,bottom:5}}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#eeedf7" />
@@ -1151,7 +1151,7 @@ export default function Dashboard() {
                     <Tooltip contentStyle={{fontSize:11,borderRadius:8,border:'1px solid #eeedf7'}} formatter={(v) => `${v} kg`} />
                     <Legend iconType="line" wrapperStyle={{fontSize:11}} />
                     <Line type="monotone" dataKey="peso"    stroke="#006e2f" strokeWidth={2} dot={{r:4,fill:'#006e2f'}} name="Peso" />
-                    <Line type="monotone" dataKey="musculo" stroke="#22c55e" strokeWidth={2} dot={{r:4,fill:'#22c55e'}} name="MÃºsculo" />
+                    <Line type="monotone" dataKey="musculo" stroke="#22c55e" strokeWidth={2} dot={{r:4,fill:'#22c55e'}} name="Músculo" />
                     <Line type="monotone" dataKey="grasa"   stroke="#c5ab03" strokeWidth={2} strokeDasharray="4 2" dot={{r:4,fill:'#c5ab03'}} name="% Grasa" />
                   </LineChart>
                 </ResponsiveContainer>
@@ -1161,7 +1161,7 @@ export default function Dashboard() {
               <Card>
                 <CardHeader className="pb-2">
                   <CardTitle className="text-base">Historial de sesiones</CardTitle>
-                  <CardDescription>{gymSesiones.length} sesiones Â· click para ver ejercicios</CardDescription>
+                  <CardDescription>{gymSesiones.length} sesiones · click para ver ejercicios</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="max-h-[480px] overflow-y-auto space-y-1">
@@ -1196,9 +1196,9 @@ export default function Dashboard() {
                                   {ejs.map(e => (
                                     <tr key={e.id} className="border-b border-[#eeedf7] last:border-0">
                                       <td className="py-1 text-[#1a1b22] font-medium">{e.nombre}</td>
-                                      <td className="py-1 text-right font-geist-mono text-[#5e5e65]">{e.carga_real != null ? `${e.carga_real} kg` : 'â€”'}</td>
-                                      <td className="py-1 text-right font-geist-mono text-[#5e5e65]">{e.series_real ?? 'â€”'}</td>
-                                      <td className="py-1 text-right font-geist-mono text-[#5e5e65]">{e.reps_real ?? 'â€”'}</td>
+                                      <td className="py-1 text-right font-geist-mono text-[#5e5e65]">{e.carga_real != null ? `${e.carga_real} kg` : '—'}</td>
+                                      <td className="py-1 text-right font-geist-mono text-[#5e5e65]">{e.series_real ?? '—'}</td>
+                                      <td className="py-1 text-right font-geist-mono text-[#5e5e65]">{e.reps_real ?? '—'}</td>
                                       <td className="py-1 pl-3 text-[#5e5e65]">{e.notas ?? ''}</td>
                                     </tr>
                                   ))}
@@ -1261,7 +1261,7 @@ export default function Dashboard() {
                             <div>
                               <div className="flex justify-between text-[10px] text-[#5e5e65] mb-1.5 font-label">
                                 <span>Progreso</span>
-                                <span>{completadas}/{etapas.length} etapas Â· <span className="font-geist-mono">{pct}%</span></span>
+                                <span>{completadas}/{etapas.length} etapas · <span className="font-geist-mono">{pct}%</span></span>
                               </div>
                               <div className="h-2 bg-[#eeedf7] rounded-full">
                                 <div className="h-2 rounded-full transition-all" style={{ width:`${pct}%`, backgroundColor:accentColor }} />
@@ -1283,7 +1283,7 @@ export default function Dashboard() {
                             </div>
                           )}
 
-                          {/* CafeterÃ­a budget */}
+                          {/* Cafetería budget */}
                           {isCafetera && desglose.length > 0 && (
                             <div>
                               <p className="text-[10px] text-[#5e5e65] font-label font-bold mb-2 uppercase tracking-wide">Presupuesto estimado</p>
@@ -1331,7 +1331,7 @@ export default function Dashboard() {
                                             <p className="font-geist-mono font-semibold">${precio.toLocaleString('es-CL')}</p>
                                             {d.variacion != null && (
                                               <p className={`text-[10px] font-geist-mono ${d.variacion < 0 ? 'text-primary' : 'text-red-500'}`}>
-                                                {d.variacion < 0 ? 'â†“' : 'â†‘'}{Math.abs(d.variacion)}%
+                                                {d.variacion < 0 ? '↓' : '↑'}{Math.abs(d.variacion)}%
                                               </p>
                                             )}
                                           </>
@@ -1343,7 +1343,7 @@ export default function Dashboard() {
                               </div>
                               {meta.ultima_revision && (
                                 <p className="text-[10px] text-[#5e5e65] mt-2 font-label">
-                                  Ãšltima revisiÃ³n: {new Date(meta.ultima_revision).toLocaleDateString('es-CL',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}
+                                  Última revisión: {new Date(meta.ultima_revision).toLocaleDateString('es-CL',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}
                                 </p>
                               )}
                             </div>
@@ -1354,7 +1354,7 @@ export default function Dashboard() {
                             <div className="text-xs text-[#5e5e65] space-y-1 font-label">
                               {meta.organismo && <p><span className="text-[#bccbb9]">Organismo:</span> {meta.organismo}</p>}
                               {meta.url_examenes && (
-                                <p><span className="text-[#bccbb9]">ExÃ¡menes:</span>{' '}
+                                <p><span className="text-[#bccbb9]">Exámenes:</span>{' '}
                                   <a href={meta.url_examenes} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">{meta.url_examenes}</a>
                                 </p>
                               )}
@@ -1374,7 +1374,7 @@ export default function Dashboard() {
           )}
 
           {/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-              MERCADO â€” Estudio calibraciÃ³n
+              MERCADO — Estudio calibración
           â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
           {section === 'mercado' && (
             <div className="space-y-8">
@@ -1386,14 +1386,14 @@ export default function Dashboard() {
                 <div className="relative max-w-2xl">
                   <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 text-primary rounded-full mb-4">
                     <FlaskConical className="w-3 h-3" />
-                    <span className="text-[10px] font-bold uppercase tracking-widest font-label">Proyecto 4 â€” Estudio de Mercado</span>
+                    <span className="text-[10px] font-bold uppercase tracking-widest font-label">Proyecto 4 — Estudio de Mercado</span>
                   </div>
                   <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-[#1a1b22] mb-2">
-                    Laboratorio de CalibraciÃ³n
+                    Laboratorio de Calibración
                   </h2>
                   <p className="text-[#5e5e65] text-sm leading-relaxed mb-4">
-                    AnÃ¡lisis de viabilidad para servicio de calibraciÃ³n de instrumentos topogrÃ¡ficos, balanzas y otros en la RegiÃ³n de Coquimbo.
-                    Datos basados en investigaciÃ³n de mercado agosto 2025.
+                    Análisis de viabilidad para servicio de calibración de instrumentos topográficos, balanzas y otros en la Región de Coquimbo.
+                    Datos basados en investigación de mercado agosto 2025.
                   </p>
                   <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold ${
                     RESUMEN_DATA.veredicto === 'VIABLE con condiciones'
@@ -1409,15 +1409,15 @@ export default function Dashboard() {
               {/* â”€â”€ KPIs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[
-                  { label: 'Competencia local acreditada', value: '0', unit: 'labs', sub: 'en Coquimbo â€” primer entrante', color: 'text-primary', bg: 'bg-primary/5' },
-                  { label: 'InversiÃ³n inicial (tÃ­pica)', value: '$41,8M', unit: 'CLP', sub: 'masas + temp + dimensional', color: 'text-[#1a1b22]', bg: 'bg-white' },
-                  { label: 'Tiempo hasta acreditaciÃ³n', value: '18â€“24', unit: 'meses', sub: 'desde inicio a cert. INN', color: 'text-amber-700', bg: 'bg-amber-50' },
-                  { label: 'Ingreso potencial aÃ±o 3â€“4', value: '$9,7â€“$19,5M', unit: 'CLP/mes', sub: '225 servicios a $65.000 prom.', color: 'text-emerald-700', bg: 'bg-emerald-50' },
+                  { label: 'Competencia local acreditada', value: '0', unit: 'labs', sub: 'en Coquimbo — primer entrante', color: 'text-primary', bg: 'bg-primary/5' },
+                  { label: 'Inversión inicial (típica)', value: '$41,8M', unit: 'CLP', sub: 'masas + temp + dimensional', color: 'text-[#1a1b22]', bg: 'bg-white' },
+                  { label: 'Tiempo hasta acreditación', value: '18–24', unit: 'meses', sub: 'desde inicio a cert. INN', color: 'text-amber-700', bg: 'bg-amber-50' },
+                  { label: 'Ingreso potencial año 3–4', value: '$9,7–$19,5M', unit: 'CLP/mes', sub: '225 servicios a $65.000 prom.', color: 'text-emerald-700', bg: 'bg-emerald-50' },
                 ].map(({ label, value, unit, sub, color, bg }) => (
                   <div key={label} className={`${bg} rounded-xl p-5 border border-[rgb(188_203_185/0.18)]`}>
                     <p className="text-[10px] font-label uppercase tracking-wider text-[#5e5e65] mb-2">{label}</p>
                     <p className={`text-2xl font-bold font-geist-mono ${color}`}>{value}</p>
-                    <p className="text-[10px] font-label text-[#5e5e65] mt-0.5">{unit} Â· {sub}</p>
+                    <p className="text-[10px] font-label text-[#5e5e65] mt-0.5">{unit} · {sub}</p>
                   </div>
                 ))}
               </div>
@@ -1456,7 +1456,7 @@ export default function Dashboard() {
               {/* â”€â”€ Plan de fases â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Plan de implementaciÃ³n escalonada</CardTitle>
+                  <CardTitle>Plan de implementación escalonada</CardTitle>
                   <CardDescription>Estrategia de entrada al mercado en 3 fases para minimizar riesgo financiero</CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -1478,10 +1478,10 @@ export default function Dashboard() {
                             ))}
                           </div>
                           <div className="flex items-center gap-4 text-xs">
-                            <span className="font-label text-[#5e5e65]">InversiÃ³n:</span>
-                            <span className="font-geist-mono font-semibold text-[#1a1b22]">${(fase.inversion_min/1e6).toFixed(1)}M â€“ ${(fase.inversion_max/1e6).toFixed(1)}M CLP</span>
+                            <span className="font-label text-[#5e5e65]">Inversión:</span>
+                            <span className="font-geist-mono font-semibold text-[#1a1b22]">${(fase.inversion_min/1e6).toFixed(1)}M – ${(fase.inversion_max/1e6).toFixed(1)}M CLP</span>
                             <span className="font-label text-[#5e5e65]">Ingresos est.:</span>
-                            <span className="font-geist-mono text-primary font-semibold">${(fase.ingresos_estimados_mes.min/1e6).toFixed(1)}M â€“ ${(fase.ingresos_estimados_mes.max/1e6).toFixed(1)}M /mes</span>
+                            <span className="font-geist-mono text-primary font-semibold">${(fase.ingresos_estimados_mes.min/1e6).toFixed(1)}M – ${(fase.ingresos_estimados_mes.max/1e6).toFixed(1)}M /mes</span>
                           </div>
                         </div>
                       </div>
@@ -1490,11 +1490,11 @@ export default function Dashboard() {
                 </CardContent>
               </Card>
 
-              {/* â”€â”€ Desglose inversiÃ³n â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+              {/* â”€â”€ Desglose inversión â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Desglose de inversiÃ³n</CardTitle>
-                  <CardDescription>Total laboratorio bÃ¡sico: masas + temperatura + dimensional</CardDescription>
+                  <CardTitle>Desglose de inversión</CardTitle>
+                  <CardDescription>Total laboratorio básico: masas + temperatura + dimensional</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
@@ -1505,7 +1505,7 @@ export default function Dashboard() {
                           <div className="flex items-center justify-between mb-1">
                             <span className="text-sm text-[#1a1b22]">{item.concepto}</span>
                             <div className="flex items-center gap-3">
-                              <span className="text-xs text-[#5e5e65] font-label">${(item.min/1e6).toFixed(1)}M â€“ ${(item.alto/1e6).toFixed(1)}M</span>
+                              <span className="text-xs text-[#5e5e65] font-label">${(item.min/1e6).toFixed(1)}M – ${(item.alto/1e6).toFixed(1)}M</span>
                               <span className="font-geist-mono font-semibold text-sm text-primary w-16 text-right">${(item.tipico/1e6).toFixed(1)}M</span>
                             </div>
                           </div>
@@ -1516,18 +1516,18 @@ export default function Dashboard() {
                       );
                     })}
                     <div className="pt-3 border-t border-[#eeedf7] flex justify-between">
-                      <span className="font-semibold text-sm">Total tÃ­pico</span>
+                      <span className="font-semibold text-sm">Total típico</span>
                       <span className="font-geist-mono font-bold text-primary text-lg">${(IMPL_DATA.inversion_total.tipica/1e6).toFixed(1)}M CLP</span>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
-              {/* â”€â”€ ProyecciÃ³n de ingresos â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+              {/* â”€â”€ Proyección de ingresos â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
               <Card>
                 <CardHeader>
-                  <CardTitle>ProyecciÃ³n de ingresos por fase</CardTitle>
-                  <CardDescription>EstimaciÃ³n conservadora â€” precio promedio por servicio</CardDescription>
+                  <CardTitle>Proyección de ingresos por fase</CardTitle>
+                  <CardDescription>Estimación conservadora — precio promedio por servicio</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -1535,7 +1535,7 @@ export default function Dashboard() {
                       <div key={i} className="p-4 rounded-xl bg-[#f4f3fc] border border-[rgb(188_203_185/0.18)]">
                         <p className="text-[10px] font-label uppercase tracking-wider text-[#5e5e65] mb-2">{p.fase}</p>
                         <p className="text-lg font-bold font-geist-mono text-primary">
-                          ${(p.ingreso_mensual_min/1e6).toFixed(1)}Mâ€“${(p.ingreso_mensual_max/1e6).toFixed(1)}M
+                          ${(p.ingreso_mensual_min/1e6).toFixed(1)}M–${(p.ingreso_mensual_max/1e6).toFixed(1)}M
                         </p>
                         <p className="text-[10px] text-[#5e5e65] font-label mt-1">CLP/mes</p>
                         <div className="mt-2 pt-2 border-t border-[#dddcf0] flex justify-between text-[10px] font-label text-[#5e5e65]">
@@ -1551,7 +1551,7 @@ export default function Dashboard() {
               {/* â”€â”€ Precios de mercado â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Precios de mercado â€” referencia Chile 2025</CardTitle>
+                  <CardTitle>Precios de mercado — referencia Chile 2025</CardTitle>
                   <CardDescription>Rango de tarifas por tipo de instrumento. Fuente: mercado nacional, verificar cotizaciones actuales.</CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -1567,9 +1567,9 @@ export default function Dashboard() {
                             <thead>
                               <tr className="border-b border-[#eeedf7]">
                                 <th className="text-left py-2 px-3 text-[10px] font-label font-semibold text-[#5e5e65] uppercase tracking-wide">Instrumento</th>
-                                <th className="text-right py-2 px-3 text-[10px] font-label font-semibold text-[#5e5e65] uppercase tracking-wide">MÃ­nimo</th>
-                                <th className="text-right py-2 px-3 text-[10px] font-label font-semibold text-[#5e5e65] uppercase tracking-wide">TÃ­pico</th>
-                                <th className="text-right py-2 px-3 text-[10px] font-label font-semibold text-[#5e5e65] uppercase tracking-wide">MÃ¡ximo</th>
+                                <th className="text-right py-2 px-3 text-[10px] font-label font-semibold text-[#5e5e65] uppercase tracking-wide">Mínimo</th>
+                                <th className="text-right py-2 px-3 text-[10px] font-label font-semibold text-[#5e5e65] uppercase tracking-wide">Típico</th>
+                                <th className="text-right py-2 px-3 text-[10px] font-label font-semibold text-[#5e5e65] uppercase tracking-wide">Máximo</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -1597,7 +1597,7 @@ export default function Dashboard() {
               <Card>
                 <CardHeader>
                   <CardTitle>Competencia nacional</CardTitle>
-                  <CardDescription>{EMPRESAS_DATA.length} laboratorios identificados â€” ninguno con sede en Coquimbo</CardDescription>
+                  <CardDescription>{EMPRESAS_DATA.length} laboratorios identificados — ninguno con sede en Coquimbo</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
@@ -1627,7 +1627,7 @@ export default function Dashboard() {
                             ))}
                           </div>
                           <div className="flex flex-wrap gap-4 text-[10px] font-label text-[#5e5e65]">
-                            <span><span className="font-semibold text-[#1a1b22]">AcreditaciÃ³n:</span> {emp.acreditacion}</span>
+                            <span><span className="font-semibold text-[#1a1b22]">Acreditación:</span> {emp.acreditacion}</span>
                             <span><span className="font-semibold text-[#1a1b22]">Coquimbo:</span> {emp.presencia_coquimbo}</span>
                           </div>
                           {emp.nota && <p className="mt-1 text-[10px] text-[#5e5e65] italic font-label">{emp.nota}</p>}
@@ -1638,11 +1638,11 @@ export default function Dashboard() {
                 </CardContent>
               </Card>
 
-              {/* â”€â”€ AcreditaciÃ³n â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+              {/* â”€â”€ Acreditación â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Costos de acreditaciÃ³n INN / ISO 17025</CardTitle>
-                  <CardDescription>Organismo: INN-Chile / DAE â€” Norma ISO/IEC 17025:2017 â€” Tiempo total: {IMPL_DATA.acreditacion_inn.tiempo_total_meses.min}â€“{IMPL_DATA.acreditacion_inn.tiempo_total_meses.max} meses</CardDescription>
+                  <CardTitle>Costos de acreditación INN / ISO 17025</CardTitle>
+                  <CardDescription>Organismo: INN-Chile / DAE — Norma ISO/IEC 17025:2017 — Tiempo total: {IMPL_DATA.acreditacion_inn.tiempo_total_meses.min}–{IMPL_DATA.acreditacion_inn.tiempo_total_meses.max} meses</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="grid sm:grid-cols-2 gap-3">
@@ -1650,7 +1650,7 @@ export default function Dashboard() {
                       <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-[#f4f3fc] border border-[rgb(188_203_185/0.18)]">
                         <span className="text-sm text-[#1a1b22]">{c.concepto}</span>
                         <span className="font-geist-mono text-sm font-semibold text-primary ml-4 shrink-0">
-                          ${(c.min/1e6).toFixed(1)}Mâ€“${(c.max/1e6).toFixed(1)}M
+                          ${(c.min/1e6).toFixed(1)}M–${(c.max/1e6).toFixed(1)}M
                         </span>
                       </div>
                     ))}
@@ -1660,7 +1660,7 @@ export default function Dashboard() {
                     <div className="flex flex-wrap gap-2">
                       {RESUMEN_DATA.fuentes.map((f, i) => (
                         <span key={i} className="text-[10px] font-label text-primary bg-white border border-primary/20 px-2 py-1 rounded-md">
-                          {f.nombre} â€” {f.url}
+                          {f.nombre} — {f.url}
                         </span>
                       ))}
                     </div>
@@ -1671,8 +1671,8 @@ export default function Dashboard() {
               {/* â”€â”€ Sectores demandantes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Sectores demandantes en la RegiÃ³n de Coquimbo</CardTitle>
-                  <CardDescription>AnÃ¡lisis de demanda por industria</CardDescription>
+                  <CardTitle>Sectores demandantes en la Región de Coquimbo</CardTitle>
+                  <CardDescription>Análisis de demanda por industria</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -1702,7 +1702,7 @@ export default function Dashboard() {
           )}
 
           {/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-              MUEBLES â€” Proyecto 5
+              MUEBLES — Proyecto 5
           â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
           {section === 'muebles' && (() => {
             function getPrecio(key, fallback) { return preciosEdit[key] ?? fallback; }
@@ -1731,14 +1731,14 @@ export default function Dashboard() {
                   <div className="relative max-w-2xl">
                     <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 text-primary rounded-full mb-4">
                       <Hammer className="w-3 h-3" />
-                      <span className="text-[10px] font-bold uppercase tracking-widest font-label">Proyecto 5 â€” Muebles de Madera</span>
+                      <span className="text-[10px] font-bold uppercase tracking-widest font-label">Proyecto 5 — Muebles de Madera</span>
                     </div>
                     <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-[#1a1b22] mb-2">
-                      Taller de CarpinterÃ­a
+                      Taller de Carpintería
                     </h2>
                     <p className="text-[#5e5e65] text-sm leading-relaxed mb-4">
-                      ProducciÃ³n en serie de {MODELOS_DATA.length} modelos estÃ¡ndar para marketplace. Mesa carpintera primero, luego escalar.
-                      Ventaja diferencial: impresiÃ³n 3D + SketchUp para plantillas y corte CNC.
+                      Producción en serie de {MODELOS_DATA.length} modelos estándar para marketplace. Mesa carpintera primero, luego escalar.
+                      Ventaja diferencial: impresión 3D + SketchUp para plantillas y corte CNC.
                     </p>
                     <div className="flex flex-wrap gap-4 text-sm">
                       {[
@@ -1771,13 +1771,13 @@ export default function Dashboard() {
                 {/* â”€â”€ TAB: MODELOS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
                 {muebleTab === 'modelos' && (
                   <div className="space-y-4">
-                    {/* Resumen mÃ¡rgenes */}
+                    {/* Resumen márgenes */}
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                       {[
-                        { label: 'Tiempo mÃ¡s rÃ¡pido', value: '2h', sub: 'Mesita auxiliar' },
+                        { label: 'Tiempo más rápido', value: '2h', sub: 'Mesita auxiliar' },
                         { label: 'Mayor margen', value: '70%', sub: 'Organizador 3D+madera' },
                         { label: 'Mejor ticket', value: '$280k', sub: 'Mesa de centro' },
-                        { label: 'EnvÃ­o nacional', value: `${MODELOS_DATA.filter((m) => m.envio_nacional).length} de ${MODELOS_DATA.length}`, sub: 'modelos flat-pack' },
+                        { label: 'Envío nacional', value: `${MODELOS_DATA.filter((m) => m.envio_nacional).length} de ${MODELOS_DATA.length}`, sub: 'modelos flat-pack' },
                       ].map(({ label, value, sub }) => (
                         <div key={label} className="bg-white rounded-xl p-4 border border-[rgb(188_203_185/0.18)]">
                           <p className="text-[10px] font-label uppercase tracking-wide text-[#5e5e65]">{label}</p>
@@ -1812,11 +1812,11 @@ export default function Dashboard() {
                             <div className="px-5 py-3 grid grid-cols-3 gap-3 text-center">
                               <div>
                                 <p className="text-[9px] font-label text-[#5e5e65] uppercase tracking-wide">Costo mat.</p>
-                                <p className="text-sm font-geist-mono font-semibold text-[#1a1b22]">${(m.costo_min/1000).toFixed(0)}kâ€“${(m.costo_max/1000).toFixed(0)}k</p>
+                                <p className="text-sm font-geist-mono font-semibold text-[#1a1b22]">${(m.costo_min/1000).toFixed(0)}k–${(m.costo_max/1000).toFixed(0)}k</p>
                               </div>
                               <div>
                                 <p className="text-[9px] font-label text-[#5e5e65] uppercase tracking-wide">Precio venta</p>
-                                <p className="text-sm font-geist-mono font-semibold text-primary">${(m.precio_min/1000).toFixed(0)}kâ€“${(m.precio_max/1000).toFixed(0)}k</p>
+                                <p className="text-sm font-geist-mono font-semibold text-primary">${(m.precio_min/1000).toFixed(0)}k–${(m.precio_max/1000).toFixed(0)}k</p>
                               </div>
                               <div>
                                 <p className="text-[9px] font-label text-[#5e5e65] uppercase tracking-wide">Tiempo</p>
@@ -1840,7 +1840,7 @@ export default function Dashboard() {
                                 <span className={`text-[9px] font-label px-2 py-0.5 rounded-full ${
                                   m.dificultad === 'baja' ? 'bg-green-50 text-green-700' : 'bg-amber-50 text-amber-700'
                                 }`}>{m.dificultad}</span>
-                                {m.envio_nacional && <span className="text-[9px] font-label bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full">envÃ­o nacional</span>}
+                                {m.envio_nacional && <span className="text-[9px] font-label bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full">envío nacional</span>}
                                 <span className="text-[9px] font-label text-[#5e5e65]">prio #{m.prioridad}</span>
                               </div>
                             </div>
@@ -1855,7 +1855,7 @@ export default function Dashboard() {
                 {muebleTab === 'mesa' && (
                   <div className="space-y-4">
 
-                    {/* Hero diseÃ±o elegido */}
+                    {/* Hero diseño elegido */}
                     <div className="bg-[#f4f3fc] rounded-xl p-5 border border-[rgb(188_203_185/0.18)] flex flex-col sm:flex-row gap-4 items-start">
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-2">
@@ -1898,7 +1898,7 @@ export default function Dashboard() {
 
                     {/* Zonas de la mesa */}
                     <Card>
-                      <CardHeader><CardTitle>Zonas de trabajo</CardTitle><CardDescription>DistribuciÃ³n del espacio en los 183cm de largo</CardDescription></CardHeader>
+                      <CardHeader><CardTitle>Zonas de trabajo</CardTitle><CardDescription>Distribución del espacio en los 183cm de largo</CardDescription></CardHeader>
                       <CardContent>
                         {/* Diagrama visual simple */}
                         <div className="flex gap-1 mb-4 h-16 rounded-xl overflow-hidden border border-[rgb(188_203_185/0.25)]">
@@ -1927,11 +1927,11 @@ export default function Dashboard() {
                       </CardContent>
                     </Card>
 
-                    {/* Pasos de construcciÃ³n */}
+                    {/* Pasos de construcción */}
                     <Card>
                       <CardHeader>
-                        <CardTitle>Pasos de construcciÃ³n</CardTitle>
-                        <CardDescription>7 pasos â€” {MESA_DATA.autor_original}</CardDescription>
+                        <CardTitle>Pasos de construcción</CardTitle>
+                        <CardDescription>7 pasos — {MESA_DATA.autor_original}</CardDescription>
                       </CardHeader>
                       <CardContent>
                         <div className="space-y-3">
@@ -1956,9 +1956,9 @@ export default function Dashboard() {
                       </CardContent>
                     </Card>
 
-                    {/* Lista de materiales â€” precios desde materiales.json */}
+                    {/* Lista de materiales — precios desde materiales.json */}
                     {(() => {
-                      // Lookup: material_ref â†’ precio_sodimac por unidad
+                      // Lookup: material_ref → precio_sodimac por unidad
                       const p2x4i = MATERIALES_DATA.pino_estructural.findIndex(p => p.dimension?.includes('2"x4"'));
                       const p2x3i = MATERIALES_DATA.pino_estructural.findIndex(p => p.dimension?.includes('2"x3"'));
                       const t18i  = MATERIALES_DATA.tableros.findIndex(t => t.tipo?.includes('18mm') && t.tipo?.includes('Plywood'));
@@ -1989,9 +1989,9 @@ export default function Dashboard() {
                           <CardHeader>
                             <CardTitle>Lista de materiales</CardTitle>
                             <CardDescription>
-                              Precios Sodimac — click en cualquier precio para editar Â·{' '}
+                              Precios Sodimac — click en cualquier precio para editar ·{' '}
                               <span className="font-geist-mono font-bold text-primary">${totalConfirmado.toLocaleString('es-CL')}</span>
-                              {pendientes > 0 && <span className="text-amber-700"> + {pendientes} Ã­tem(s) por verificar</span>}
+                              {pendientes > 0 && <span className="text-amber-700"> + {pendientes} ítem(s) por verificar</span>}
                             </CardDescription>
                           </CardHeader>
                           <CardContent>
@@ -2011,7 +2011,7 @@ export default function Dashboard() {
                                       <td className="py-2 px-3 text-[#1a1b22] text-xs">{mat.item}</td>
                                       <td className="py-2 px-3 text-center font-geist-mono text-[#5e5e65] text-xs">Ã—{mat.cantidad}</td>
                                       <td className="py-2 px-3 text-right font-geist-mono text-xs text-[#5e5e65]">
-                                        {mat.precioU !== null ? `$${mat.precioU.toLocaleString('es-CL')}` : 'â€”'}
+                                        {mat.precioU !== null ? `$${mat.precioU.toLocaleString('es-CL')}` : '—'}
                                       </td>
                                       <td className="py-2 px-3 text-right font-geist-mono font-semibold whitespace-nowrap">
                                         {mat.total !== null ? (
@@ -2062,7 +2062,7 @@ export default function Dashboard() {
                                 {h.urgente ? <AlertTriangle className="w-3.5 h-3.5 text-amber-600 shrink-0" /> : <Circle className="w-3.5 h-3.5 text-[#5e5e65] shrink-0" />}
                                 <span className="text-sm text-[#1a1b22]">{h.nombre}</span>
                               </div>
-                              <span className="font-geist-mono text-sm font-semibold text-primary shrink-0 ml-3">${(h.precio_min/1000).toFixed(0)}kâ€“${(h.precio_max/1000).toFixed(0)}k</span>
+                              <span className="font-geist-mono text-sm font-semibold text-primary shrink-0 ml-3">${(h.precio_min/1000).toFixed(0)}k–${(h.precio_max/1000).toFixed(0)}k</span>
                             </div>
                           ))}
                         </div>
@@ -2089,7 +2089,7 @@ export default function Dashboard() {
                       </CardContent>
                     </Card>
 
-                    {/* Seleccionadas â€” prÃ³xima compra */}
+                    {/* Seleccionadas — próxima compra */}
                     <Card>
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
@@ -2135,7 +2135,7 @@ export default function Dashboard() {
                       </CardContent>
                     </Card>
 
-                    {/* Por comprar â€” media / baja */}
+                    {/* Por comprar — media / baja */}
                     {['media', 'baja'].map(prio => {
                       const items = HERR_DATA.por_comprar.filter((h) => h.prioridad === prio);
                       if (items.length === 0) return null;
@@ -2145,7 +2145,7 @@ export default function Dashboard() {
                           <CardHeader>
                             <CardTitle className="flex items-center gap-2">
                               <span className={`text-[10px] font-label font-bold px-2 py-0.5 rounded-full border ${colors[prio]}`}>prioridad {prio}</span>
-                              {prio === 'media' ? 'A futuro â€” recomendado' : 'A futuro â€” cuando suba el volumen'}
+                              {prio === 'media' ? 'A futuro — recomendado' : 'A futuro — cuando suba el volumen'}
                             </CardTitle>
                           </CardHeader>
                           <CardContent>
@@ -2159,7 +2159,7 @@ export default function Dashboard() {
                                       <div key={i} className="bg-white border border-[rgb(188_203_185/0.2)] rounded-lg px-3 py-2 text-xs">
                                         <span className="font-semibold text-[#1a1b22]">{mod.marca} {mod.modelo}</span>
                                         <span className="font-geist-mono text-primary ml-2">
-                                          ${mod.precio_min.toLocaleString('es-CL')}â€“${mod.precio_max.toLocaleString('es-CL')}
+                                          ${mod.precio_min.toLocaleString('es-CL')}–${mod.precio_max.toLocaleString('es-CL')}
                                         </span>
                                         {mod.nota && <span className="block text-[#5e5e65] mt-0.5">{mod.nota}</span>}
                                       </div>
@@ -2224,7 +2224,7 @@ export default function Dashboard() {
 
                     {/* Flujo de trabajo */}
                     <Card>
-                      <CardHeader><CardTitle>Flujo SketchUp â†’ CNC</CardTitle><CardDescription>{SKETCHUP_DATA.flujo_trabajo}</CardDescription></CardHeader>
+                      <CardHeader><CardTitle>Flujo SketchUp → CNC</CardTitle><CardDescription>{SKETCHUP_DATA.flujo_trabajo}</CardDescription></CardHeader>
                       <CardContent>
                         <div className="space-y-2">
                           {SKETCHUP_DATA.cnc_chile.flujo.map((paso, i) => (
@@ -2242,7 +2242,7 @@ export default function Dashboard() {
                           {Object.entries(SKETCHUP_DATA.cnc_chile.precios_referencia).map(([key, val]) => (
                             <div key={key} className="flex items-center justify-between p-3 rounded-lg bg-white border border-[rgb(188_203_185/0.18)]">
                               <span className="text-xs text-[#5e5e65] font-label">{val.unidad}</span>
-                              <span className="font-geist-mono text-sm text-primary font-bold">${(val.min/1000).toFixed(0)}kâ€“${(val.max/1000).toFixed(0)}k</span>
+                              <span className="font-geist-mono text-sm text-primary font-bold">${(val.min/1000).toFixed(0)}k–${(val.max/1000).toFixed(0)}k</span>
                             </div>
                           ))}
                         </div>
@@ -2301,7 +2301,7 @@ export default function Dashboard() {
                     {/* Pino estructural */}
                     <Card>
                       <CardHeader>
-                        <CardTitle>Pino estructural â€” Sodimac</CardTitle>
+                        <CardTitle>Pino estructural — Sodimac</CardTitle>
                         <CardDescription>{MATERIALES_DATA.nota}</CardDescription>
                       </CardHeader>
                       <CardContent>
@@ -2309,7 +2309,7 @@ export default function Dashboard() {
                           <table className="w-full text-sm border-collapse">
                             <thead>
                               <tr className="border-b border-[#eeedf7]">
-                                <th className="text-left py-2 px-3 text-[10px] font-label font-semibold text-[#5e5e65] uppercase">DimensiÃ³n</th>
+                                <th className="text-left py-2 px-3 text-[10px] font-label font-semibold text-[#5e5e65] uppercase">Dimensión</th>
                                 <th className="text-center py-2 px-3 text-[10px] font-label font-semibold text-[#5e5e65] uppercase">Largo</th>
                                 <th className="text-right py-2 px-3 text-[10px] font-label font-semibold text-[#5e5e65] uppercase">Precio Sodimac</th>
                               </tr>
@@ -2340,7 +2340,7 @@ export default function Dashboard() {
 
                     {/* Tableros */}
                     <Card>
-                      <CardHeader><CardTitle>Tableros y paneles â€” Sodimac</CardTitle></CardHeader>
+                      <CardHeader><CardTitle>Tableros y paneles — Sodimac</CardTitle></CardHeader>
                       <CardContent>
                         <div className="overflow-x-auto">
                           <table className="w-full text-sm border-collapse">
@@ -2377,7 +2377,7 @@ export default function Dashboard() {
 
                     {/* Herrajes y fijaciones */}
                     <Card>
-                      <CardHeader><CardTitle>Herrajes y fijaciones â€” Sodimac</CardTitle></CardHeader>
+                      <CardHeader><CardTitle>Herrajes y fijaciones — Sodimac</CardTitle></CardHeader>
                       <CardContent>
                         <div className="space-y-2">
                           {MATERIALES_DATA.herrajes_y_fijaciones.map((h, i) => (
@@ -2408,7 +2408,7 @@ export default function Dashboard() {
 
                     {/* Acabados */}
                     <Card>
-                      <CardHeader><CardTitle>Acabados recomendados</CardTitle><CardDescription>Aceite + cera = diferenciador principal vs mueble de fÃ¡brica</CardDescription></CardHeader>
+                      <CardHeader><CardTitle>Acabados recomendados</CardTitle><CardDescription>Aceite + cera = diferenciador principal vs mueble de fábrica</CardDescription></CardHeader>
                       <CardContent>
                         <div className="grid sm:grid-cols-2 gap-2">
                           {MATERIALES_DATA.acabados.filter((a) => a.recomendado).map((a, i) => (
@@ -2417,20 +2417,20 @@ export default function Dashboard() {
                                 <p className="text-sm text-[#1a1b22] font-semibold">{a.tipo}</p>
                                 {a.nota && <p className="text-[10px] text-[#5e5e65] font-label">{a.nota}</p>}
                               </div>
-                              <span className="font-geist-mono text-sm text-primary font-bold shrink-0 ml-3">${(a.precio_min/1000).toFixed(0)}kâ€“${(a.precio_max/1000).toFixed(0)}k</span>
+                              <span className="font-geist-mono text-sm text-primary font-bold shrink-0 ml-3">${(a.precio_min/1000).toFixed(0)}k–${(a.precio_max/1000).toFixed(0)}k</span>
                             </div>
                           ))}
                         </div>
                         {/* Proveedores */}
                         <div className="mt-4">
-                          <p className="text-xs font-semibold text-[#1a1b22] mb-2">Proveedores en la regiÃ³n</p>
+                          <p className="text-xs font-semibold text-[#1a1b22] mb-2">Proveedores en la región</p>
                           <div className="grid sm:grid-cols-2 gap-2">
                             {MATERIALES_DATA.proveedores_zona.map((p, i) => (
                               <div key={i} className="flex items-start gap-2 p-3 rounded-lg bg-[#f4f3fc] border border-[rgb(188_203_185/0.18)]">
                                 <MapPin className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" />
                                 <div>
                                   <p className="text-sm font-semibold text-[#1a1b22]">{p.nombre}</p>
-                                  <p className="text-[10px] text-[#5e5e65] font-label">{p.ciudad}{p.zona ? ` Â· ${p.zona}` : ''}{p.ventaja ? ` Â· ${p.ventaja}` : ''}</p>
+                                  <p className="text-[10px] text-[#5e5e65] font-label">{p.ciudad}{p.zona ? ` · ${p.zona}` : ''}{p.ventaja ? ` · ${p.ventaja}` : ''}</p>
                                 </div>
                               </div>
                             ))}
