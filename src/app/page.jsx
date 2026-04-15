@@ -1091,11 +1091,23 @@ export default function Dashboard() {
                   <section className="bg-white rounded-xl p-8 border border-[rgb(188_203_185/0.18)] shadow-sm">
                     <div className="flex justify-between items-center mb-6">
                       <h3 className="text-xl font-bold text-[#1a1b22] font-inter">Semana {semanaActual} — PPL</h3>
-                      <a href="/rutina_semana11.html" target="_blank" rel="noopener noreferrer">
-                        <Button variant="outline" size="sm" className="text-xs gap-1">
-                          <FileText className="w-3 h-3" /> Ver rutina
-                        </Button>
-                      </a>
+                      <div className="flex items-center gap-1">
+                        <a href="/rutina_semana11.html" target="_blank" rel="noopener noreferrer">
+                          <Button variant="outline" size="sm" className="text-xs gap-1">
+                            <FileText className="w-3 h-3" /> S11
+                          </Button>
+                        </a>
+                        <a href="/rutina_semana12.html" target="_blank" rel="noopener noreferrer">
+                          <Button variant="outline" size="sm" className="text-xs gap-1">
+                            <FileText className="w-3 h-3" /> S12
+                          </Button>
+                        </a>
+                        <a href="/rutina_semana13.html" target="_blank" rel="noopener noreferrer">
+                          <Button variant="outline" size="sm" className="text-xs gap-1">
+                            <FileText className="w-3 h-3" /> S13
+                          </Button>
+                        </a>
+                      </div>
                       <Button size="sm" className="text-xs gap-1" onClick={() => {
                         const dayIdx = new Date().getDay();
                         const pplIdx = dayIdx === 0 ? 6 : dayIdx - 1;
