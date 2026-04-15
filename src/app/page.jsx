@@ -1920,7 +1920,7 @@ export default function Dashboard() {
                               </div>
                               {m.usa_3d && m.nota_3d && (
                                 <p className="text-[10px] text-primary font-label bg-primary/5 px-2 py-1 rounded-lg">
-                                  ðŸ–¨ {m.nota_3d}
+                                  🖨 {m.nota_3d}
                                 </p>
                               )}
                               <div className="mt-2 flex items-center gap-2">
@@ -2130,7 +2130,7 @@ export default function Dashboard() {
                         <div className="grid sm:grid-cols-2 gap-2">
                           {MESA_DATA.adaptaciones_para_ti.map((a, i) => (
                             <div key={i} className="flex items-start gap-2 p-3 rounded-lg bg-primary/5 border border-primary/15">
-                              <span className="text-primary mt-0.5 shrink-0 text-sm">ðŸ–¨</span>
+                              <span className="text-primary mt-0.5 shrink-0 text-sm">🖨</span>
                               <p className="text-xs text-[#1a1b22]">{a}</p>
                             </div>
                           ))}
