@@ -39,3 +39,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Datos privados — empresa y contabilidad
+Empresa/
+
+# Scripts temporales de registro/patch (pueden contener claves API)
+patch_*.js
+reg_*.js
