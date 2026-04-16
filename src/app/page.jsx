@@ -12,10 +12,11 @@ import {
   Search, X, CalendarOff, Circle, CheckCheck,
   Dumbbell, TrendingDown, Target, TrendingUp, Heart, FileText,
   FlaskConical, AlertTriangle, BadgeCheck, Building2, MapPin,
-  Hammer, Link, ExternalLink, Clock, LogOut, Pencil,
+  Hammer, Link, ExternalLink, Clock, LogOut, Pencil, Wallet,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import AccountantAgent from '@/components/AccountantAgent';
+import BancoSection    from '@/components/BancoSection';
 import EMPRESAS_DATA    from '@/data/calibracion/empresas_nacionales.json';
 import PRECIOS_DATA     from '@/data/calibracion/precios_mercado.json';
 import IMPL_DATA        from '@/data/calibracion/implementacion.json';
@@ -38,6 +39,7 @@ const NAV = [
   { id: 'proyectos',    label: 'Proyectos',    Icon: FolderOpen   },
   { id: 'mercado',      label: 'Calibración',  Icon: FlaskConical },
   { id: 'muebles',      label: 'Muebles',      Icon: Hammer       },
+  { id: 'banco',        label: 'Banco',        Icon: Wallet       },
   { id: 'contador',     label: 'Contador',     Icon: Receipt      },
 ];
 
@@ -2535,6 +2537,10 @@ export default function Dashboard() {
           {/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
               CONTADOR
           â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+          {section === 'banco' && (
+            <BancoSection apiFetch={apiFetch} />
+          )}
+
           {section === 'contador' && <AccountantAgent />}
 
         </div>
