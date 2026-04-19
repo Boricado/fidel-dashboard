@@ -267,6 +267,20 @@ export default function Dashboard() {
     setLoginSubmitting(false);
   }
 
+  async function handleRecovery() {
+    if (!supabase) return;
+    const email = loginForm.email.trim();
+    if (!email) { setAuthError('Ingresa tu correo para recuperar la clave.'); return; }
+    setLoginSubmitting(true);
+    setAuthError('');
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: typeof window !== 'undefined' ? `${window.location.origin}/` : undefined,
+    });
+    setLoginSubmitting(false);
+    if (error) { setAuthError(getAuthMessage(error.message)); }
+    else { setAuthError('✓ Revisa tu correo para restablecer la clave.'); }
+  }
+
   async function handleLogout() {
     if (!supabase) return;
     await supabase.auth.signOut();
@@ -547,6 +561,14 @@ export default function Dashboard() {
               <Button type="submit" className="w-full" disabled={loginSubmitting}>
                 {loginSubmitting ? 'Entrando...' : 'Entrar al dashboard'}
               </Button>
+              <button
+                type="button"
+                onClick={handleRecovery}
+                disabled={loginSubmitting}
+                className="w-full text-xs text-[#5e5e65] hover:text-primary underline underline-offset-2 text-center mt-1 disabled:opacity-50"
+              >
+                Recuperar contraseña
+              </button>
             </form>
           </CardContent>
         </Card>
