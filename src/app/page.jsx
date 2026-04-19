@@ -359,9 +359,11 @@ export default function Dashboard() {
   const sesionesSemanActual = gymSesiones.filter(s =>
     s.semana === semanaActual || (s.fecha && s.fecha >= _inicioSem && s.fecha <= _finSem)
   );
+  const pushTipo = semanaActual <= 12 ? 'Push A' : ((semanaActual - 13) % 2 === 0 ? 'Push B' : 'Push A');
+  const pullTipo = semanaActual <= 12 ? 'Pull A' : ((semanaActual - 13) % 2 === 0 ? 'Pull A' : 'Pull B');
   const PPL_DIAS = [
-    { dia:'Lun', tipo:'Push A' }, { dia:'Mar', tipo:'Carrera' }, { dia:'Mié', tipo:'Pierna' },
-    { dia:'Jue', tipo:'Cardio Z2' }, { dia:'Vie', tipo:'Pull A' },
+    { dia:'Lun', tipo: pushTipo }, { dia:'Mar', tipo:'Carrera' }, { dia:'Mié', tipo:'Pierna' },
+    { dia:'Jue', tipo:'Cardio Z2' }, { dia:'Vie', tipo: pullTipo },
     { dia:'Sáb', tipo:'Tirada Larga' }, { dia:'Dom', tipo:'Descanso' },
   ];
   const semanasSesiones = useMemo(() => {
@@ -708,7 +710,7 @@ export default function Dashboard() {
                     <button onClick={() => setSection('salud')} className="text-[10px] text-primary font-semibold hover:underline font-label">Ver salud</button>
                   </div>
                   {PPL_DIAS.map(({ dia, tipo }) => {
-                    const sesion = sesionesSemanActual.find(s => s.tipo === tipo || s.tipo.startsWith(tipo.split('/')[0]));
+                    const sesion = sesionesSemanActual.find(s => s.tipo === tipo || (tipo === 'Cardio Z2' && s.tipo === 'Carrera') || s.tipo.startsWith(tipo.split('/')[0]));
                     const hoyIdx = new Date().getDay(); // 0=Dom
                     const map = { Dom:0, Lun:1, Mar:2, 'Mié':3, Jue:4, Vie:5, 'Sáb':6 };
                     const isToday = map[dia] === hoyIdx;
@@ -1094,7 +1096,7 @@ export default function Dashboard() {
                     <div className="flex justify-between items-center mb-6">
                       <h3 className="text-xl font-bold text-[#1a1b22] font-inter">Semana {semanaActual} — PPL</h3>
                       <div className="flex items-center gap-1">
-                        {[semanaActual - 1, semanaActual, semanaActual + 1].filter(s => s >= 11 && s <= 27).map(s => (
+                        {[semanaActual, semanaActual + 1, semanaActual + 2].filter(s => s >= 11 && s <= 27).map(s => (
                           <a key={s} href={`/rutina_semana${s}.html`} target="_blank" rel="noopener noreferrer">
                             <Button variant={s === semanaActual ? 'default' : 'outline'} size="sm" className="text-xs gap-1">
                               <FileText className="w-3 h-3" /> S{s}
@@ -1120,7 +1122,7 @@ export default function Dashboard() {
                     </div>
                     <div className="space-y-2">
                       {PPL_DIAS.map(({ dia, tipo }) => {
-                        const sesion = sesionesSemanActual.find(s => s.tipo === tipo || s.tipo.startsWith(tipo.split('/')[0]));
+                        const sesion = sesionesSemanActual.find(s => s.tipo === tipo || (tipo === 'Cardio Z2' && s.tipo === 'Carrera') || s.tipo.startsWith(tipo.split('/')[0]));
                         const hoyIdx = new Date().getDay();
                         const map = { Dom:0, Lun:1, Mar:2, 'Mié':3, Jue:4, Vie:5, 'Sáb':6 };
                         const isToday = map[dia] === hoyIdx;
