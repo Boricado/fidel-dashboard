@@ -1094,21 +1094,13 @@ export default function Dashboard() {
                     <div className="flex justify-between items-center mb-6">
                       <h3 className="text-xl font-bold text-[#1a1b22] font-inter">Semana {semanaActual} — PPL</h3>
                       <div className="flex items-center gap-1">
-                        <a href="/rutina_semana11.html" target="_blank" rel="noopener noreferrer">
-                          <Button variant="outline" size="sm" className="text-xs gap-1">
-                            <FileText className="w-3 h-3" /> S11
-                          </Button>
-                        </a>
-                        <a href="/rutina_semana12.html" target="_blank" rel="noopener noreferrer">
-                          <Button variant="outline" size="sm" className="text-xs gap-1">
-                            <FileText className="w-3 h-3" /> S12
-                          </Button>
-                        </a>
-                        <a href="/rutina_semana13.html" target="_blank" rel="noopener noreferrer">
-                          <Button variant="outline" size="sm" className="text-xs gap-1">
-                            <FileText className="w-3 h-3" /> S13
-                          </Button>
-                        </a>
+                        {[semanaActual - 1, semanaActual, semanaActual + 1].filter(s => s >= 11 && s <= 27).map(s => (
+                          <a key={s} href={`/rutina_semana${s}.html`} target="_blank" rel="noopener noreferrer">
+                            <Button variant={s === semanaActual ? 'default' : 'outline'} size="sm" className="text-xs gap-1">
+                              <FileText className="w-3 h-3" /> S{s}
+                            </Button>
+                          </a>
+                        ))}
                       </div>
                       <Button size="sm" className="text-xs gap-1" onClick={() => {
                         const dayIdx = new Date().getDay();
