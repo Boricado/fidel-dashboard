@@ -120,8 +120,8 @@ export default function Dashboard() {
   const [session,            setSession]            = useState(null);
   const [authError,          setAuthError]          = useState('');
   const [loginForm,          setLoginForm]          = useState({
-    email: 'fidel.mora.aguirre@gmail.com',
-    password: 'Enaymaya1',
+    email: '',
+    password: '',
   });
   const [loginSubmitting,    setLoginSubmitting]    = useState(false);
   const [licitaciones,       setLicitaciones]       = useState([]);
@@ -518,12 +518,9 @@ export default function Dashboard() {
         <Card className="shadow-sm border-primary/15">
           <CardHeader>
             <CardTitle>Iniciar sesion</CardTitle>
-            <CardDescription>
-              En Render el dashboard quedara protegido por login de Supabase.
-            </CardDescription>
           </CardHeader>
           <CardContent>
-            <form className="space-y-4" onSubmit={handleLogin}>
+            <form className="space-y-4" onSubmit={handleLogin} autoComplete="off">
               <div className="space-y-2">
                 <label className="text-xs font-label uppercase text-[#5e5e65]">Correo</label>
                 <Input
