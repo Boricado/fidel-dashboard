@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { AlertCircle, CheckCircle2, Calendar, Wallet, ClipboardList, Building2 } from "lucide-react";
 
@@ -75,12 +75,14 @@ const BADGE_LABEL = {
 };
 
 export default function AccountantAgent() {
-  const [checked, setChecked] = useState(() => {
+  const [checked, setChecked] = useState({});
+
+  useEffect(() => {
     try {
-      const s = typeof window !== 'undefined' ? localStorage.getItem('conta_checked') : null;
-      return s ? JSON.parse(s) : {};
-    } catch { return {}; }
-  });
+      const s = localStorage.getItem('conta_checked');
+      if (s) setChecked(JSON.parse(s));
+    } catch {}
+  }, []);
   const f29List = generarF29(EMPRESA.inicio);
 
   function toggle(id) {
