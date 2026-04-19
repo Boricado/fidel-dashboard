@@ -38,7 +38,7 @@
     { "nombre": "Carrera fácil Z2",                                "series": 1, "reps": null,    "carga": null, "notas": "6 km · FC 118–138 · ritmo cómodo" }
   ],
   "Tirada Larga": [
-    { "nombre": "Tirada larga",                                    "series": 1, "reps": null,    "carga": null, "notas": "12 km · ritmo 6:30–7:00/km · FC <145" }
+    { "nombre": "Tirada larga",                                    "series": 1, "reps": null,    "carga": null, "notas": "12 km · ritmo 6:30–7:00/km · FC <145 ppm (Z3 Garmin, objetivo del programa)" }
   ],
   "Deporte": [],
   "Descanso": []
