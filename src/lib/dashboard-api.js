@@ -42,9 +42,29 @@ function combineHealthData(dbData, inbodyData) {
       return {
         ...entry,
         ...inbodyEntry,
-        // Asegurar que los campos principales estén correctos
-        peso_kg: entry.peso || inbodyEntry.peso_kg,
-        masa_grasa_kg: entry.grasa || inbodyEntry.masa_grasa_kg,
+        // Usar datos de InBody como prioritarios, con BD como respaldo
+        peso_kg: inbodyEntry.peso_kg || entry.peso,
+        masa_grasa_kg: inbodyEntry.masa_grasa_kg || entry.grasa,
+        masa_muscular_kg: inbodyEntry.masa_muscular_kg,
+        porcentaje_grasa: inbodyEntry.porcentaje_grasa,
+        nivel_grasa_visceral: inbodyEntry.nivel_grasa_visceral,
+        inbody_score: inbodyEntry.inbody_score,
+        imc: inbodyEntry.imc,
+        tasa_metabolica_basal: inbodyEntry.tasa_metabolica_basal,
+        relacion_cintura_cadera: inbodyEntry.relacion_cintura_cadera,
+        proteinas_kg: inbodyEntry.proteinas_kg,
+        agua_total_l: inbodyEntry.agua_total_l,
+        minerales_kg: inbodyEntry.minerales_kg,
+        grado_obesidad: inbodyEntry.grado_obesidad,
+        peso_objetivo_kg: inbodyEntry.peso_objetivo_kg,
+        control_peso_kg: inbodyEntry.control_peso_kg,
+        control_grasa_kg: inbodyEntry.control_grasa_kg,
+        control_muscular_kg: inbodyEntry.control_muscular_kg,
+        altura_cm: inbodyEntry.altura_cm,
+        edad: inbodyEntry.edad,
+        genero: inbodyEntry.genero,
+        fuente: inbodyEntry.fuente,
+        ocr_confidence: inbodyEntry.ocr_confidence
       };
     }
     return entry;
