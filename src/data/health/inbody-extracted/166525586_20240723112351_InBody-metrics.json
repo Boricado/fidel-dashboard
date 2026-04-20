@@ -4,7 +4,7 @@
   "personal_info": {
     "id": null,
     "height_cm": null,
-    "age": 166525586,
+    "age": null,
     "gender": null
   },
   "body_composition": {
@@ -24,7 +24,7 @@
     "fat_mass_kg": 26.3
   },
   "obesity_analysis": {
-    "imc": 10,
+    "imc": null,
     "fat_percentage": null
   },
   "muscle_segments": {},

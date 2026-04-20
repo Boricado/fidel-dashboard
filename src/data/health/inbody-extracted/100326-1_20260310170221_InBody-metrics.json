@@ -4,7 +4,7 @@
   "personal_info": {
     "id": null,
     "height_cm": null,
-    "age": 100326,
+    "age": null,
     "gender": null,
     "scan_date": "2026-03-10",
     "scan_time": "17:02"
@@ -32,7 +32,7 @@
   "muscle_segments": {},
   "fat_segments": {},
   "scores": {
-    "inbody_score": 1,
+    "inbody_score": 81,
     "inbody_score_max": 100
   },
   "weight_control": {

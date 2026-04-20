@@ -4,7 +4,7 @@
   "personal_info": {
     "id": null,
     "height_cm": null,
-    "age": 166525586,
+    "age": null,
     "gender": null
   },
   "body_composition": {
@@ -14,17 +14,17 @@
     "proteins_range": null,
     "minerals_kg": null,
     "minerals_range": null,
-    "fat_mass_kg": 229,
+    "fat_mass_kg": 22.9,
     "fat_mass_range": null,
     "weight_kg": 75.3,
     "weight_range": null
   },
   "muscle_fat_analysis": {
     "muscle_mass_kg": null,
-    "fat_mass_kg": 229
+    "fat_mass_kg": 22.9
   },
   "obesity_analysis": {
-    "imc": 10,
+    "imc": null,
     "fat_percentage": null
   },
   "muscle_segments": {},

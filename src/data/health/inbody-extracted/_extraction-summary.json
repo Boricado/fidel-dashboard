@@ -321,7 +321,7 @@
       "weight": 80.3,
       "muscle_mass": 30.7,
       "fat_mass": 21.8,
-      "inbody_score": 1,
+      "inbody_score": 81,
       "imc": null,
       "visceral_fat_level": 9
     },
@@ -331,16 +331,16 @@
       "muscle_mass": null,
       "fat_mass": 26.3,
       "inbody_score": 48,
-      "imc": 10,
+      "imc": null,
       "visceral_fat_level": null
     },
     {
       "fileName": "166525586_20250628103509_InBody.jpg",
       "weight": 75.3,
       "muscle_mass": null,
-      "fat_mass": 229,
+      "fat_mass": 22.9,
       "inbody_score": 46,
-      "imc": 10,
+      "imc": null,
       "visceral_fat_level": null
     },
     {
@@ -349,7 +349,7 @@
       "muscle_mass": null,
       "fat_mass": 24.7,
       "inbody_score": 49,
-      "imc": 10,
+      "imc": null,
       "visceral_fat_level": null
     },
     {
@@ -357,8 +357,8 @@
       "date": "2026-04-16",
       "weight": 81.2,
       "muscle_mass": null,
-      "fat_mass": 222,
-      "inbody_score": 1,
+      "fat_mass": 22.2,
+      "inbody_score": 81,
       "imc": null,
       "visceral_fat_level": 10
     }

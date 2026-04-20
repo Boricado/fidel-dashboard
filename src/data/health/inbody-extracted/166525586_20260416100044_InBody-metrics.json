@@ -4,7 +4,7 @@
   "personal_info": {
     "id": null,
     "height_cm": null,
-    "age": 166525586,
+    "age": null,
     "gender": null,
     "scan_date": "2026-04-16",
     "scan_time": "10:00"
@@ -16,14 +16,14 @@
     "proteins_range": null,
     "minerals_kg": null,
     "minerals_range": null,
-    "fat_mass_kg": 222,
+    "fat_mass_kg": 22.2,
     "fat_mass_range": null,
     "weight_kg": 81.2,
     "weight_range": "1877-2211"
   },
   "muscle_fat_analysis": {
     "muscle_mass_kg": null,
-    "fat_mass_kg": 222
+    "fat_mass_kg": 22.2
   },
   "obesity_analysis": {
     "imc": null,
@@ -32,7 +32,7 @@
   "muscle_segments": {},
   "fat_segments": {},
   "scores": {
-    "inbody_score": 1,
+    "inbody_score": 81,
     "inbody_score_max": 100
   },
   "weight_control": {
