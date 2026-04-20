@@ -152,7 +152,7 @@ function mergeHealthMetrics(entries) {
     });
   }
 
-  return [...grouped.values()].sort((a, b) => new Date(a.fecha_registro) - new Date(b.fecha_registro));
+  return [...grouped.values()].sort((a, b) => new Date(b.fecha_registro) - new Date(a.fecha_registro));
 }
 
 function getDifference(current, previous, digits = 1) {
