@@ -36,7 +36,7 @@
     "inbody_score_max": 100
   },
   "weight_control": {
-    "target_weight_kg": 3,
+    "target_weight_kg": 81.2,
     "weight_control_kg": -97,
     "fat_control_kg": 7,
     "muscle_control_kg": null

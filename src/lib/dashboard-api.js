@@ -8,6 +8,7 @@ function loadInBodyData() {
 
   Object.entries(INBODY_EXTRACTED_DATA).forEach(([date, data]) => {
     inbodyData[date] = {
+      peso_kg: data.body_composition?.weight_kg || null,
       masa_muscular_kg: data.muscle_fat_analysis?.muscle_mass_kg || data.body_composition?.muscle_mass_kg || null,
       masa_grasa_kg: data.muscle_fat_analysis?.fat_mass_kg || data.body_composition?.fat_mass_kg || null,
       porcentaje_grasa: data.obesity_analysis?.fat_percentage || null,
@@ -36,38 +37,39 @@ function loadInBodyData() {
 }
 
 function combineHealthData(dbData, inbodyData) {
+  // Encontrar el peso objetivo más reciente para usarlo como línea de meta global
+  const latestTarget = Object.values(inbodyData)
+    .filter(d => d.peso_objetivo_kg)
+    .sort((a, b) => new Date(b.scan_date) - new Date(a.scan_date))[0]?.peso_objetivo_kg || 81.2;
+
   return dbData.map(entry => {
     const inbodyEntry = inbodyData[entry.fecha_registro];
-    if (inbodyEntry) {
-      return {
-        ...entry,
-        ...inbodyEntry,
-        // Usar datos de InBody como prioritarios, con BD como respaldo
-        peso_kg: inbodyEntry.peso_kg || entry.peso,
-        masa_grasa_kg: inbodyEntry.masa_grasa_kg || entry.grasa,
-        masa_muscular_kg: inbodyEntry.masa_muscular_kg,
-        porcentaje_grasa: inbodyEntry.porcentaje_grasa,
-        nivel_grasa_visceral: inbodyEntry.nivel_grasa_visceral,
-        inbody_score: inbodyEntry.inbody_score,
-        imc: inbodyEntry.imc,
-        tasa_metabolica_basal: inbodyEntry.tasa_metabolica_basal,
-        relacion_cintura_cadera: inbodyEntry.relacion_cintura_cadera,
-        proteinas_kg: inbodyEntry.proteinas_kg,
-        agua_total_l: inbodyEntry.agua_total_l,
-        minerales_kg: inbodyEntry.minerales_kg,
-        grado_obesidad: inbodyEntry.grado_obesidad,
-        peso_objetivo_kg: inbodyEntry.peso_objetivo_kg,
-        control_peso_kg: inbodyEntry.control_peso_kg,
-        control_grasa_kg: inbodyEntry.control_grasa_kg,
-        control_muscular_kg: inbodyEntry.control_muscular_kg,
-        altura_cm: inbodyEntry.altura_cm,
-        edad: inbodyEntry.edad,
-        genero: inbodyEntry.genero,
-        fuente: inbodyEntry.fuente,
-        ocr_confidence: inbodyEntry.ocr_confidence
-      };
-    }
-    return entry;
+    
+    return {
+      ...entry,
+      ...(inbodyEntry || {}),
+      // Normalización de campos prioritarios
+      peso_kg: inbodyEntry?.peso_kg || entry.peso || null,
+      masa_grasa_kg: inbodyEntry?.masa_grasa_kg || entry.grasa || null,
+      masa_muscular_kg: inbodyEntry?.masa_muscular_kg || null,
+      // Línea de meta persistente para la gráfica
+      peso_objetivo_kg: inbodyEntry?.peso_objetivo_kg || latestTarget,
+      // Asegurar que existan los campos para evitar errores en la UI
+      porcentaje_grasa: inbodyEntry?.porcentaje_grasa || null,
+      inbody_score: inbodyEntry?.inbody_score || null,
+      imc: inbodyEntry?.imc || null,
+      nivel_grasa_visceral: inbodyEntry?.nivel_grasa_visceral || null,
+      tasa_metabolica_basal: inbodyEntry?.tasa_metabolica_basal || null,
+      relacion_cintura_cadera: inbodyEntry?.relacion_cintura_cadera || null,
+      proteinas_kg: inbodyEntry?.proteinas_kg || null,
+      agua_total_l: inbodyEntry?.agua_total_l || null,
+      minerales_kg: inbodyEntry?.minerales_kg || null,
+      grado_obesidad: inbodyEntry?.grado_obesidad || null,
+      control_peso_kg: inbodyEntry?.control_peso_kg || null,
+      control_grasa_kg: inbodyEntry?.control_grasa_kg || null,
+      control_muscular_kg: inbodyEntry?.control_muscular_kg || null,
+      fuente: inbodyEntry ? 'inbody' : 'manual'
+    };
   });
 }
 
@@ -85,7 +87,7 @@ export async function getDashboardData() {
     supabase
       .from('metricas_salud')
       .select('*')
-      .order('fecha_registro', { ascending: false }), // Cambiado a descendente para mostrar primero el más antiguo
+      .order('fecha_registro', { ascending: true }), // Cambiado a ascendente para que la evolución sea correcta
     supabase.from('proyectos').select('*').order('created_at', { ascending: false }).limit(5),
     supabase.from('gym_sesiones').select('*').order('fecha', { ascending: false }).limit(100),
     supabase.from('gym_ejercicios').select('*').order('id', { ascending: true }),

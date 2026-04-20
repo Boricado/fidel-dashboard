@@ -43,6 +43,13 @@ function sanitizeHealthData() {
       hasChanges = true;
     }
 
+    // 1b. Corrección de Peso (si tomó el target weight 81.2 en lugar del real 91.2)
+    if (content.body_composition?.weight_kg === 81.2 && content.raw_ocr_text?.includes('91.2')) {
+      console.log(`[${file}] Peso corregido: 81.2 -> 91.2 (detectado error de target weight)`);
+      content.body_composition.weight_kg = 91.2;
+      hasChanges = true;
+    }
+
     // 2. Corrección de Puntuación InBody (inbody_score)
     // El OCR suele leer "8 1 7100" y tomar solo el "1". Buscamos el patrón en el texto crudo.
     if (content.scores?.inbody_score < 10 && content.raw_ocr_text) {
@@ -67,6 +74,12 @@ function sanitizeHealthData() {
     if (content.personal_info?.age > 120) {
       console.log(`[${file}] Edad corregida (era un ID): ${content.personal_info.age} -> null`);
       content.personal_info.age = null;
+      hasChanges = true;
+    }
+
+    // 5. Forzar Peso Objetivo (Sabemos que la meta es 81.2)
+    if (!content.weight_control?.target_weight_kg || content.weight_control.target_weight_kg < 50) {
+      content.weight_control.target_weight_kg = 81.2;
       hasChanges = true;
     }
 

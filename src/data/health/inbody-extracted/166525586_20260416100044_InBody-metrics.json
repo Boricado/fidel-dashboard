@@ -18,7 +18,7 @@
     "minerals_range": null,
     "fat_mass_kg": 22.2,
     "fat_mass_range": null,
-    "weight_kg": 81.2,
+    "weight_kg": 91.2,
     "weight_range": "1877-2211"
   },
   "muscle_fat_analysis": {
@@ -36,7 +36,7 @@
     "inbody_score_max": 100
   },
   "weight_control": {
-    "target_weight_kg": 2,
+    "target_weight_kg": 81.2,
     "weight_control_kg": null,
     "fat_control_kg": null,
     "muscle_control_kg": null

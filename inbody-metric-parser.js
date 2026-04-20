@@ -12,7 +12,7 @@
 const extractNumber = (text, pattern) => {
   const match = text.match(pattern);
   if (match && match[1]) {
-    const num = parseFloat(match[1].replace(/[^\d.,\-]/g, '').replace(',', '.'));
+    const num = parseFloat(match[1].replace(/[^\d.,\-]/g, '').replace(',', '.').replace('..', '.'));
     return !isNaN(num) ? num : null;
   }
   return null;
@@ -71,11 +71,11 @@ const parseInBodyMetrics = (ocrText, imageName) => {
     metrics.body_composition.minerals_range = (ocrText.match(/Minerales[^(]*\(\s*([\d.,\s\-]+)\s*\)/i) || [, null])[1] || null;
 
     // "Masa Grasa Corporal — (kg) 222 ( 81~162 )"
-    metrics.body_composition.fat_mass_kg = extractNumber(ocrText, /Masa\s+Grasa\s+Corporal.*?(\d+[.,]?\d*)/i) || null;
+    metrics.body_composition.fat_mass_kg = extractNumber(ocrText, /Masa\s+Grasa\s+Corporal[^\d]*?(\d+[.,]?\d*)/i) || null;
     metrics.body_composition.fat_mass_range = (ocrText.match(/Masa\s+Grasa\s+Corporal[^(]*\(\s*([\d.,\s\-~]+)\s*\)/i) || [, null])[1] || null;
 
     // "Peso (kg) 91.2 ( 573-775 )"
-    metrics.body_composition.weight_kg = extractNumber(ocrText, /Peso.*?(\d+[.,]\d+)\s*kg/i) || null;
+    metrics.body_composition.weight_kg = extractNumber(ocrText, /Peso\s+\(kg\)\s+([\d.,]+)/i) || extractNumber(ocrText, /Peso[^\d]*?(\d+[.,]\d+)(?!\s*objetivo)/i) || null;
     metrics.body_composition.weight_range = (ocrText.match(/Peso[^(]*\(\s*([\d.,\s\-]+)\s*\)/i) || [, null])[1] || null;
 
     // ─── MUSCLE-FAT ANALYSIS ──────────────────────────────────────────────
@@ -84,7 +84,7 @@ const parseInBodyMetrics = (ocrText, imageName) => {
     metrics.muscle_fat_analysis.muscle_mass_kg = extractNumber(ocrText, /musculosquel[^0-9]*(\d+[.,]\d+)/i) ||
                                                  extractNumber(ocrText, /músculo[^0-9]*(\d+[.,]\d+)\s*kg/i) ||
                                                  extractNumber(ocrText, /Masa\s+músculo.*?(\d+[.,]\d+)/i) || null;
-    metrics.muscle_fat_analysis.fat_mass_kg = extractNumber(ocrText, /Masa\s+Grasa\s+Corporal.*?(\d+[.,]?\d*)/i) || 
+    metrics.muscle_fat_analysis.fat_mass_kg = extractNumber(ocrText, /Masa\s+Grasa\s+Corporal[^\d]*?(\d+[.,]?\d*)/i) || 
                                               extractNumber(ocrText, /Masa\s+Grasa.*?(\d+[.,]?\d*)/i) || null;
 
     // ─── OBESITY ANALYSIS ─────────────────────────────────────────────────
@@ -96,7 +96,13 @@ const parseInBodyMetrics = (ocrText, imageName) => {
     // ─── InBODY SCORE ─────────────────────────────────────────────────────
     // Look for "Puntuación InBody" followed by numbers
     const scoreMatch = ocrText.match(/Puntuación\s+InBody[\s\S]*?(\d+)/i);
-    if (scoreMatch) {
+    
+    // Fallback para cuando el OCR separa los dígitos como "8 1 7100"
+    const splitScoreMatch = ocrText.match(/(\d)\s+(\d)\s+\d+\s+Puntos/);
+    
+    if (splitScoreMatch) {
+      metrics.scores.inbody_score = parseInt(`${splitScoreMatch[1]}${splitScoreMatch[2]}`);
+    } else if (scoreMatch) {
       metrics.scores.inbody_score = parseInt(scoreMatch[1]);
     }
     metrics.scores.inbody_score_max = 100;
@@ -164,10 +170,17 @@ const parseInBodyMetrics = (ocrText, imageName) => {
     }
 
     // ─── WEIGHT CONTROL ───────────────────────────────────────────────────
-    metrics.weight_control.target_weight_kg = extractNumber(ocrText, /Peso\s+objetivo.*?([\d.]+)\s*kg/i) || null;
-    metrics.weight_control.weight_control_kg = extractNumber(ocrText, /Control\s+de\s+peso.*?([\d.\-]+)\s*kg/i) || null;
-    metrics.weight_control.fat_control_kg = extractNumber(ocrText, /Control\s+de\s+grasa.*?([\d.\-]+)\s*kg/i) || null;
-    metrics.weight_control.muscle_control_kg = extractNumber(ocrText, /Control\s+muscular.*?([\d.\-]+)\s*kg/i) || null;
+    // Actualizado para manejar comas (81,2) y espacios
+    metrics.weight_control.target_weight_kg = extractNumber(ocrText, /Peso\s+objetivo\s+([\d.,]+)/i) || null;
+    metrics.weight_control.weight_control_kg = extractNumber(ocrText, /Control\s+de\s+peso\s+([\d.,\-]+)/i) || null;
+    metrics.weight_control.fat_control_kg = extractNumber(ocrText, /Control\s+de\s+grasa\s+([\d.,\-]+)/i) || null;
+    metrics.weight_control.muscle_control_kg = extractNumber(ocrText, /Control\s+muscular\s+([\d.,\-]+)/i) || null;
+
+    // Mejora en la captura del Score cuando el OCR separa los dígitos "8 1"
+    const pointsMatch = ocrText.match(/(\d)\s+(\d)\s+\d+\s+Puntos/);
+    if (pointsMatch && !metrics.scores.inbody_score) {
+      metrics.scores.inbody_score = parseInt(`${pointsMatch[1]}${pointsMatch[2]}`);
+    }
 
     // ─── INVESTIGATION PARAMETERS ─────────────────────────────────────────
     metrics.investigation_params.basal_metabolic_rate = extractNumber(ocrText, /Tasa\s+metabólica\s+basal.*?([\d.]+)/i) || null;
