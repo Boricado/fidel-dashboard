@@ -1,0 +1,54 @@
+{
+  "source": "166525586_20251123132152_InBody.jpg",
+  "extraction_timestamp": "2026-04-20T21:53:16.137Z",
+  "personal_info": {
+    "id": null,
+    "height_cm": null,
+    "age": 166525586,
+    "gender": null
+  },
+  "body_composition": {
+    "water_liters": 49.5,
+    "water_range": null,
+    "proteins_kg": null,
+    "proteins_range": null,
+    "minerals_kg": null,
+    "minerals_range": null,
+    "fat_mass_kg": 24.7,
+    "fat_mass_range": null,
+    "weight_kg": 79.4,
+    "weight_range": null
+  },
+  "muscle_fat_analysis": {
+    "muscle_mass_kg": null,
+    "fat_mass_kg": 24.7
+  },
+  "obesity_analysis": {
+    "imc": 10,
+    "fat_percentage": null
+  },
+  "muscle_segments": {},
+  "fat_segments": {},
+  "scores": {
+    "inbody_score": 49,
+    "inbody_score_max": 100
+  },
+  "weight_control": {
+    "target_weight_kg": null,
+    "weight_control_kg": null,
+    "fat_control_kg": 8,
+    "muscle_control_kg": null
+  },
+  "investigation_params": {
+    "basal_metabolic_rate": 1827,
+    "waist_hip_ratio": null,
+    "visceral_fat_level": null,
+    "obesity_degree": null
+  },
+  "impedance": {},
+  "history": {},
+  "raw_ocr_text": "y [InBody270]\n—\n| ID | Altura | Edad | Sexo | Fecha / Hora de la prueba\n166525586 174em ar Masculino | 2025.11.23. 13:21\nAnálisis de Composición Corporal Puntuación InBody\nCantidad total de agua en el cuerpo Agua Corporal Total (L) 49,5 ( 37,4-45,8 )\nPara producir los músculos Proteínas (kg) 13,5 ( 101-123 ) 78/ 100 Puntos\n* La puntuación total que refleja la evaluación de la comp\nPara fortalecer los huesos Minerales (kg) 4,51 ( 346-423 ) 1 mopar Una persona musculosa puede superar\nPara almacenar el exceso de energía Masa Grasa Corporal (kg) 24,7 ( 8,0-16,0 ) Control de Peso ————————\nLa suma de lo anterior Peso (kg) 92.2 ( 56,6-76,6 ) Peso Ideal 79,4 kg\n7\" ControldePeso - 12,8 kg\nControl de Grasa - 12,8 kg\nTO » Control de Músculo 0,0 kg\nAnalisis de Músculo-Grasa Evaluación de Obesidad\na |_Normal_| Ligeramente\n> IMC O Normal O Bajo O Alto\nPeso (kg) 55 70 85 100 115 130 145 160 175 190 205 % Wi Alto\nI O EO) >\nPGC 1 Ligeramente Al\nMME (kg) 70 80 90 100 110 120 130 140 150 160 170 % E Nomal O Alto Alto\nNasa de Misc Esquelico IS E EOS EE 30 6 E\n> Relación Cintura-Cadera ————— ¿\nMasa Grasa (kg) 40 60 80 100 160 220 280 1340 400 460 520 % 0,80 0,90\nCorporal IN O ES SMA 7 00 | EE\nNivel de Grasa Visceral ——— ¿\neee N Nr Bajo 10 Alto\nAnálisis de Obesidad Nivel 11 | _\nParámetros de Investigación —— h\nIMC kg/m? 10,0 15,0 185 220 250 30,0 35,0 40,0 45,0 50,0 55,0 =\ndodo ss Capon (KG/M CEE 305 Masa Libre de Grasa  67,5kg ( 51,0623 )\nPGC (%)|_00 50 100 150 200 250 300 350 400 450 500 Tasa Metabólica Basal — 1827 keal ( 1894-2232 )\norense d Grasa Cool ————[ a LE] IME 9,1 kg/m\nHi ig _— Ingesta calórica recomendada 2480 kcal\n% %\nEvaluación Evaluación Gasto calórico del ejercicio —— h\nAnálisis de Masa Magra Segmental — Análisis de Grasa Segmental Golf 162 | Gateball 175\nCaminata 184 | Yoga 184\n199. 2 16K9... a ADO 1.9kg Badminton 208|Tenisdemesa — 208\n120,0% 119,1% _248,6% 251,5% Tenis 277 | Ciclismo 277\nAlto Alto Alto Alto Boxeo 277 | Basquetbol 27.1\n3 31,2kg o) 3 14,2kg o) Senderismo 301 | Salto de cuerda — 323\nLo] - 112,0% z Lo] E 336.1% h g Aeróbicos 323 | Trotar 323\n5 . a 5 a , \"\n3 Alto = 5 Alto = Fútbol 323 | Natación 323\n= = Esgrima japonesa 461 | Raquetbol 461\n_S6skg + 96M. .3.1k9 34k9 ses ter A\n99.7% 99,3% 179,5% 179,6% \"\ne AN (0 IN . 4 . . asado en su peso actual\nNormal Normal Alto Alto *Basado en una duración de 30 minutos\nImpedancia ——————————\nBD BI TR PD PI\n# Se estima la grasa segmental Zoo) 20k12|260,4 258,0 21,4 241,5 237,7\nFn 2269 17,3 212,2 207,9\nHistorial de Composición Corporal\n92,8 92,2\nPeso (kg) —s9 —*\n38,0 38,6\nMed *—85 —\n28,3\n== 264 268\nRee oToal 202 we MIO OO\nss ss ss ss rss ss ss ——————\nVer.LookinBody 120.4.0.0.7 - S/N: F922005445 Copyright 01996- by InBody Co. Ltd. All rights reserved.BR-Spanish(m)-F3/230-8-140219\n",
+  "extraction_notes": [
+    "Extraction completed at 2026-04-20T21:53:16.138Z"
+  ]
+}

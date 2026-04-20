@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cat src/app/api/tareas/[id]/route.js)",
+      "Bash(cat src/app/api/licitaciones/[id]/route.js)",
+      "Bash(node_modules/.bin/next build:*)",
+      "Bash(git add:*)",
+      "Bash(git rm:*)",
+      "Bash(git commit -m ':*)",
+      "Bash(node -e ':*)",
+      "Bash(node)",
+      "Bash(git restore:*)",
+      "Bash(node patch_gym.js)",
+      "Bash(npm run:*)",
+      "Bash(git push:*)",
+      "Bash(node patch_modal.js)",
+      "Bash(node patch_modal2.js)",
+      "Bash(node patch_rutina_fix.js)",
+      "Bash(node patch_rutina_fix2.js)",
+      "Bash(node -e ' *)",
+      "Bash(node reg_pull_18abr.js)",
+      "Bash(node reg_tirada_19abr.js)",
+      "WebSearch",
+      "Bash(node generar_rutinas.js)",
+      "Bash(node patch_rutinas_nav.js)",
+      "Bash(git commit -m ' *)"
+    ]
+  }
+}

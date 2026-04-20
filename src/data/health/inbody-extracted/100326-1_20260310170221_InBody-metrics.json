@@ -1,0 +1,56 @@
+{
+  "source": "100326-1_20260310170221_InBody.jpg",
+  "extraction_timestamp": "2026-04-20T21:52:45.777Z",
+  "personal_info": {
+    "id": null,
+    "height_cm": null,
+    "age": 100326,
+    "gender": null,
+    "scan_date": "2026-03-10",
+    "scan_time": "17:02"
+  },
+  "body_composition": {
+    "water_liters": 50.1,
+    "water_range": "1",
+    "proteins_kg": null,
+    "proteins_range": null,
+    "minerals_kg": null,
+    "minerals_range": null,
+    "fat_mass_kg": 21.8,
+    "fat_mass_range": null,
+    "weight_kg": 80.3,
+    "weight_range": "1857-2187 "
+  },
+  "muscle_fat_analysis": {
+    "muscle_mass_kg": 30.7,
+    "fat_mass_kg": 21.8
+  },
+  "obesity_analysis": {
+    "imc": null,
+    "fat_percentage": null
+  },
+  "muscle_segments": {},
+  "fat_segments": {},
+  "scores": {
+    "inbody_score": 1,
+    "inbody_score_max": 100
+  },
+  "weight_control": {
+    "target_weight_kg": 3,
+    "weight_control_kg": -97,
+    "fat_control_kg": 7,
+    "muscle_control_kg": null
+  },
+  "investigation_params": {
+    "basal_metabolic_rate": 1844,
+    "waist_hip_ratio": null,
+    "visceral_fat_level": 9,
+    "obesity_degree": 134
+  },
+  "impedance": {},
+  "history": {},
+  "raw_ocr_text": "——————]—]——————————]———;;-———;——z—;ao————]—;z———\n| ID | Altura | Edad | Género | Fecha / Hora del test\n| 100326-1 175em 38 Masculino | 10.03.2026. 17:02\nAnálisis de la Composición Corporal Puntuación InBody\nCantidad total de agua corporal Agua Corporal Total (1) 50,1 ( 37,9-46,3 )\nNecesario para definir musculatura Proteínas (kg) 13,6 ( 102-124 ) 8 1 7100 Puntos\ni * La puntuación total que refleja la evaluación de\nNecesario para reforzar los huesos Minerales (kg) 456 ( 350~428 ) la composición corporal. Una persona musculosa\nE puede superar 100 puntos.\nNecesario para almacenar el exceso de energía Masa Grasa Corporal — (kg) 21,8 ( 81~162 ) Control de peso ———————\nSuma de lo anterior Peso (kg) 90.0 ( 57,3-775 ) Peso objetivo 80,3 kg\n— — Control de peso -97 kg\nControl de grasa -9,7 kg\nPOT , Control muscular 0,0 kg\nAnálisis Músculo-Grasa Parámetros de Investigación —— h\n54 Tasa metabólica basal 1844 kcal ( 1857-2187 )\n55 70 85 100 115 130 145 160 175 190 205 % iA) 1 La\nPeso (kg) IO NO LS TS AM 9) Relación Cintura-Cadera — 0,94 ( 0,80-0,90 )\n2 Nivel de grasa visceral 9 ( 1~9 )\nMasa » (kg) 70 80 90 100 110 120 130 140 150 160 170 %\nmusculoesqueléica I O E E A 30 () Grado de obesidad 134% ( 90-110 )\nMasa Grasa (kg) [40 80 80 100 160 220 280 340 400 460 520 % Interpretación de los resultados —— h\nCorporal —————— A] Kid et i\n> Análisis de la Composición Corporal\nEl peso corporal es la suma del agua corporal total,\nlas proteínas, los minerales y la masa de grasa corporal.\nAnálisis de Obesidad Mantenga una composición corporal equilibrada para\nINC (kg?) 100 150 185 220 250 300 350 400 450 500 550 Análisis Músculo-grasa\nIndcede Masa Copor IU O O o E 20 4 Compare la longitud de las barras de la masa musculoesquelética\nPorcentaje de (%) |_00 50 100 150 200 250 300 350 400 450 500 y la masa de grasa corporal. Cuanto mas larga sea la barra de la\nGrasa Corporal 74 7 masa muscular esquelética en comparación con la masa de\ngrasa corporal, más fuerte será el cuerpo\nfee \"escasea Análisis de obesidad\nEvaluación Evaluación ques: ors . o\nFA P El IMC es un índice utilizado para determinar la obesidad\nAnálisis de Magro por Segmentos Analisis de Grasa Segmental mediante el peso y la altura.\nEl PGC es el porcentaje de grasa corporal en relación\nLAK WANK nd 209 1.2kg a peso corporal\n124,9% 123,9% 202,8% 205,3% Analisis de magro por segmentos\nAlto Alto Alto Alto Evalúa si la cantidad de músculo está distribuida\nadecuadamente por todo el cuerpo. Compara la\no o\n° . 30,7kg 7 D 12,2kg 3 3 masa muscular con el peso actual.\no 111,6% D o 286,7% D —_\n=r Alto S = Alto o. Análisis de Grasa Segmental\n= 2 XN = Evalúa si la cantidad de grasa está distribuida\n...0,11kg ..90kg... 2 KO 2,99 adecuadamente por todo el cuerpo. Compara masa\n..100,6% 98,7%. .165,2% 164,8% grasa con La IDeal.\nNel uu E Hie Código QR de lectura de resultados —\nEscanee el codigo QR para =r\nver la lectura de los resultados = E [=]\nLa grasa segmental es estimada. mas detalladamente.\nHistorial de Composición Corporal RE\nPeso (kg) | 90,0 Impedancia. ———————\nhd BD BI TR PD PI\nZoo) 2011|260,7 261,4 21,3 229,4 218,8\n1 (ko) | 39,0 100 = 227,9 2200 17,8 2009 191,1\nPorcentaje de\nGrasa Copa = 2% 2\nY Reciente O Total 100328 : : : : : : :\npo\nVer LookinBody 120.3.0.1.7 - S/N: F31902069 Copyright ©1996~ by InBody Co., Ltd. All rights reserved. BR-Spanish-F3/230-8-140530\n",
+  "extraction_notes": [
+    "Extraction completed at 2026-04-20T21:52:45.783Z"
+  ]
+}

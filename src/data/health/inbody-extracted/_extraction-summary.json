@@ -1,0 +1,367 @@
+{
+  "timestamp": "2026-04-20T21:52:35.440Z",
+  "total_files": 5,
+  "successful": 5,
+  "failed": 0,
+  "files": [
+    {
+      "success": true,
+      "fileName": "100326-1_20260310170221_InBody.jpg",
+      "outputPath": "C:\\Users\\fidel\\Documents\\fidel-dashboard\\src\\data\\health\\inbody-extracted\\100326-1_20260310170221_InBody-metrics.json",
+      "metrics": {
+        "source": "100326-1_20260310170221_InBody.jpg",
+        "extraction_timestamp": "2026-04-20T21:52:45.777Z",
+        "personal_info": {
+          "id": null,
+          "height_cm": null,
+          "age": 100326,
+          "gender": null,
+          "scan_date": "2026-03-10",
+          "scan_time": "17:02"
+        },
+        "body_composition": {
+          "water_liters": 50.1,
+          "water_range": "1",
+          "proteins_kg": null,
+          "proteins_range": null,
+          "minerals_kg": null,
+          "minerals_range": null,
+          "fat_mass_kg": 21.8,
+          "fat_mass_range": null,
+          "weight_kg": 80.3,
+          "weight_range": "1857-2187 "
+        },
+        "muscle_fat_analysis": {
+          "muscle_mass_kg": 30.7,
+          "fat_mass_kg": 21.8
+        },
+        "obesity_analysis": {
+          "imc": null,
+          "fat_percentage": null
+        },
+        "muscle_segments": {},
+        "fat_segments": {},
+        "scores": {
+          "inbody_score": 1,
+          "inbody_score_max": 100
+        },
+        "weight_control": {
+          "target_weight_kg": 3,
+          "weight_control_kg": -97,
+          "fat_control_kg": 7,
+          "muscle_control_kg": null
+        },
+        "investigation_params": {
+          "basal_metabolic_rate": 1844,
+          "waist_hip_ratio": null,
+          "visceral_fat_level": 9,
+          "obesity_degree": 134
+        },
+        "impedance": {},
+        "history": {},
+        "raw_ocr_text": "——————]—]——————————]———;;-———;——z—;ao————]—;z———\n| ID | Altura | Edad | Género | Fecha / Hora del test\n| 100326-1 175em 38 Masculino | 10.03.2026. 17:02\nAnálisis de la Composición Corporal Puntuación InBody\nCantidad total de agua corporal Agua Corporal Total (1) 50,1 ( 37,9-46,3 )\nNecesario para definir musculatura Proteínas (kg) 13,6 ( 102-124 ) 8 1 7100 Puntos\ni * La puntuación total que refleja la evaluación de\nNecesario para reforzar los huesos Minerales (kg) 456 ( 350~428 ) la composición corporal. Una persona musculosa\nE puede superar 100 puntos.\nNecesario para almacenar el exceso de energía Masa Grasa Corporal — (kg) 21,8 ( 81~162 ) Control de peso ———————\nSuma de lo anterior Peso (kg) 90.0 ( 57,3-775 ) Peso objetivo 80,3 kg\n— — Control de peso -97 kg\nControl de grasa -9,7 kg\nPOT , Control muscular 0,0 kg\nAnálisis Músculo-Grasa Parámetros de Investigación —— h\n54 Tasa metabólica basal 1844 kcal ( 1857-2187 )\n55 70 85 100 115 130 145 160 175 190 205 % iA) 1 La\nPeso (kg) IO NO LS TS AM 9) Relación Cintura-Cadera — 0,94 ( 0,80-0,90 )\n2 Nivel de grasa visceral 9 ( 1~9 )\nMasa » (kg) 70 80 90 100 110 120 130 140 150 160 170 %\nmusculoesqueléica I O E E A 30 () Grado de obesidad 134% ( 90-110 )\nMasa Grasa (kg) [40 80 80 100 160 220 280 340 400 460 520 % Interpretación de los resultados —— h\nCorporal —————— A] Kid et i\n> Análisis de la Composición Corporal\nEl peso corporal es la suma del agua corporal total,\nlas proteínas, los minerales y la masa de grasa corporal.\nAnálisis de Obesidad Mantenga una composición corporal equilibrada para\nINC (kg?) 100 150 185 220 250 300 350 400 450 500 550 Análisis Músculo-grasa\nIndcede Masa Copor IU O O o E 20 4 Compare la longitud de las barras de la masa musculoesquelética\nPorcentaje de (%) |_00 50 100 150 200 250 300 350 400 450 500 y la masa de grasa corporal. Cuanto mas larga sea la barra de la\nGrasa Corporal 74 7 masa muscular esquelética en comparación con la masa de\ngrasa corporal, más fuerte será el cuerpo\nfee \"escasea Análisis de obesidad\nEvaluación Evaluación ques: ors . o\nFA P El IMC es un índice utilizado para determinar la obesidad\nAnálisis de Magro por Segmentos Analisis de Grasa Segmental mediante el peso y la altura.\nEl PGC es el porcentaje de grasa corporal en relación\nLAK WANK nd 209 1.2kg a peso corporal\n124,9% 123,9% 202,8% 205,3% Analisis de magro por segmentos\nAlto Alto Alto Alto Evalúa si la cantidad de músculo está distribuida\nadecuadamente por todo el cuerpo. Compara la\no o\n° . 30,7kg 7 D 12,2kg 3 3 masa muscular con el peso actual.\no 111,6% D o 286,7% D —_\n=r Alto S = Alto o. Análisis de Grasa Segmental\n= 2 XN = Evalúa si la cantidad de grasa está distribuida\n...0,11kg ..90kg... 2 KO 2,99 adecuadamente por todo el cuerpo. Compara masa\n..100,6% 98,7%. .165,2% 164,8% grasa con La IDeal.\nNel uu E Hie Código QR de lectura de resultados —\nEscanee el codigo QR para =r\nver la lectura de los resultados = E [=]\nLa grasa segmental es estimada. mas detalladamente.\nHistorial de Composición Corporal RE\nPeso (kg) | 90,0 Impedancia. ———————\nhd BD BI TR PD PI\nZoo) 2011|260,7 261,4 21,3 229,4 218,8\n1 (ko) | 39,0 100 = 227,9 2200 17,8 2009 191,1\nPorcentaje de\nGrasa Copa = 2% 2\nY Reciente O Total 100328 : : : : : : :\npo\nVer LookinBody 120.3.0.1.7 - S/N: F31902069 Copyright ©1996~ by InBody Co., Ltd. All rights reserved. BR-Spanish-F3/230-8-140530\n",
+        "extraction_notes": [
+          "Extraction completed at 2026-04-20T21:52:45.783Z"
+        ]
+      },
+      "ocrConfidence": 81,
+      "warnings": []
+    },
+    {
+      "success": true,
+      "fileName": "166525586_20240723112351_InBody.jpg",
+      "outputPath": "C:\\Users\\fidel\\Documents\\fidel-dashboard\\src\\data\\health\\inbody-extracted\\166525586_20240723112351_InBody-metrics.json",
+      "metrics": {
+        "source": "166525586_20240723112351_InBody.jpg",
+        "extraction_timestamp": "2026-04-20T21:52:56.006Z",
+        "personal_info": {
+          "id": null,
+          "height_cm": null,
+          "age": 166525586,
+          "gender": null
+        },
+        "body_composition": {
+          "water_liters": 48.8,
+          "water_range": null,
+          "proteins_kg": null,
+          "proteins_range": null,
+          "minerals_kg": null,
+          "minerals_range": null,
+          "fat_mass_kg": 26.3,
+          "fat_mass_range": null,
+          "weight_kg": 78.3,
+          "weight_range": null
+        },
+        "muscle_fat_analysis": {
+          "muscle_mass_kg": null,
+          "fat_mass_kg": 26.3
+        },
+        "obesity_analysis": {
+          "imc": 10,
+          "fat_percentage": null
+        },
+        "muscle_segments": {},
+        "fat_segments": {},
+        "scores": {
+          "inbody_score": 48,
+          "inbody_score_max": 100
+        },
+        "weight_control": {
+          "target_weight_kg": null,
+          "weight_control_kg": null,
+          "fat_control_kg": 5,
+          "muscle_control_kg": null
+        },
+        "investigation_params": {
+          "basal_metabolic_rate": 1807,
+          "waist_hip_ratio": null,
+          "visceral_fat_level": null,
+          "obesity_degree": null
+        },
+        "impedance": {},
+        "history": {},
+        "raw_ocr_text": "y [InBody270]\n—\n| ID | Altura | Edad | Sexo | Fecha / Hora de la prueba\n166525586 174em 36 Masculino | 2024.07.23. 11:23\nAnálisis de Composición Corporal Puntuación InBody\nCantidad total de agua en el cuerpo Agua Corporal Total (L) 48,8 ( 37,4-45,8 )\nPara producir los músculos Proteínas (kg) 13,3 ( 101-123 ) 75/ 100 Puntos\n* La puntuación total que refleja la evaluación de la comp\nPara fortalecer los huesos Minerales (kg) 440 ( 346-423 ) scion corporal Una persona musculosa puede superar\n4 puntos.\nPara almacenar el exceso de energía Masa Grasa Corporal (kg) 26,3 ( 80~160 ) Control de Peso ————————\nLa suma de lo anterior Peso (kg) 92.8 ( 56,6-76,6 ) Peso Ideal 78,3 kg\n7\" ControldePeso - 14,5 kg\nControl de Grasa - 14,5 kg\nTO » Control de Músculo 0,0 kg\nAnalisis de Músculo-Grasa Evaluación de Obesidad\na |_Normal_| Ligeramente\n> IMC O Normal O Bajo O Alto\nPeso (kg) 55 70 85 100 115 130 145 160 175 190 205 % Wi Alto\nI EO) 3\n. Ligeramente\nMME (kg) 70 80 90 100 HO 120 130 140 150 160 170 % PGC O Normal O i Alto\nMas de iso suelo CS —— E E\n2 Relación Cintura-Cadera ————— ¿\nMasa Grasa (kg) 40 60 80 100 160 220 280 1340 400 4600 520 % 0,80 0,90\nCorporal NE E A 63 101 | [a\nNivel de Grasa Visceral ——— ¿\neee N Nr Bajo 10 Alto\nAnálisis de Obesidad Nivel 11 | _\nParámetros de Investigación —— h\nIMC kg/m? 10,0 15,0 185 220 250 30,0 35,0 40,0 45,0 50,0 55,0 =\n[cod ca Cara (CT) pe o ss os RA 307 Masa Libre de Grasa 66,5kg ( 51,0623 )\nPGC (%)|_00 50 100 150 200 250 300 350 400 450 500 Tasa Metabólica Basal 1807 keal ( 1903-2244 )\norense d Grasa Cool ———— IE) IME 9,0 kgr\nHi ig _— Ingesta calórica recomendada 2500 keal\n% %\nEvaluación Evaluación Gasto calórico del ejercicio —— h\nAnálisis de Masa Magra Segmental — Análisis de Grasa Segmental Golf 163 | Gateball 176\nCaminata 186 | Yoga 186\n..4.08kg . 2099. LL 1:7K9 1.7kg Badminton 210 |Tenisdemesa — 210\n116,4% 116,8% 279.8% 276,6% Tenis 278 | Ciclismo 278\nAlto Alto Alto Alto Boxeo 278 | Basquetbol 278\no o Senderismo 303 | Salto de cuerda — 325\n5 ero g E 412.56 4 8 pertbicos 325 | Trota 325\n2 110.2% a 2 355,0% 5 ; To J\nFc E EC\n= = sgrima japonesa aquetbol\n_61kg 955. . 339 339 sem e\n98,7% 98,1% 191,2% 190,5%\nA nia ni o y * Basado en su peso actual\nNormal Normal Alto Alto *Basado en una duración de 30 minutos\nImpedancia ——————————\nBD BI TR PD PI\n# Se estima la grasa segmental Zoo) 20k1|269,1 269,4 21,6 249,6 2450\nem 5 237,4 17,7 219,2 213,4\nHistorial de Composición Corporal\nPeso (kg) 928\nMME (kg) | 38,0\nMasa de Músculo Esquelético .\nPGC (%) | 28,3\nPorcentaje de Grasa Corporal .\nWReciente O Total E : i i i : i :\nss ss ss ss rss ss ss ——————\nVer.LookinBody 120.4.0.0.7 - S/N: F922005445 Copyright 01996- by InBody Co. Ltd. All rights reserved.BR-Spanish(m)-F3/230-8-140219\n",
+        "extraction_notes": [
+          "Extraction completed at 2026-04-20T21:52:56.013Z"
+        ]
+      },
+      "ocrConfidence": 77,
+      "warnings": []
+    },
+    {
+      "success": true,
+      "fileName": "166525586_20250628103509_InBody.jpg",
+      "outputPath": "C:\\Users\\fidel\\Documents\\fidel-dashboard\\src\\data\\health\\inbody-extracted\\166525586_20250628103509_InBody-metrics.json",
+      "metrics": {
+        "source": "166525586_20250628103509_InBody.jpg",
+        "extraction_timestamp": "2026-04-20T21:53:06.034Z",
+        "personal_info": {
+          "id": null,
+          "height_cm": null,
+          "age": 166525586,
+          "gender": null
+        },
+        "body_composition": {
+          "water_liters": 46.9,
+          "water_range": null,
+          "proteins_kg": null,
+          "proteins_range": null,
+          "minerals_kg": null,
+          "minerals_range": null,
+          "fat_mass_kg": 229,
+          "fat_mass_range": null,
+          "weight_kg": 75.3,
+          "weight_range": null
+        },
+        "muscle_fat_analysis": {
+          "muscle_mass_kg": null,
+          "fat_mass_kg": 229
+        },
+        "obesity_analysis": {
+          "imc": 10,
+          "fat_percentage": null
+        },
+        "muscle_segments": {},
+        "fat_segments": {},
+        "scores": {
+          "inbody_score": 46,
+          "inbody_score_max": 100
+        },
+        "weight_control": {
+          "target_weight_kg": null,
+          "weight_control_kg": 6,
+          "fat_control_kg": 6,
+          "muscle_control_kg": null
+        },
+        "investigation_params": {
+          "basal_metabolic_rate": 1752,
+          "waist_hip_ratio": null,
+          "visceral_fat_level": null,
+          "obesity_degree": null
+        },
+        "impedance": {},
+        "history": {},
+        "raw_ocr_text": "| B = dy [InBody270]\n—\n| ID | Altura | Edad | Sexo | Fecha / Hora de la prueba\n166525586 174cm 37 Masculino | 2025.06.28. 10:35\nAnálisis de Composición Corporal Puntuación InBody\nCantidad total de agua en el cuerpo Agua Corporal Total (L) 46,9 ( 37,4-45,8 )\nPara producir los músculos Proteínas (kg) 12,7 ( 101-123 ) 76, 100 Puntos\n* La puntuación total que refleja la evaluación de la comp\nPara fortalecer los huesos Minerales (kg) 436 ( 346-423 ) scion corporal Una persona musculosa puede superar\nz puntos.\nPara almacenar el exceso de energía Masa Grasa Corporal (kg) 229 ( 8,0-16,0 ) Control de Peso ————————\nLa suma de lo anterior Peso (kg) 86,9 ( 566-766 ) Peso Ideal 75,3 kg\n7\" Control de Peso - 11,6 kg\nControl de Grasa - 11,6 kg\nTO » Control de Músculo 0,0 kg\nAnalisis de Músculo-Grasa Evaluación de Obesidad .\nI | No r E E 1geramente\nIMC O Normal O Bajo vi ale\nPeso (kg) 55 70 85 100 115 130 145 160 175 190 205 % O Alto\n§ I E | 5G i\nMME (kg) 70 80 90 100 HO 120 130 140 150 160 170 % PGC El Normal aia Alto\nVa sado sóc CO MANO ES ES MN 3 5 a.\nd Relación Cintura-Cadera ————— ¿\nMasa Grasa (kg) 40 60 80 100 160 220 280 340 400 460 520 % 0,80 0,90\nCorporal EEE 22,9 0,98 | [a\nNivel de Grasa Visceral ——— ¿\neee N Nr Bajo 10 Alto\nAnálisis de Obesidad Nivel 10 | _\nParámetros de Investigación —— h\nIMC 2 10,0 15,0 185 220 250 30,0 35,0 40,0 45,0 50,0 55,0 =\ndodo ss Capon (KG/M CEC 287 Masa Libre de Grasa — 64,0 kg ( 51,0-62,3 )\nPGC (%) 00 50 100 150 200 250 1300 350 400 450 500 Tasa Metabólica Basal — 1752 keal ( 1806-2125 )\norense d Grasa Cool —] U| eN IME 8,6 kgr\nHi ig _— Ingesta calórica recomendada 2386 kcal\n% %\nEvaluación Evaluación Gasto calórico del ejercicio —— h\nAnálisis de Masa Magra Segmental — Análisis de Grasa Segmental Golf 153 | Gateball 165\nCaminata 174 | Yoga 174\n. 819. . 7%. e :4K9 14k Badminton 196| Tenis demesa — 196\n111,1% 110,7% —231,8% 231,8% Tenis 261 | Ciclismo 261\nNormal Normal Alto Alto Boxeo 261 | Básquetbol 261\n3 29 1kg o) 3 12,9kg o) Senderismo 283 | Salto de cuerda — 304\nLo] - 106.7% z Lo] E 306.4% h g Aeróbicos 304 | Trotar 304\n> o > o a ¡A\ng Normal = EB Alto > Ea E. vet pho\n= = sgrima japonesa aquetbol\n992kg 925g . 309 299 sam E Ex vr\n97,8% 97,1% 172,0% 171,5%\nA o his o T * Basado en su peso actual\nNormal Normal Alto Alto *Basado en una duración de 30 minutos\nImpedancia ——————————\nBD BI TR PD PI\n# Se estima la grasa segmental Zoo) 20k12|285,7 284,0 222 260,8 255,1\nOD ame SEDA 2520 18,2 228,2 2220\nHistorial de Composición Corporal\n92,8\nPeso (kg) —es 9\nMME (kg)\nMasa de Músculo Esquelético 2 —Ses\n28,3\nEEE 264\nMReciente O Total 2 : 20028 : : : : : :\nss ss ss ss rss ss ss ——————\nVer.LookinBody 120.4.0.0.7 - S/N: F922005445 Copyright 01996- by InBody Co. Ltd. All rights reserved.BR-Spanish(m)-F3/230-8-140219\n",
+        "extraction_notes": [
+          "Extraction completed at 2026-04-20T21:53:06.035Z"
+        ]
+      },
+      "ocrConfidence": 75,
+      "warnings": []
+    },
+    {
+      "success": true,
+      "fileName": "166525586_20251123132152_InBody.jpg",
+      "outputPath": "C:\\Users\\fidel\\Documents\\fidel-dashboard\\src\\data\\health\\inbody-extracted\\166525586_20251123132152_InBody-metrics.json",
+      "metrics": {
+        "source": "166525586_20251123132152_InBody.jpg",
+        "extraction_timestamp": "2026-04-20T21:53:16.137Z",
+        "personal_info": {
+          "id": null,
+          "height_cm": null,
+          "age": 166525586,
+          "gender": null
+        },
+        "body_composition": {
+          "water_liters": 49.5,
+          "water_range": null,
+          "proteins_kg": null,
+          "proteins_range": null,
+          "minerals_kg": null,
+          "minerals_range": null,
+          "fat_mass_kg": 24.7,
+          "fat_mass_range": null,
+          "weight_kg": 79.4,
+          "weight_range": null
+        },
+        "muscle_fat_analysis": {
+          "muscle_mass_kg": null,
+          "fat_mass_kg": 24.7
+        },
+        "obesity_analysis": {
+          "imc": 10,
+          "fat_percentage": null
+        },
+        "muscle_segments": {},
+        "fat_segments": {},
+        "scores": {
+          "inbody_score": 49,
+          "inbody_score_max": 100
+        },
+        "weight_control": {
+          "target_weight_kg": null,
+          "weight_control_kg": null,
+          "fat_control_kg": 8,
+          "muscle_control_kg": null
+        },
+        "investigation_params": {
+          "basal_metabolic_rate": 1827,
+          "waist_hip_ratio": null,
+          "visceral_fat_level": null,
+          "obesity_degree": null
+        },
+        "impedance": {},
+        "history": {},
+        "raw_ocr_text": "y [InBody270]\n—\n| ID | Altura | Edad | Sexo | Fecha / Hora de la prueba\n166525586 174em ar Masculino | 2025.11.23. 13:21\nAnálisis de Composición Corporal Puntuación InBody\nCantidad total de agua en el cuerpo Agua Corporal Total (L) 49,5 ( 37,4-45,8 )\nPara producir los músculos Proteínas (kg) 13,5 ( 101-123 ) 78/ 100 Puntos\n* La puntuación total que refleja la evaluación de la comp\nPara fortalecer los huesos Minerales (kg) 4,51 ( 346-423 ) 1 mopar Una persona musculosa puede superar\nPara almacenar el exceso de energía Masa Grasa Corporal (kg) 24,7 ( 8,0-16,0 ) Control de Peso ————————\nLa suma de lo anterior Peso (kg) 92.2 ( 56,6-76,6 ) Peso Ideal 79,4 kg\n7\" ControldePeso - 12,8 kg\nControl de Grasa - 12,8 kg\nTO » Control de Músculo 0,0 kg\nAnalisis de Músculo-Grasa Evaluación de Obesidad\na |_Normal_| Ligeramente\n> IMC O Normal O Bajo O Alto\nPeso (kg) 55 70 85 100 115 130 145 160 175 190 205 % Wi Alto\nI O EO) >\nPGC 1 Ligeramente Al\nMME (kg) 70 80 90 100 110 120 130 140 150 160 170 % E Nomal O Alto Alto\nNasa de Misc Esquelico IS E EOS EE 30 6 E\n> Relación Cintura-Cadera ————— ¿\nMasa Grasa (kg) 40 60 80 100 160 220 280 1340 400 460 520 % 0,80 0,90\nCorporal IN O ES SMA 7 00 | EE\nNivel de Grasa Visceral ——— ¿\neee N Nr Bajo 10 Alto\nAnálisis de Obesidad Nivel 11 | _\nParámetros de Investigación —— h\nIMC kg/m? 10,0 15,0 185 220 250 30,0 35,0 40,0 45,0 50,0 55,0 =\ndodo ss Capon (KG/M CEE 305 Masa Libre de Grasa  67,5kg ( 51,0623 )\nPGC (%)|_00 50 100 150 200 250 300 350 400 450 500 Tasa Metabólica Basal — 1827 keal ( 1894-2232 )\norense d Grasa Cool ————[ a LE] IME 9,1 kg/m\nHi ig _— Ingesta calórica recomendada 2480 kcal\n% %\nEvaluación Evaluación Gasto calórico del ejercicio —— h\nAnálisis de Masa Magra Segmental — Análisis de Grasa Segmental Golf 162 | Gateball 175\nCaminata 184 | Yoga 184\n199. 2 16K9... a ADO 1.9kg Badminton 208|Tenisdemesa — 208\n120,0% 119,1% _248,6% 251,5% Tenis 277 | Ciclismo 277\nAlto Alto Alto Alto Boxeo 277 | Basquetbol 27.1\n3 31,2kg o) 3 14,2kg o) Senderismo 301 | Salto de cuerda — 323\nLo] - 112,0% z Lo] E 336.1% h g Aeróbicos 323 | Trotar 323\n5 . a 5 a , \"\n3 Alto = 5 Alto = Fútbol 323 | Natación 323\n= = Esgrima japonesa 461 | Raquetbol 461\n_S6skg + 96M. .3.1k9 34k9 ses ter A\n99.7% 99,3% 179,5% 179,6% \"\ne AN (0 IN . 4 . . asado en su peso actual\nNormal Normal Alto Alto *Basado en una duración de 30 minutos\nImpedancia ——————————\nBD BI TR PD PI\n# Se estima la grasa segmental Zoo) 20k12|260,4 258,0 21,4 241,5 237,7\nFn 2269 17,3 212,2 207,9\nHistorial de Composición Corporal\n92,8 92,2\nPeso (kg) —s9 —*\n38,0 38,6\nMed *—85 —\n28,3\n== 264 268\nRee oToal 202 we MIO OO\nss ss ss ss rss ss ss ——————\nVer.LookinBody 120.4.0.0.7 - S/N: F922005445 Copyright 01996- by InBody Co. Ltd. All rights reserved.BR-Spanish(m)-F3/230-8-140219\n",
+        "extraction_notes": [
+          "Extraction completed at 2026-04-20T21:53:16.138Z"
+        ]
+      },
+      "ocrConfidence": 77,
+      "warnings": []
+    },
+    {
+      "success": true,
+      "fileName": "166525586_20260416100044_InBody.jpg",
+      "outputPath": "C:\\Users\\fidel\\Documents\\fidel-dashboard\\src\\data\\health\\inbody-extracted\\166525586_20260416100044_InBody-metrics.json",
+      "metrics": {
+        "source": "166525586_20260416100044_InBody.jpg",
+        "extraction_timestamp": "2026-04-20T21:53:26.444Z",
+        "personal_info": {
+          "id": null,
+          "height_cm": null,
+          "age": 166525586,
+          "gender": null,
+          "scan_date": "2026-04-16",
+          "scan_time": "10:00"
+        },
+        "body_composition": {
+          "water_liters": 50.7,
+          "water_range": "1",
+          "proteins_kg": null,
+          "proteins_range": null,
+          "minerals_kg": null,
+          "minerals_range": null,
+          "fat_mass_kg": 222,
+          "fat_mass_range": null,
+          "weight_kg": 81.2,
+          "weight_range": "1877-2211"
+        },
+        "muscle_fat_analysis": {
+          "muscle_mass_kg": null,
+          "fat_mass_kg": 222
+        },
+        "obesity_analysis": {
+          "imc": null,
+          "fat_percentage": null
+        },
+        "muscle_segments": {},
+        "fat_segments": {},
+        "scores": {
+          "inbody_score": 1,
+          "inbody_score_max": 100
+        },
+        "weight_control": {
+          "target_weight_kg": 2,
+          "weight_control_kg": null,
+          "fat_control_kg": null,
+          "muscle_control_kg": null
+        },
+        "investigation_params": {
+          "basal_metabolic_rate": 1861,
+          "waist_hip_ratio": null,
+          "visceral_fat_level": 10,
+          "obesity_degree": 135
+        },
+        "impedance": {},
+        "history": {},
+        "raw_ocr_text": "——————]—]——————————]———;;-———;——z—;ao————]—;z———\n| ID | Altura | Edad | Género | Fecha / Hora del test\n166525586 175em 38 Masculino | 16.04.2026. 10:00\nAnálisis de la Composición Corporal Puntuación InBody\nCantidad total de agua corporal Agua Corporal Total (1) 50,7 ( 37,9-46,3 )\nNecesario para definir musculatura Proteínas (kg) 13,8 ( 102-124 ) 8 1 7100 Puntos\ni * La puntuación total que refleja la evaluación de\nNecesario para reforzar los huesos Minerales (kg) 461 ( 350-428 ) la composición corporal. Una persona musculosa\n2 puede superar 100 puntos.\nNecesario para almacenar el exceso de energía Masa Grasa Corporal — (kg) 222 ( 81~162 ) Control de peso ———————\nSuma de lo anterior Peso (kg) 91.2 ( 573-775 ) Peso objetivo 81,2 kg\n— - Control de peso - 10,0 kg\nControl de grasa - 10,0 kg\nPOT , Control muscular 0,0 kg\nAnálisis Músculo-Grasa Parámetros de Investigación ——— h\n54 Tasa metabólica basal 1861 kcal ( 1877-2211)\n55 70 85 100 115 130 145 160 175 190 205 % iA) 1 La\nPeso (kg) MD TS ES NN 9 Rascón Cintura-Cadera — 0,97 ( 0,80-0,90 )\nNivel de grasa visceral 10 (19)\nMasa (kg) 70 80 90 100 110 120 130 140 150 160 170 %\nmusculosqueltia pm ——— mos NN 3 6 Grado de obesidad 135% ( 90-110 )\nE e (kg) [40 80 80 100 160 220 280 340 400 460 520 % Interpretación de los resultados —— h\norporal CEE Pins 5 cox\nT 222 Análisis de la Composición Corporal\nEl peso corporal es la suma del agua corporal total,\nlas proteínas, los minerales y la masa de grasa corporal.\nAnálisis de Obesidad Mantenga una composición corporal equilibrada para\nINC (kg?) 100 150 185 220 250 300 350 400 450 500 550 Análisis Músculo-grasa\nIndcede Masa Copor I O E 1 E 70 3 Compare la longitud de las barras de la masa musculoesquelética\nPorcentaje de (%) |_00 50 100 150 200 250 300 350 400 450 500 y la masa de grasa corporal. Cuanto mas larga sea la barra de la\nGrasa Corporal I E E — 24 3 masa muscular esquelética en comparación con la masa de\ngrasa corporal, más fuerte será el cuerpo\n“e Meegge Análisis de obesidad\nEvaluación Evaluación ques: ors . o\nE P El IMC es un índice utilizado para determinar la obesidad\nAnálisis de Magro por Segmentos Analisis de Grasa Segmental mediante el peso y la altura.\nEl PGC es el porcentaje de grasa corporal en relación\nASK KO. ...1:3kg 1.2kg a peso corporal\n129.3% 129.7% — 206,9% 205,9% Análisis de magro por segmentos\nAlto Alto Alto Alto Esla S la cantdad de musculo ot druida\nadecuadamente por todo el cuerpo. Compara la\no o\n° . 31,8kg 7 D 12,8kg 3 3 masa muscular con el peso actual.\n2 115,0% D o 300,2% D —_\n=r S = o. Análisis de Grasa Segmental\n= Ate - EB Aa o Evalúa si la cantidad d tá distribuid\n= = valúa si la cantidad de grasa está distribuida\n.B1kg. 819... a KO 2,7kg adecuadamente por todo el cuerpo. Compara masa\n97,2% 96,4% 17,8% 157.4% grasa con La Deal.\npend Horna thie \"e Código QR de lectura de resultados —\nEscanee el código QR para a\nver la lectura de los resultados = E [=]\nLa grasa segmental es estimada. mas detalladamente.\nHistorial de Composición Corporal RE\n91,2 .\nPeso (9) | 900 ; Impedancia ———————————\nas BD BI TR PD PI\nMasa 39,6 Zo) 20k17|254,0 2583 21,1 245,0 239,8\nmuscubesqueltia — “9 390 — 10011 222,0 226,4 17,6 213,4 207,4\nf 243\nPorcentaje de 9\nGrasa Copa = 242 —\nY Reciente O Total Us : \"o i : i : i i\npo\nVer LookinBody 120.3.0.1.7 - S/N: F31902069 Copyright ©1996~ by InBody Co., Ltd. All rights reserved. BR-Spanish-F3/230-8-140530\n",
+        "extraction_notes": [
+          "Extraction completed at 2026-04-20T21:53:26.445Z"
+        ]
+      },
+      "ocrConfidence": 79,
+      "warnings": []
+    }
+  ],
+  "all_metrics_summary": [
+    {
+      "fileName": "100326-1_20260310170221_InBody.jpg",
+      "date": "2026-03-10",
+      "weight": 80.3,
+      "muscle_mass": 30.7,
+      "fat_mass": 21.8,
+      "inbody_score": 1,
+      "imc": null,
+      "visceral_fat_level": 9
+    },
+    {
+      "fileName": "166525586_20240723112351_InBody.jpg",
+      "weight": 78.3,
+      "muscle_mass": null,
+      "fat_mass": 26.3,
+      "inbody_score": 48,
+      "imc": 10,
+      "visceral_fat_level": null
+    },
+    {
+      "fileName": "166525586_20250628103509_InBody.jpg",
+      "weight": 75.3,
+      "muscle_mass": null,
+      "fat_mass": 229,
+      "inbody_score": 46,
+      "imc": 10,
+      "visceral_fat_level": null
+    },
+    {
+      "fileName": "166525586_20251123132152_InBody.jpg",
+      "weight": 79.4,
+      "muscle_mass": null,
+      "fat_mass": 24.7,
+      "inbody_score": 49,
+      "imc": 10,
+      "visceral_fat_level": null
+    },
+    {
+      "fileName": "166525586_20260416100044_InBody.jpg",
+      "date": "2026-04-16",
+      "weight": 81.2,
+      "muscle_mass": null,
+      "fat_mass": 222,
+      "inbody_score": 1,
+      "imc": null,
+      "visceral_fat_level": 10
+    }
+  ],
+  "output_directory": "C:\\Users\\fidel\\Documents\\fidel-dashboard\\src\\data\\health\\inbody-extracted"
+}

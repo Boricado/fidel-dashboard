@@ -29,13 +29,46 @@ CREATE TABLE IF NOT EXISTS tareas (
     created_at TIMESTAMP DEFAULT NOW()
 );
 
--- 3. Métricas Salud
+-- 3. Métricas Salud (Expanded for InBody integration)
 CREATE TABLE IF NOT EXISTS metricas_salud (
     id SERIAL PRIMARY KEY,
+
+    -- Basic metrics
     peso NUMERIC(5,2),
     grasa NUMERIC(5,2),
     fc_reposo NUMERIC(3),
+
+    -- InBody comprehensive metrics
+    masa_muscular NUMERIC(5,2),        -- Muscle mass
+    masa_grasa NUMERIC(5,2),          -- Fat mass
+    agua_corporal NUMERIC(5,2),       -- Body water (liters)
+    proteinas NUMERIC(5,2),           -- Proteins
+    minerales NUMERIC(5,2),           -- Minerals
+    imc NUMERIC(5,2),                 -- BMI
+    porcentaje_grasa NUMERIC(5,2),    -- Fat percentage
+    grasa_visceral NUMERIC(3),        -- Visceral fat level
+    puntuacion_inbody NUMERIC(3),     -- InBody score (0-100)
+
+    -- Investigation parameters
+    tmb NUMERIC(4),                   -- Basal metabolic rate
+    relacion_cintura_cadera NUMERIC(4,3), -- Waist-hip ratio
+    grado_obesidad NUMERIC(5,2),      -- Obesity degree (%)
+
+    -- Control parameters
+    peso_objetivo NUMERIC(5,2),       -- Target weight
+    control_peso NUMERIC(5,2),        -- Weight control
+    control_grasa NUMERIC(5,2),       -- Fat control
+    control_muscular NUMERIC(5,2),    -- Muscle control
+
+    -- Personal info
+    altura NUMERIC(3),                -- Height (cm)
+    edad NUMERIC(3),                  -- Age
+    genero TEXT,                      -- Gender
+
+    -- Metadata
     fecha_registro DATE DEFAULT CURRENT_DATE,
+    fuente TEXT DEFAULT 'manual',     -- 'manual' or 'inbody'
+    notas TEXT,                       -- Additional notes
     created_at TIMESTAMP DEFAULT NOW()
 );
 

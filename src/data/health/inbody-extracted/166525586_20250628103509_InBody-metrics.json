@@ -1,0 +1,54 @@
+{
+  "source": "166525586_20250628103509_InBody.jpg",
+  "extraction_timestamp": "2026-04-20T21:53:06.034Z",
+  "personal_info": {
+    "id": null,
+    "height_cm": null,
+    "age": 166525586,
+    "gender": null
+  },
+  "body_composition": {
+    "water_liters": 46.9,
+    "water_range": null,
+    "proteins_kg": null,
+    "proteins_range": null,
+    "minerals_kg": null,
+    "minerals_range": null,
+    "fat_mass_kg": 229,
+    "fat_mass_range": null,
+    "weight_kg": 75.3,
+    "weight_range": null
+  },
+  "muscle_fat_analysis": {
+    "muscle_mass_kg": null,
+    "fat_mass_kg": 229
+  },
+  "obesity_analysis": {
+    "imc": 10,
+    "fat_percentage": null
+  },
+  "muscle_segments": {},
+  "fat_segments": {},
+  "scores": {
+    "inbody_score": 46,
+    "inbody_score_max": 100
+  },
+  "weight_control": {
+    "target_weight_kg": null,
+    "weight_control_kg": 6,
+    "fat_control_kg": 6,
+    "muscle_control_kg": null
+  },
+  "investigation_params": {
+    "basal_metabolic_rate": 1752,
+    "waist_hip_ratio": null,
+    "visceral_fat_level": null,
+    "obesity_degree": null
+  },
+  "impedance": {},
+  "history": {},
+  "raw_ocr_text": "| B = dy [InBody270]\n—\n| ID | Altura | Edad | Sexo | Fecha / Hora de la prueba\n166525586 174cm 37 Masculino | 2025.06.28. 10:35\nAnálisis de Composición Corporal Puntuación InBody\nCantidad total de agua en el cuerpo Agua Corporal Total (L) 46,9 ( 37,4-45,8 )\nPara producir los músculos Proteínas (kg) 12,7 ( 101-123 ) 76, 100 Puntos\n* La puntuación total que refleja la evaluación de la comp\nPara fortalecer los huesos Minerales (kg) 436 ( 346-423 ) scion corporal Una persona musculosa puede superar\nz puntos.\nPara almacenar el exceso de energía Masa Grasa Corporal (kg) 229 ( 8,0-16,0 ) Control de Peso ————————\nLa suma de lo anterior Peso (kg) 86,9 ( 566-766 ) Peso Ideal 75,3 kg\n7\" Control de Peso - 11,6 kg\nControl de Grasa - 11,6 kg\nTO » Control de Músculo 0,0 kg\nAnalisis de Músculo-Grasa Evaluación de Obesidad .\nI | No r E E 1geramente\nIMC O Normal O Bajo vi ale\nPeso (kg) 55 70 85 100 115 130 145 160 175 190 205 % O Alto\n§ I E | 5G i\nMME (kg) 70 80 90 100 HO 120 130 140 150 160 170 % PGC El Normal aia Alto\nVa sado sóc CO MANO ES ES MN 3 5 a.\nd Relación Cintura-Cadera ————— ¿\nMasa Grasa (kg) 40 60 80 100 160 220 280 340 400 460 520 % 0,80 0,90\nCorporal EEE 22,9 0,98 | [a\nNivel de Grasa Visceral ——— ¿\neee N Nr Bajo 10 Alto\nAnálisis de Obesidad Nivel 10 | _\nParámetros de Investigación —— h\nIMC 2 10,0 15,0 185 220 250 30,0 35,0 40,0 45,0 50,0 55,0 =\ndodo ss Capon (KG/M CEC 287 Masa Libre de Grasa — 64,0 kg ( 51,0-62,3 )\nPGC (%) 00 50 100 150 200 250 1300 350 400 450 500 Tasa Metabólica Basal — 1752 keal ( 1806-2125 )\norense d Grasa Cool —] U| eN IME 8,6 kgr\nHi ig _— Ingesta calórica recomendada 2386 kcal\n% %\nEvaluación Evaluación Gasto calórico del ejercicio —— h\nAnálisis de Masa Magra Segmental — Análisis de Grasa Segmental Golf 153 | Gateball 165\nCaminata 174 | Yoga 174\n. 819. . 7%. e :4K9 14k Badminton 196| Tenis demesa — 196\n111,1% 110,7% —231,8% 231,8% Tenis 261 | Ciclismo 261\nNormal Normal Alto Alto Boxeo 261 | Básquetbol 261\n3 29 1kg o) 3 12,9kg o) Senderismo 283 | Salto de cuerda — 304\nLo] - 106.7% z Lo] E 306.4% h g Aeróbicos 304 | Trotar 304\n> o > o a ¡A\ng Normal = EB Alto > Ea E. vet pho\n= = sgrima japonesa aquetbol\n992kg 925g . 309 299 sam E Ex vr\n97,8% 97,1% 172,0% 171,5%\nA o his o T * Basado en su peso actual\nNormal Normal Alto Alto *Basado en una duración de 30 minutos\nImpedancia ——————————\nBD BI TR PD PI\n# Se estima la grasa segmental Zoo) 20k12|285,7 284,0 222 260,8 255,1\nOD ame SEDA 2520 18,2 228,2 2220\nHistorial de Composición Corporal\n92,8\nPeso (kg) —es 9\nMME (kg)\nMasa de Músculo Esquelético 2 —Ses\n28,3\nEEE 264\nMReciente O Total 2 : 20028 : : : : : :\nss ss ss ss rss ss ss ——————\nVer.LookinBody 120.4.0.0.7 - S/N: F922005445 Copyright 01996- by InBody Co. Ltd. All rights reserved.BR-Spanish(m)-F3/230-8-140219\n",
+  "extraction_notes": [
+    "Extraction completed at 2026-04-20T21:53:06.035Z"
+  ]
+}

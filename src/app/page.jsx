@@ -21,6 +21,7 @@ import EMPRESAS_DATA    from '@/data/calibracion/empresas_nacionales.json';
 import PRECIOS_DATA     from '@/data/calibracion/precios_mercado.json';
 import IMPL_DATA        from '@/data/calibracion/implementacion.json';
 import RESUMEN_DATA     from '@/data/calibracion/resumen_ejecutivo.json';
+import { INBODY_SCAN_FILES } from '@/data/health/inbody-scans';
 import MODELOS_DATA     from '@/data/muebles/modelos.json';
 import HERR_DATA        from '@/data/muebles/herramientas.json';
 import MESA_DATA        from '@/data/muebles/mesa_carpintera.json';
@@ -106,6 +107,70 @@ function DonutStat({ pct, label, color = '#006e2f' }) {
       </div>
     </div>
   );
+}
+
+function getMetricValue(entry, ...keys) {
+  for (const key of keys) {
+    if (entry?.[key] != null) {
+      return entry[key];
+    }
+  }
+
+  return null;
+}
+
+function mergeHealthMetrics(entries) {
+  const grouped = new Map();
+
+  for (const entry of entries) {
+    const dateKey = entry.fecha_registro;
+    const current = grouped.get(dateKey) ?? {};
+
+    grouped.set(dateKey, {
+      ...current,
+      ...entry,
+      fecha_registro: dateKey,
+      peso: getMetricValue(entry, 'peso_kg', 'peso') ?? getMetricValue(current, 'peso_kg', 'peso'),
+      musculo: getMetricValue(entry, 'masa_muscular_kg', 'musculo') ?? getMetricValue(current, 'masa_muscular_kg', 'musculo'),
+      grasa_kg: getMetricValue(entry, 'masa_grasa_kg', 'grasa_kg') ?? getMetricValue(current, 'masa_grasa_kg', 'grasa_kg'),
+      grasa: getMetricValue(entry, 'porcentaje_grasa', 'grasa') ?? getMetricValue(current, 'porcentaje_grasa', 'grasa'),
+      visceral: getMetricValue(entry, 'nivel_grasa_visceral', 'visceral') ?? getMetricValue(current, 'nivel_grasa_visceral', 'visceral'),
+      score_inbody: getMetricValue(entry, 'inbody_score', 'score_inbody') ?? getMetricValue(current, 'inbody_score', 'score_inbody'),
+      bmi: getMetricValue(entry, 'imc', 'bmi') ?? getMetricValue(current, 'imc', 'bmi'),
+      bmr: getMetricValue(entry, 'tasa_metabolica_basal', 'bmr') ?? getMetricValue(current, 'tasa_metabolica_basal', 'bmr'),
+      cintura_cadera:
+        getMetricValue(entry, 'relacion_cintura_cadera', 'cintura_cadera') ??
+        getMetricValue(current, 'relacion_cintura_cadera', 'cintura_cadera'),
+      proteinas_kg: getMetricValue(entry, 'proteinas_kg') ?? current.proteinas_kg ?? null,
+      agua_total_l: getMetricValue(entry, 'agua_total_l') ?? current.agua_total_l ?? null,
+      minerales_kg: getMetricValue(entry, 'minerales_kg') ?? current.minerales_kg ?? null,
+      brazo_derecho_magra_kg: getMetricValue(entry, 'brazo_derecho_magra_kg') ?? current.brazo_derecho_magra_kg ?? null,
+      brazo_izquierdo_magra_kg: getMetricValue(entry, 'brazo_izquierdo_magra_kg') ?? current.brazo_izquierdo_magra_kg ?? null,
+      tronco_magra_kg: getMetricValue(entry, 'tronco_magra_kg') ?? current.tronco_magra_kg ?? null,
+      pierna_derecha_magra_kg: getMetricValue(entry, 'pierna_derecha_magra_kg') ?? current.pierna_derecha_magra_kg ?? null,
+      pierna_izquierda_magra_kg: getMetricValue(entry, 'pierna_izquierda_magra_kg') ?? current.pierna_izquierda_magra_kg ?? null,
+    });
+  }
+
+  return [...grouped.values()].sort((a, b) => new Date(a.fecha_registro) - new Date(b.fecha_registro));
+}
+
+function getDifference(current, previous, digits = 1) {
+  if (current == null || previous == null) {
+    return null;
+  }
+
+  const delta = Number((current - previous).toFixed(digits));
+  const sign = delta > 0 ? '+ ' : delta < 0 ? '- ' : '';
+  return `${sign}${Math.abs(delta).toFixed(digits)}`;
+}
+
+function formatMetricValue(value, digits = 1) {
+  if (value == null || Number.isNaN(Number(value))) {
+    return '—';
+  }
+
+  return Number(value).toFixed(digits);
 }
 
 
@@ -340,6 +405,65 @@ export default function Dashboard() {
     return `${unique[0]}, ${unique[1]} y ${unique.length - 2} más`;
   }, [licsVisibles, filtroRegion]);
 
+  const healthMetrics = useMemo(() => mergeHealthMetrics(metricasSalud), [metricasSalud]);
+  const latestDetailedPair = useMemo(() => {
+    const march = healthMetrics.find((entry) => entry.fecha_registro === '2026-03-10');
+    const april = healthMetrics.find((entry) => entry.fecha_registro === '2026-04-16');
+    return march && april ? { march, april } : null;
+  }, [healthMetrics]);
+
+  const inbodyDownloadCards = useMemo(() => {
+    return INBODY_SCAN_FILES.map((scan, index) => {
+      const sameDateMetric = healthMetrics.find((entry) => entry.fecha_registro === scan.date);
+      const fallbackMetric = healthMetrics[index] ?? null;
+
+      return {
+        ...scan,
+        metric: sameDateMetric ?? fallbackMetric,
+        downloadUrl: `/api/inbody-files/${encodeURIComponent(scan.fileName)}`,
+      };
+    });
+  }, [healthMetrics]);
+
+  const comparisonRows = useMemo(() => {
+    if (!latestDetailedPair) {
+      return [];
+    }
+
+    const { march, april } = latestDetailedPair;
+
+    return [
+      { label: 'Peso total', march: march.peso, april: april.peso, unit: 'kg', digits: 1 },
+      { label: 'Masa musculoesquelética', march: march.musculo, april: april.musculo, unit: 'kg', digits: 1 },
+      { label: 'Masa grasa corporal', march: march.grasa_kg, april: april.grasa_kg, unit: 'kg', digits: 1 },
+      { label: 'Proteínas', march: march.proteinas_kg, april: april.proteinas_kg, unit: 'kg', digits: 1 },
+      { label: 'Agua corporal total', march: march.agua_total_l, april: april.agua_total_l, unit: 'L', digits: 1 },
+      { label: 'Minerales', march: march.minerales_kg, april: april.minerales_kg, unit: 'kg', digits: 2 },
+      { label: 'Porcentaje de grasa corporal', march: march.grasa, april: april.grasa, unit: '%', digits: 1 },
+      { label: 'IMC', march: march.bmi, april: april.bmi, unit: '', digits: 1 },
+      { label: 'Puntuación InBody', march: march.score_inbody, april: april.score_inbody, unit: 'pts', digits: 0 },
+      { label: 'Tasa metabólica basal', march: march.bmr, april: april.bmr, unit: 'kcal', digits: 0 },
+      { label: 'Relación cintura-cadera', march: march.cintura_cadera, april: april.cintura_cadera, unit: '', digits: 2 },
+      { label: 'Grasa visceral', march: march.visceral, april: april.visceral, unit: '', digits: 0 },
+    ];
+  }, [latestDetailedPair]);
+
+  const segmentComparisonRows = useMemo(() => {
+    if (!latestDetailedPair) {
+      return [];
+    }
+
+    const { march, april } = latestDetailedPair;
+
+    return [
+      { label: 'Brazo derecho', march: march.brazo_derecho_magra_kg, april: april.brazo_derecho_magra_kg, digits: 2 },
+      { label: 'Brazo izquierdo', march: march.brazo_izquierdo_magra_kg, april: april.brazo_izquierdo_magra_kg, digits: 2 },
+      { label: 'Tronco', march: march.tronco_magra_kg, april: april.tronco_magra_kg, digits: 1 },
+      { label: 'Pierna derecha', march: march.pierna_derecha_magra_kg, april: april.pierna_derecha_magra_kg, digits: 2 },
+      { label: 'Pierna izquierda', march: march.pierna_izquierda_magra_kg, april: april.pierna_izquierda_magra_kg, digits: 2 },
+    ];
+  }, [latestDetailedPair]);
+
   const descartadasCount  = licitaciones.filter(l => l.user_accion === 'descartado').length;
   const postuladas        = licitaciones.filter(l => l.user_accion === 'postulado').length;
   const revisando         = licitaciones.filter(l => l.user_accion === 'revisar').length;
@@ -348,10 +472,10 @@ export default function Dashboard() {
   const tareasRealizadas  = tareas.filter(t => t.estado === 'completada');
   const tareasCompletadas = tareasRealizadas.length;
   const proyectosActivos  = proyectos.filter(p => p.estado === 'activo').length;
-  const ultimaMedicion    = metricasSalud[metricasSalud.length - 1];
+  const ultimaMedicion    = healthMetrics[healthMetrics.length - 1];
   const pesoActual        = ultimaMedicion?.peso ?? '--';
 
-  const graficaInBody = metricasSalud.map(m => ({
+  const graficaInBody = healthMetrics.map(m => ({
     fecha:   m.fecha_registro ? new Date(m.fecha_registro).toLocaleDateString('es-CL',{month:'short',year:'2-digit'}) : '',
     peso:    m.peso,
     grasa:   m.grasa,
@@ -1224,22 +1348,151 @@ export default function Dashboard() {
                     })}
                   </section>
 
-                  {/* Últimas mediciones */}
+                  {/* Línea de tiempo InBody */}
                   <section className="bg-white rounded-xl p-6 border border-[rgb(188_203_185/0.18)] shadow-sm">
-                    <h3 className="text-base font-bold text-[#1a1b22] font-inter mb-4">Historial InBody</h3>
+                    <div className="flex items-start justify-between gap-3 mb-4">
+                      <div>
+                        <h3 className="text-base font-bold text-[#1a1b22] font-inter">Historial InBody</h3>
+                        <p className="text-xs text-[#5e5e65] font-label">Todos los controles disponibles, desde julio de 2024 hasta abril de 2026</p>
+                      </div>
+                      <span className="text-[10px] font-bold font-label uppercase tracking-wider text-primary bg-primary/10 px-2 py-1 rounded-full">
+                        {inbodyDownloadCards.length} archivos
+                      </span>
+                    </div>
                     <div className="space-y-3">
-                      {[...metricasSalud].reverse().slice(0,5).map(m => (
-                        <div key={m.id} className="flex items-center justify-between py-2 border-b border-[#eeedf7] last:border-0">
-                          <span className="text-xs text-[#5e5e65] font-label">{new Date(m.fecha_registro).toLocaleDateString('es-CL',{day:'2-digit',month:'short'})}</span>
-                          <span className="font-geist-mono text-sm font-bold">{m.peso} kg</span>
-                          <span className={`text-xs font-geist-mono px-2 py-0.5 rounded font-bold ${(m.score_inbody??0)>=80 ? 'bg-primary/10 text-primary' : 'bg-[#eeedf7] text-[#5e5e65]'}`}>{m.score_inbody ?? '—'}</span>
+                      {inbodyDownloadCards.map((scan) => (
+                        <div key={scan.id} className="rounded-xl border border-[#eeedf7] p-4 bg-[#fcfdfc]">
+                          <div className="flex items-start justify-between gap-3">
+                            <div>
+                              <p className="text-xs text-[#5e5e65] font-label uppercase tracking-wider">
+                                {new Date(`${scan.date}T12:00:00`).toLocaleDateString('es-CL', { day: '2-digit', month: 'short', year: 'numeric' })}
+                              </p>
+                              <h4 className="text-sm font-bold text-[#1a1b22] mt-1">{scan.label}</h4>
+                              <p className="text-xs text-[#5e5e65] mt-1">{scan.notes}</p>
+                            </div>
+                            <a
+                              href={scan.downloadUrl}
+                              className="inline-flex items-center gap-1 rounded-lg border border-primary/20 bg-primary/5 px-3 py-2 text-[11px] font-bold font-label text-primary transition-colors hover:bg-primary/10"
+                              download
+                            >
+                              <ExternalLink className="w-3 h-3" />
+                              Descargar
+                            </a>
+                          </div>
+                          <div className="grid grid-cols-2 gap-2 mt-4 text-xs">
+                            <div className="rounded-lg bg-white px-3 py-2 border border-[#eeedf7]">
+                              <span className="block text-[#5e5e65] font-label">Peso</span>
+                              <span className="font-geist-mono font-bold text-[#1a1b22]">{scan.metric?.peso != null ? `${formatMetricValue(scan.metric.peso)} kg` : '—'}</span>
+                            </div>
+                            <div className="rounded-lg bg-white px-3 py-2 border border-[#eeedf7]">
+                              <span className="block text-[#5e5e65] font-label">Músculo</span>
+                              <span className="font-geist-mono font-bold text-[#1a1b22]">{scan.metric?.musculo != null ? `${formatMetricValue(scan.metric.musculo)} kg` : '—'}</span>
+                            </div>
+                            <div className="rounded-lg bg-white px-3 py-2 border border-[#eeedf7]">
+                              <span className="block text-[#5e5e65] font-label">% grasa</span>
+                              <span className="font-geist-mono font-bold text-[#1a1b22]">{scan.metric?.grasa != null ? `${formatMetricValue(scan.metric.grasa)}%` : '—'}</span>
+                            </div>
+                            <div className="rounded-lg bg-white px-3 py-2 border border-[#eeedf7]">
+                              <span className="block text-[#5e5e65] font-label">Score</span>
+                              <span className="font-geist-mono font-bold text-[#1a1b22]">{scan.metric?.score_inbody != null ? `${formatMetricValue(scan.metric.score_inbody, 0)} pts` : '—'}</span>
+                            </div>
+                          </div>
                         </div>
                       ))}
-                      {metricasSalud.length === 0 && <p className="text-xs text-[#5e5e65] text-center py-4">Sin mediciones</p>}
+                      {inbodyDownloadCards.length === 0 && <p className="text-xs text-[#5e5e65] text-center py-4">Sin mediciones</p>}
                     </div>
                   </section>
                 </div>
               </div>
+
+              {latestDetailedPair && (
+                <section className="bg-white rounded-xl p-8 border border-[rgb(188_203_185/0.18)] shadow-sm space-y-8">
+                  <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+                    <div>
+                      <h3 className="text-lg font-bold text-[#1a1b22] font-inter">Comparativa detallada Marzo vs Abril 2026</h3>
+                      <p className="text-sm text-[#5e5e65] font-label">
+                        Evolución entre el InBody del 10 de marzo de 2026 y el del 16 de abril de 2026.
+                      </p>
+                    </div>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                      {[
+                        { label: 'Peso', value: getDifference(latestDetailedPair.april.peso, latestDetailedPair.march.peso), tone: 'text-[#1a1b22]' },
+                        { label: 'Músculo', value: getDifference(latestDetailedPair.april.musculo, latestDetailedPair.march.musculo), tone: 'text-primary' },
+                        { label: 'Grasa kg', value: getDifference(latestDetailedPair.april.grasa_kg, latestDetailedPair.march.grasa_kg), tone: 'text-amber-700' },
+                        { label: 'Visceral', value: getDifference(latestDetailedPair.april.visceral, latestDetailedPair.march.visceral, 0), tone: 'text-red-500' },
+                      ].map((item) => (
+                        <div key={item.label} className="rounded-xl border border-[#eeedf7] bg-[#fcfdfc] px-4 py-3">
+                          <p className="text-[10px] font-label uppercase tracking-wider text-[#5e5e65]">{item.label}</p>
+                          <p className={`mt-1 text-lg font-bold font-geist-mono ${item.tone}`}>{item.value ?? '—'}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="grid lg:grid-cols-2 gap-8">
+                    <div className="overflow-hidden rounded-xl border border-[#eeedf7]">
+                      <div className="grid grid-cols-4 bg-[#f4f3fc] px-4 py-3 text-[10px] font-bold font-label uppercase tracking-wider text-[#5e5e65]">
+                        <span>Parámetro</span>
+                        <span className="text-right">10.03.2026</span>
+                        <span className="text-right">16.04.2026</span>
+                        <span className="text-right">Variación</span>
+                      </div>
+                      <div className="divide-y divide-[#eeedf7]">
+                        {comparisonRows.map((row) => (
+                          <div key={row.label} className="grid grid-cols-4 items-center px-4 py-3 text-sm">
+                            <span className="font-medium text-[#1a1b22]">{row.label}</span>
+                            <span className="text-right font-geist-mono text-[#5e5e65]">
+                              {row.unit ? `${formatMetricValue(row.march, row.digits)} ${row.unit}` : formatMetricValue(row.march, row.digits)}
+                            </span>
+                            <span className="text-right font-geist-mono text-[#5e5e65]">
+                              {row.unit ? `${formatMetricValue(row.april, row.digits)} ${row.unit}` : formatMetricValue(row.april, row.digits)}
+                            </span>
+                            <span className="text-right font-geist-mono font-bold text-primary">
+                              {row.unit ? `${getDifference(row.april, row.march, row.digits)} ${row.unit}` : getDifference(row.april, row.march, row.digits)}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      <div className="overflow-hidden rounded-xl border border-[#eeedf7]">
+                        <div className="grid grid-cols-4 bg-[#f4f3fc] px-4 py-3 text-[10px] font-bold font-label uppercase tracking-wider text-[#5e5e65]">
+                          <span>Segmento</span>
+                          <span className="text-right">10.03</span>
+                          <span className="text-right">16.04</span>
+                          <span className="text-right">Variación</span>
+                        </div>
+                        <div className="divide-y divide-[#eeedf7]">
+                          {segmentComparisonRows.map((row) => (
+                            <div key={row.label} className="grid grid-cols-4 items-center px-4 py-3 text-sm">
+                              <span className="font-medium text-[#1a1b22]">{row.label}</span>
+                              <span className="text-right font-geist-mono text-[#5e5e65]">{formatMetricValue(row.march, row.digits)} kg</span>
+                              <span className="text-right font-geist-mono text-[#5e5e65]">{formatMetricValue(row.april, row.digits)} kg</span>
+                              <span className={`text-right font-geist-mono font-bold ${row.april >= row.march ? 'text-primary' : 'text-amber-700'}`}>
+                                {getDifference(row.april, row.march, row.digits)} kg
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="grid gap-3">
+                        {[
+                          'Se observa un incremento de 0,6 kg en la masa muscular total en un mes aproximadamente.',
+                          'La mayor parte del aumento de masa magra se concentra en el tronco y ambos brazos.',
+                          'El nivel de grasa visceral subió un escalón y quedó en 10, en el borde alto del rango normal.',
+                          'La tasa metabólica basal aumentó 17 kcal, coherente con el aumento de masa muscular.',
+                        ].map((note) => (
+                          <div key={note} className="rounded-xl border border-[#eeedf7] bg-[#fcfdfc] px-4 py-3 text-sm text-[#1a1b22]">
+                            {note}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              )}
 
               {/* Gráfico tendencia corporal */}
               <section className="bg-white rounded-xl p-8 border border-[rgb(188_203_185/0.18)] shadow-sm">
